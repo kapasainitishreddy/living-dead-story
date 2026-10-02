@@ -1,0 +1,21 @@
+# Godot 4+
+.godot/
+/android/
+
+# Imported/build artifacts
+*.tmp
+*.log
+build/
+dist/
+exports/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets/local config
+.env
+.env.*
+!.env.example
