@@ -4,42 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>STILL HERE â€” Vertical Slice</title>
-<style>
-:root{
-  --ink:#070910; --paper:#eef0f5; --muted:#9aa2b4; --glass:rgba(10,14,24,.56);
-  --line:rgba(255,255,255,.12); --warm:#ffd48c; --cool:#91b9ff; --alive:#cfe7ff;
-}
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--paper);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
-#grain{position:fixed;inset:0;pointer-events:none;opacity:.12;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")}
-#hud{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:max(22px,env(safe-area-inset-top)) 22px max(22px,env(safe-area-inset-bottom));pointer-events:none}
-.topbar,.bottombar{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{letter-spacing:.28em;font-weight:700;font-size:12px;opacity:.88}
-.chip{pointer-events:auto;border:1px solid var(--line);background:rgba(6,9,16,.45);backdrop-filter:blur(18px);color:var(--paper);border-radius:999px;padding:10px 14px;font-size:12px}
-#panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,620px);max-height:82vh;overflow:auto;padding:26px;border-radius:28px;background:linear-gradient(180deg,rgba(14,18,31,.76),rgba(7,9,16,.88));border:1px solid rgba(255,255,255,.14);box-shadow:0 24px 90px rgba(0,0,0,.55);backdrop-filter:blur(24px)}
-.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#bbc3d5;margin-bottom:12px}
-h1{font-size:clamp(34px,7vw,66px);line-height:.92;margin:0 0 16px;letter-spacing:-.045em}
-h2{font-size:clamp(26px,5vw,44px);line-height:1;margin:0 0 14px;letter-spacing:-.03em}
-p{color:#c8cfdd;line-height:1.55;margin:0 0 18px}
-.quote{font-family:Georgia,serif;font-size:clamp(18px,3.7vw,27px);line-height:1.45;color:#f3f1ea;margin:22px 0}
-.actions{display:grid;gap:10px;margin-top:18px}
-button.action{appearance:none;width:100%;text-align:left;border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:16px 18px;background:rgba(255,255,255,.055);color:white;font:inherit;cursor:pointer;transition:.22s ease}
-button.action:hover,button.action:focus{background:rgba(255,255,255,.11);transform:translateY(-1px);outline:none}
-button.action strong{display:block;font-size:15px;margin-bottom:4px}
-button.action span{font-size:12px;color:#aab3c7}
-button.primary{background:linear-gradient(135deg,rgba(255,212,140,.18),rgba(145,185,255,.13));border-color:rgba(255,212,140,.28)}
-.small{font-size:12px;color:#9da6b9}
-.hidden{display:none!important}
-#toast{position:fixed;left:50%;bottom:8vh;transform:translateX(-50%) translateY(20px);opacity:0;transition:.45s ease;pointer-events:none;background:rgba(5,7,12,.72);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(16px);padding:12px 16px;border-radius:999px;font-size:13px}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-#threadCard{display:flex;gap:14px;align-items:center;padding:15px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);margin:18px 0}
-.orb{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 7%,#ffe3a6 16%,#c89045 42%,rgba(200,144,69,.08) 72%);box-shadow:0 0 34px rgba(255,199,102,.42);flex:none}
-.safe{font-size:12px;color:#aeb8cb;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;margin-top:20px}
-.safe a{color:#e7edf9}
-#constellation{position:fixed;right:18px;bottom:18px;width:min(42vw,220px);height:min(42vw,220px);border-radius:50%;border:1px solid rgba(255,255,255,.1);background:radial-gradient(circle,rgba(38,49,74,.22),rgba(6,8,14,.25));backdrop-filter:blur(10px);pointer-events:none;opacity:.78}
-@media (max-width:620px){#constellation{width:150px;height:150px;opacity:.58}.brand{font-size:10px}.chip{padding:8px 10px}}
-</style>
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 <canvas id="world"></canvas>
@@ -60,106 +25,7 @@ button.primary{background:linear-gradient(135deg,rgba(255,212,140,.18),rgba(145,
 <main id="panel"></main>
 <div id="toast"></div>
 
-<script>
-const panel = document.getElementById('panel');
-const toast = document.getElementById('toast');
-const chip = document.getElementById('lightsChip');
-const state = JSON.parse(localStorage.getItem('stillHereState') || '{"lights":0,"threads":[],"visited":0}');
-state.visited += 1; save();
-function save(){ localStorage.setItem('stillHereState', JSON.stringify(state)); chip.textContent=`${state.lights} light${state.lights===1?'':'s'} found`; }
-
-function showToast(t){toast.textContent=t;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)}
-function setPanel(html){panel.innerHTML=html; panel.scrollTop=0;}
-function actions(items){
-  return `<div class="actions">${items.map((x,i)=>`<button class="action ${x.primary?'primary':''}" data-i="${i}"><strong>${x.title}</strong><span>${x.sub||''}</span></button>`).join('')}</div>`;
-}
-function bind(items){panel.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>items[+b.dataset.i].go())}
-
-function start(){
-  sceneMood.target=.05;
-  setPanel(`
-    <div class="eyebrow">The Quiet City Â· 03:17</div>
-    <h1>Everyone is awake.<br/>Nobody is living.</h1>
-    <p>The trains still run. The stores still open. People still answer when spoken to. But three weeks ago the city stopped wanting anything.</p>
-    <p class="quote">Tonight, one window turns on.</p>
-    ${actions([{title:"Find the light",sub:"Begin a 5â€“8 minute story journey.",primary:true,go:pulse},{title:"I only have a minute",sub:"Start a tiny Night Run.",go:nightRun}])}
-    <div class="safe">This prototype is a narrative wellbeing game, not crisis care. If you may hurt yourself or are in immediate danger, use the <a href="#" id="helpNow">help-now screen</a>.</div>
-  `);
-  bind([{go:pulse},{go:nightRun}]); bindHelp();
-}
-function bindHelp(){const a=document.getElementById('helpNow'); if(a)a.onclick=(e)=>{e.preventDefault();helpNow();}}
-function pulse(){
-  const opts=[
-    {title:"I can barely carry anything",sub:"2-minute path. No pressure.",go:()=>signal('tiny')},
-    {title:"I can do something small",sub:"5-minute path.",go:()=>signal('small')},
-    {title:"I want to explore",sub:"Full scene and puzzle.",go:()=>signal('full')},
-    {title:"Just stay with me",sub:"No objectives. Enter a quiet room.",go:sanctuary},
-  ];
-  setPanel(`<div class="eyebrow">Before we go</div><h2>What can you carry tonight?</h2><p>No score. No diagnosis. This only changes how much the game asks of you.</p>${actions(opts)}`);
-  bind(opts);
-}
-function signal(mode){
-  sceneMood.target=.18;
-  const opts=[
-    {title:"Follow the radio signal",sub:"The impossible platform is beneath Central Station.",primary:true,go:()=>station(mode)},
-    {title:"Inspect the photograph",sub:"Someone in it has been erased.",go:()=>photo(mode)}
-  ];
-  setPanel(`<div class="eyebrow">Signal 001</div><h2>â€œPLATFORM 6 DOES NOT EXIST.â€</h2>
-  <p>Your dead radio clicks on by itself. A voice whispers the same sentence three times.</p>
-  <p class="quote">â€œDo not board the 3:17 train.â€</p>
-  <p>On the table beside it is a photograph you don't remember taking.</p>${actions(opts)}`);
-  bind(opts);
-}
-function station(mode){
-  sceneMood.target=.28;
-  const opts=[
-    {title:"Touch the warm ticket",sub:"It has today's date and your handwriting.",go:()=>realAction(mode,'curiosity')},
-    {title:"Ask the silent conductor",sub:"He points at the dark tunnel.",go:()=>realAction(mode,'connection')},
-    {title:"Leave",sub:"Nothing is lost. You can return later.",go:start}
-  ];
-  setPanel(`<div class="eyebrow">Central Station Â· Platform 6</div><h2>The train has no destination.</h2>
-  <p>Every departure board reads <b>UNKNOWN</b>. Inside the empty carriage, one paper ticket is glowing faintly.</p>
-  <p class="quote">Somewhere in the tunnel, something knocks back.</p>${actions(opts)}`);
-  bind(opts);
-}
-function photo(mode){
-  const opts=[
-    {title:"Turn the photograph over",sub:"A message is written behind it.",go:()=>realAction(mode,'memory')},
-    {title:"Put it away",sub:"You don't have to open every door tonight.",go:start}
-  ];
-  setPanel(`<div class="eyebrow">Evidence</div><h2>Someone is missing from the picture.</h2>
-  <p>Four people are standing around a birthday cake. There are five plates.</p>
-  <p>Where the fifth person should be, the image isn't torn. It is simply unfinished.</p>${actions(opts)}`);
-  bind(opts);
-}
-function realAction(mode, thread){
-  let options = mode==='tiny' ? [
-    ["Take one slow breath","No timer. Just notice the exhale."],
-    ["Put both feet on the floor","That is enough movement."],
-    ["Skip this","The story still continues."]
-  ] : mode==='small' ? [
-    ["Drink some water","One glass, or even one sip."],
-    ["Open a curtain or step to a window","Look outside for ten seconds."],
-    ["Stand and stretch","No workout. Just change position."],
-    ["Skip this","The story still continues."]
-  ] : [
-    ["Walk to another room and back","About one minute."],
-    ["Send someone a low-pressure message","Even a meme counts."],
-    ["Get water or make something warm","Tea, coffee, anything."],
-    ["Step outside or to a window","Notice one thing you didn't see before."],
-    ["Skip this","No punishment."]
-  ];
-  const acts=options.map((o,idx)=>({title:o[0],sub:o[1],primary:idx===0,go:()=>powerTrain(thread, idx===options.length-1)}));
-  setPanel(`<div class="eyebrow">The train needs power</div><h2>Move something in your world.</h2>
-    <p>This is not proof-of-completion. The game trusts you.</p>
-    <p class="quote">A tiny action here can move something enormous there.</p>${actions(acts)}`);
-  bind(acts);
-}
-function powerTrain(thread, skipped){
-  if(!skipped){
-    state.lights += 1;
-    state.threads.push({type:thread, at:Date.now()});
-    save();
-    sceneMood.target=Math.min(.­é`¸¸Üà°¸ÈĞ­ÍÑ…Ñ”¹±¥¡ÑÌ¨¸ÄÌ¤ì(€€€‰ÕÉÍĞ ¤ì(€ô(€½¹ÍĞ±…‰•°€ôÍ­¥ÁÁ•€ü€‰Q¡”½¹‘ÕÑ½ÈÍÑ…ÉÑÌ…¸•µ•É•¹ä•¹•É…Ñ½È¸ˆ€è€‰]!U4¸=¹”…ÉÉ¥…”¥¹¥Ñ•Ìİ¥Ñ …µ‰•È±¥¡Ğ¸Q¡•¸Ñ¡”¹•áĞ¸Q¡•¸Ñ¡”¹•áĞ¸ˆì(€½¹ÍĞ±•…É¹•€ôÑ¡É•…ôôôÕÉ¥½Í¥Ñäœ€ü€‰e½Ô‰½…É‘•‰•…ÕÍ”å½Ôİ…¹Ñ•Ñ¼­¹½Ü¸ˆ€èÑ¡É•…ôôô½¹¹•Ñ¥½¸œ€ü€‰e½Ô™½±±½İ•…¹½Ñ¡•ÈÁ•ÉÍ½¸ÌÍ¥¹…°¸ˆ€è€‰e½Ô¹½Ñ¥•İ¡…Ğİ…Ìµ¥ÍÍ¥¹œ¸ˆì(€Í•ÑA…¹•°¡€ñ‘¥Ø±…ÍÌô‰•å•‰É½Üˆù)½ÕÉ¹•ä½µÁ±•Ñ”ğ½‘¥Øøñ ÈùQ¡”ÑÉ…¥¸µ½Ù•Ì¸ğ½ Èø(€€€€ñÀø‘í±…‰•±ôğ½Àø(€€€€ñ‘¥Ø¥ô‰Ñ¡É•…‘…Éˆøñ‘¥Ø±…ÍÌô‰½Éˆˆøğ½‘¥Øøñ‘¥Øøñˆø‘íÍ­¥ÁÁ•ü9<Q!IIEU%IœèQ!I=U9ôğ½ˆøñ‘¥Ø±…ÍÌô‰Íµ…±°ˆø‘íÍ­¥ÁÁ•üe½Ô…¸½¹Ñ¥¹Õ”İ¥Ñ¡½ÕĞ•…É¹¥¹œ…¹åÑ¡¥¹œ¸œé±•…É¹•‘ôğ½‘¥Øøğ½‘¥Øøğ½‘¥Øø(€€€€ñÀ±…ÍÌô‰ÅÕ½Ñ”ˆûŠqQ¡”‘•……É•¸Ğ±½Í¥¹œÑ¡•¥ÈÉ•…Í½¹Ì³ŠtÑ¡”½¹‘ÕÑ½ÈÍ…åÌ¸ƒŠqM½µ•½¹”¥ÌÑ…­¥¹œÑ¡•´»Štğ½Àø(€€€€‘í…Ñ¥½¹Ì¡míÑ¥Ñ±”è‰½¹Ñ¥¹Õ”…¹½Ñ¡•È¹¥¡Ğˆ±ÍÕˆè‰e½ÕÈ¥ÑäÉ•µ•µ‰•ÉÌÑ¡¥Ì©½ÕÉ¹•ä¸ˆ±ÁÉ¥µ…ÉäéÑÉÕ”±¼éÍÑ…ÉÑô±íÑ¥Ñ±”è‰Y¥Í¥ĞÑ¡”M…¹ÑÕ…Éäˆ±ÍÕˆè‰M•”İ¡…ĞÑ¡”¥ÑäÉ•µ•µ‰•ÉÌ…‰½ÕĞå½Ô¸ˆ±¼éÍ…¹ÑÕ…Éåõt¥õ€¤ì(€‰¥¹¡mí¼éÍÑ…ÉÑô±í¼éÍ…¹ÑÕ…Éåõt¤ì)ô)™Õ¹Ñ¥½¸¹¥¡ÑIÕ¸ ¥ì(€½¹ÍĞ½ÁÑÌõl(€€€íÑ¥Ñ±”è‰¥¹½¹”İ…É´Ñ¡¥¹œˆ±ÍÕˆè‰	±…¹­•Ğ°‘É¥¹¬°Í¡½İ•È°ÍÕ¹±¥¡Ğ¸¹åÑ¡¥¹œ¸ˆ±¼è ¤ôùÁ½İ•ÉQÉ…¥¸ …É”œ±™…±Í”¥ô°(€€€íÑ¥Ñ±”è‰1½½¬…Ğ½¹”™…Èµ…İ…äÑ¡¥¹œˆ±ÍÕˆè‰±½Õ°‰Õ¥±‘¥¹œ°ÑÉ•”°ÍÑ…È°…¹åÑ¡¥¹œ¸ˆ±¼è ¤ôùÁ½İ•ÉQÉ…¥¸ İ½¹‘•Èœ±™…±Í”¥ô°(€€€íÑ¥Ñ±”è‰M­¥ÀÑ¡”…Ñ¥½¸ˆ±ÍÕˆè‰M¥Ğ¥¸Ñ¡”Í•¹”™½È„µ½µ•¹Ğ¥¹ÍÑ•…¸ˆ±¼è ¤ôùÁ½İ•ÉQÉ…¥¸ É•ÍĞœ±ÑÉÕ”¥ô(€tì(€Í•ÑA…¹•°¡€ñ‘¥Ø±…ÍÌô‰•å•‰É½Üˆù9¥¡ĞIÕ¸ƒ
-Ü€äÀÍ•½¹‘Ìğ½‘¥Øøñ Èù=¹”Í¥¹…°¥ÌÍÑ¥±°‰±¥¹­¥¹œ¸ğ½ ÈøñÀùe½Ô‘¼¹½Ğ¹••Ñ¼™¥àÑ¡”¥ÑäÑ½¹¥¡Ğ¸ğ½ÀøñÀ±…ÍÌô‰ÅÕ½Ñ”ˆù¥¹½¹”Íµ…±°Ñ¡¥¹œÑ¡…ĞÑ•±±Ìå½ÕÈ‰½‘äÑ¡”¹¥¡Ğ¥ÌÍÑ¥±°µ½Ù¥¹œ¸ğ½Àø‘í…Ñ¥½¹Ì¡½ÁÑÌ¥õ€¤ì(€‰¥¹¡½ÁÑÌ¤ì)ô)™Õ¹Ñ¥½¸Í…¹ÑÕ…Éä ¥ì(€½¹ÍĞ½Õ¹ÑÌõíôìÍÑ…Ñ”¹Ñ¡É•…‘Ì¹™½É… ¡Ğôù½Õ¹ÑÍmĞ¹ÑåÁ•tô¡½Õ¹ÑÍmĞ¹ÑåÁ•uñğÀ¤¬Ä¤ì(€½¹ÍĞ±¥ÍĞõ=‰©•Ğ¹•¹ÑÉ¥•Ì¡½Õ¹ÑÌ¤¹µ…À ¡m¬±Ùt¤ôù€ñ‘¥Ø±…ÍÌô‰Ñ¡É•…‘I½Üˆøñˆø‘í¬¹Ñ½UÁÁ•É…Í” ¥ôğ½ˆøƒ
-Ü€‘íÙôğ½‘¥Øù€¤¹©½¥¸ œœ¤ñğ€œñÍÁ…¸±…ÍÌô‰Íµ…±°ˆù9¼Ñ¡É•…‘Ìå•Ğ¸Q¡…Ğ¥Ì½­…ä¸ğ½ÍÁ…¸øœì(€Í•ÑA…¹•°¡€ñ‘¥Ø±…ÍÌô‰•å•‰É½ÜˆùM…¹ÑÕ…Éäğ½‘¥Øøñ Èù9½Ñ¡¥¹œ¡•É”•áÁ¥É•Ì¸ğ½ Èø(€€€€ñÀùe½ÕÈİ½É±‘½•Ì¹½ĞÁÕ¹¥Í …‰Í•¹”¸½µ”‰…¬Ñ½µ½ÉÉ½Ü°¹•áĞµ½¹Ñ °½È¹•áĞå•…È¸ğ½Àø(€€€€ñ‘¥Ø¥ô‰Ñ¡É•…‘…Éˆøñ‘¥Ø±…ÍÌô‰½Éˆˆøğ½‘¥Øøñ‘¥Øøñˆø‘íÍÑ…Ñ”¹±¥¡ÑÍô1%!P‘íÍÑ…Ñ”¹±¥¡ÑÌôôôÄüœœèLô=U9ğ½ˆøñ‘¥Ø±…ÍÌô‰Íµ…±°ˆø‘í±¥ÍÑôğ½‘¥Øøğ½‘¥Øøğ½‘¥Øø(€€€€ñÀ±…ÍÌô‰ÅÕ½Ñ”ˆûŠqe½Ô‘¼¹½Ğ¡…Ù”Ñ¼É•‰Õ¥±•Ù•ÉåÑ¡¥¹œÑ½¹¥¡Ğ»Štğ½Àø(€€€€‘í…Ñ¥½¹Ì¡míÑ¥Ñ±”è‰I•ÑÕÉ¸Ñ¼Ñ¡”¥Ñäˆ±ÍÕˆè‰½¹Ñ¥¹Õ”İ¡•¸å½Ôİ…¹Ğ¸ˆ±ÁÉ¥µ…ÉäéÑÉÕ”±¼éÍÑ…ÉÑô±íÑ¥Ñ±”è‰$¹••¥µµ•‘¥…Ñ”¡•±Àˆ±ÍÕˆè‰1•…Ù”Ñ¡”™¥Ñ¥½¸…¹Í¡½ÜÍÕÁÁ½ÉĞ½ÁÑ¥½¹Ì¸ˆ±¼é¡•±Á9½İõt¥õ€¤ì(€‰¥¹¡mí¼éÍÑ…ÉÑô±í¼é¡•±Á9½İõt¤ì)ô)™Õ¹Ñ¥½¸¡•±Á9½Ü ¥ì(€Í•ÑA…¹•°¡€ñ‘¥Ø±…ÍÌô‰•å•‰É½Üˆù!•±À¹½Üğ½‘¥Øøñ Èù1•…Ù”Ñ¡”…µ”™½È„µ½µ•¹Ğ¸ğ½ Èø(€€€€ñÀù%˜å½Ôµ¥¡Ğ…Ğ½¸Ñ¡½Õ¡ÑÌ½˜¡…Éµ¥¹œå½ÕÉÍ•±˜°½¹Ñ…Ğ•µ•É•¹äÍ•ÉÙ¥•Ì½È„É¥Í¥ÌÍ•ÉÙ¥”¹½Ü°…¹¥˜Á½ÍÍ¥‰±”µ½Ù”Ñ½İ…É…¹½Ñ¡•ÈÁ•ÉÍ½¸½È„Í…™•ÈÁ±…”¸ğ½Àø(€€€€ñ‘¥Ø±…ÍÌô‰…Ñ¥½¹Ìˆø(€€€€€€ñ„±…ÍÌô‰…Ñ¥½¸ÁÉ¥µ…ÉäˆÍÑå±”ô‰‘¥ÍÁ±…äé‰±½¬íÑ•áĞµ‘•½É…Ñ¥½¸é¹½¹”ˆ¡É•˜ô‰Ñ•°èäààˆøñÍÑÉ½¹œù…±°€äàà€¡T¹L¸¤ğ½ÍÑÉ½¹œøñÍÁ…¸ùMÕ¥¥‘”€˜É¥Í¥Ì1¥™•±¥¹”ğ½ÍÁ…¸øğ½„ø(€€€€€€ñ„±…ÍÌô‰…Ñ¥½¸ˆÍÑå±”ô‰‘¥ÍÁ±…äé‰±½¬íÑ•áĞµ‘•½É…Ñ¥½¸é¹½¹”ˆ¡É•˜ô‰ÍµÌèäààˆøñÍÑÉ½¹œùQ•áĞ€äàà€¡T¹L¸¤ğ½ÍÑÉ½¹œøñÍÁ…¸ù½¹¹•Ğİ¥Ñ „É¥Í¥Ì½Õ¹Í•±½Èğ½ÍÁ…¸øğ½„ø(€€€€€€ñ„±…ÍÌô‰…Ñ¥½¸ˆÍÑå±”ô‰‘¥ÍÁ±…äé‰±½¬íÑ•áĞµ‘•½É…Ñ¥½¸é¹½¹”ˆ¡É•˜ô‰Ñ•°èäÄÄˆøñÍÑÉ½¹œù…±°€äÄÄğ½ÍÑÉ½¹œøñÍÁ…¸ù%˜Ñ¡•É”¥Ì¥µµ•‘¥…Ñ”‘…¹•Èğ½ÍÁ…¸øğ½„ø(€€€€ğ½‘¥Øø(€€€€ñÀ±…ÍÌô‰Íµ…±°ˆÍÑå±”ô‰µ…É¥¸µÑ½ÀèÄÙÁàˆù½È„ÁÉ½‘ÕÑ¥½¸É•±•…Í”°Ñ¡¥ÌÍÉ••¸Í¡½Õ±±½…±¥é”É•Í½ÕÉ•Ì‰ä½Õ¹ÑÉä…¹±•ĞÑ¡”ÕÍ•ÈÁÉ”µÍ…Ù”ÑÉÕÍÑ•½¹Ñ…ÑÌ…¹„Á•ÉÍ½¹…°Í…™•ÑäÁ±…¸¸ğ½Àø(€€€€‘í…Ñ¥½¹Ì¡míÑ¥Ñ±”è‰I•ÑÕÉ¸Ñ¼M…¹ÑÕ…Éäˆ±ÍÕˆè‰9¼Í½É”½ÈÁÉ½É•ÍÌ¥Ì…ÑÑ…¡•Ñ¼Ñ¡¥ÌÍÉ••¸¸ˆ±¼éÍ…¹ÑÕ…Éåõt¥õ€¤ì(€‰¥¹¡mí¼éÍ…¹ÑÕ…Éåõt¤ì)ô()‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% É•Í•Ñ	Ñ¸œ¤¹½¹±¥¬ô ¤ôùí±½…±MÑ½É…”¹É•µ½Ù•%Ñ•´ ÍÑ¥±±!•É•MÑ…Ñ”œ¤ì±½…Ñ¥½¸¹É•±½… ¥ôì)‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% Í…¹ÑÕ…Éå	Ñ¸œ¤¹½¹±¥¬õÍ…¹ÑÕ…Éäì((¼¼]=I19YL)½¹ÍĞŒõ‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% İ½É±œ¤±ÑàõŒ¹•Ñ½¹Ñ•áĞ œÉœ¤ì±•Ğ\± ±AHì)½¹ÍĞÍ•¹•5½½õíÙ…±Õ”è¸ÀÔ±Ñ…É•Ğè¸ÀÕôì±•ĞĞôÀ°™±…Í ôÀì)½¹ÍĞÉ…¥¸õÉÉ…ä¹™É½´¡í±•¹Ñ èÄÌÁô° ¤ôø¡íàé5…Ñ ¹É…¹‘½´ ¤±äé5…Ñ ¹É…¹‘½´ ¤±°è¸ÀÄÔ­5…Ñ ¹É…¹‘½´ ¤¨¸ÀĞ±Ìè¸ÀÀÌ­5…Ñ ¹É…¹‘½´ ¤¨¸ÀÀİô¤¤ì)½¹ÍĞ‰Õ¥±‘¥¹ÌõÉÉ…ä¹™É½´¡í±•¹Ñ èÌÑô°¡|±¤¤ôø¡íàé¤¼ÌÌ±Üè¸ÀÈ­5…Ñ ¹É…¹‘½´ ¤¨¸ÀÈØ± è¸ÄĞ­5…Ñ ¹É…¹‘½´ ¤¨¸ÌĞ±Í••é5…Ñ ¹É…¹‘½´ ¤¨ÄÁô¤¤ì)™Õ¹Ñ¥½¸É•Í¥é” ¥íAHõ5…Ñ ¹µ¥¸¡‘•Ù¥•A¥á•±I…Ñ¥½ñğÄ°È¤í\õ¥¹¹•É]¥‘Ñ í õ¥¹¹•É!•¥¡ĞíŒ¹İ¥‘Ñ õ\©AHíŒ¹¡•¥¡Ğõ ©AHíŒ¹ÍÑå±”¹İ¥‘Ñ õ\¬ÁàœíŒ¹ÍÑå±”¹¡•¥¡Ğõ ¬ÁàœíÑà¹Í•ÑQÉ…¹Í™½É´¡AH°À°À±AH°À°À¤íÉ•Í¥é•MÑ…ÉÌ ¥ô)…‘‘Ù•¹Ñ1¥ÍÑ•¹•È É•Í¥é”œ±É•Í¥é”¤ì()™Õ¹Ñ¥½¸Í­å±¥¹” ¥ì(€½¹ÍĞ´õÍ•¹•5½½¹Ù…±Õ”ì(€±•ĞœõÑà¹É•…Ñ•1¥¹•…ÉÉ…‘¥•¹Ğ À°À°À± ¤íœ¹…‘‘½±½ÉMÑ½À À±Éˆ ‘ìà¬ÌÀ©µô°‘ìÄÀ¬ÌÔ©µô°‘ìÈÀ¬Ôà©µô¥€¤íœ¹…‘‘½±½ÉMÑ½À ¸ØÈ±Éˆ ‘ìÄÄ¬Äà©µô°‘ìÄĞ¬ÈÌ©µô°‘ìÈĞ¬Ìà©µô¥€¤íœ¹…‘‘½±½ÉMÑ½À Ä°œŒÀÔÀÜÁŒœ¤íÑà¹™¥±±MÑå±”õœíÑà¹™¥±±I•Ğ À°À±\± ¤ì(€€¼¼µ½½¸¡…±¼(€±•ĞÉœõÑà¹É•…Ñ•I…‘¥…±É…‘¥•¹Ğ¡\¨¸Üà± ¨¸Äà°À±\¨¸Üà± ¨¸Äà± ¨¸Èà¤íÉœ¹…‘‘½±½ÉMÑ½À À±É‰„ ÄäÀ°ÈÄÀ°ÈÔÔ°‘ì¸ÄÀ¬¸Äà©µô¥€¤íÉœ¹…‘‘½±½ÉMÑ½À Ä°É‰„ À°À°À°À¤œ¤íÑà¹™¥±±MÑå±”õÉœíÑà¹™¥±±I•Ğ À°À±\± ¨¸Ø¤ì(€€¼¼™…È¡…é”(€Ñà¹™¥±±MÑå±”õÉ‰„ ÄÀÀ°ÄÈÀ°ÄÔÀ°‘ì¸ÀÌ¬¸ÀØ©µô¥€íÑà¹™¥±±I•Ğ À± ¨¸ĞÜ±\± ¨¸ÈÔ¤ì(€‰Õ¥±‘¥¹Ì¹™½É…  ¡ˆ±¤¤ôùì(€€€½¹ÍĞàõˆ¹à©\µ\¨¸ÀÈ±Üõˆ¹Ü©\± õˆ¹ © ±äõ ¨¸ÜĞµ ì(€€€Ñà¹™¥±±MÑå±”õÉ‰„ ‘ìà¬ÄÀ©µô°‘ìÄÄ¬ÄÌ©µô°‘ìÄà¬Äà©µô°¸äà¥€íÑà¹™¥±±I•Ğ¡à±ä±Ü± ¤ì(€€€½¹ÍĞ½±Ìõ5…Ñ ¹µ…à È±5…Ñ ¹™±½½È¡Ü¼ÄØ¤¤±É½İÌõ5…Ñ ¹µ…à Ì±5…Ñ ¹™±½½È¡ ¼Ää¤¤ì(€€€™½È¡±•ĞäôÀíäñÉ½İÌíä¬¬¤™½È¡±•ĞàôÀíàñ½±Ìíà¬¬¥ì(€€€€€½¹ÍĞÀô¡5…Ñ ¹Í¥¸ ¡¤¬Ä¤¨ÄÜ¸Ì­à¨Ì¸Ä­ä¨Ô¸Ü¤¬Ä¤¼Èì(€€€€€¥˜¡À€ğ€¸ÄÈ­´¨¸ÌĞ¥ì(€€€€€€€½¹ÍĞ…±Á¡„ô¸ÀÔ­´¨¸ØÈì(€€€€€€€Ñà¹™¥±±MÑå±”õÉ‰„ ÈÔÔ°ÈÄÀ°ÄÈà°‘í…±Á¡…ô¥€ì(€€€€€€€Ñà¹™¥±±I•Ğ¡à¬Ô­à¨ÄÌ±ä¬à­ä¨ÄÜ°Ô°Ü¤ì(€€€€€ô(€€€ô(€ô¤ì(€€¼¼™½É•É½Õ¹ÍÑÉ••Ğ(€Ñà¹™¥±±MÑå±”ôÉ‰„ Ì°Ô°ä°¸äØ¤œíÑà¹™¥±±I•Ğ À± ¨¸ÜĞ±\± ¨¸ÈØ¤ì(€€¼¼É½…É•™±•Ñ¥½¸(€±•ĞÈõÑà¹É•…Ñ•1¥¹•…ÉÉ…‘¥•¹Ğ¡\¨¸ÔÈ± ¨¸ÜĞ±\¨¸ÔÈ± ¤íÈ¹…‘‘½±½ÉMÑ½À À±É‰„ ÈÔÔ°ÄäĞ°ÄÀÔ°‘ì¸ÀÈ¬¸ÄÈ©µô¥€¤íÈ¹…‘‘½±½ÉMÑ½À Ä°É‰„ ÈÔÔ°ÄäĞ°ÄÀÔ°À¤œ¤íÑà¹™¥±±MÑå±”õÈíÑà¹‰•¥¹A…Ñ  ¤íÑà¹µ½Ù•Q¼¡\¨¸ĞÜ± ¨¸ÜĞ¤íÑà¹±¥¹•Q¼¡\¨¸ÔÜ± ¨¸ÜĞ¤íÑà¹±¥¹•Q¼¡\¨¸ÜÔ± ¤íÑà¹±¥¹•Q¼¡\¨¸Èà± ¤íÑà¹±½Í•A…Ñ  ¤íÑà¹™¥±° ¤ì(€€¼¼½¹”Í¥¹…°İ¥¹‘½Ü(€½¹ÍĞÁàõ\¨¸ÈÈ±Áäõ ¨¸ÌĞì(€±•Ğ±½ÜõÑà¹É•…Ñ•I…‘¥…±É…‘¥•¹Ğ¡Áà±Áä°À±Áà±Áä°ØÀ¬ÈÀ©5…Ñ ¹Í¥¸¡Ğ¨¸ÀÀÌ¤¤í±½Ü¹…‘‘½±½ÉMÑ½À À±É‰„ ÈÔÔ°ÈÄØ°ÄĞÈ°‘ì¸ÔÔ¬¸È©5…Ñ ¹Í¥¸¡Ğ¨¸ÀÀĞ¥ô¥€¤í±½Ü¹…‘‘½±½ÉMÑ½À Ä°É‰„ ÈÔÔ°ÄäÀ°äÀ°À¤œ¤íÑà¹™¥±±MÑå±”õ±½ÜíÑà¹™¥±±I•Ğ¡Áà´ÄÀÀ±Áä´ÄÀÀ°ÈÀÀ°ÈÀÀ¤íÑà¹™¥±±MÑå±”ôœ™™àäØœíÑà¹™¥±±I•Ğ¡Áà´Ô±Áä´Ğ°ÄÀ°à¤ì(€€¼¼É…¥¸(€Ñà¹ÍÑÉ½­•MÑå±”õÉ‰„ ÄàÀ°ÈÀÔ°ÈÌÔ°‘ì¸ÄÄ´¸ÀĞ©µô¥€íÑà¹±¥¹•]¥‘Ñ ôÄì(€É…¥¸¹™½É… ¡É¸ôùíÉ¸¹ä¬õÉ¸¹Ìí¥˜¡É¸¹äøÄ¥íÉ¸¹äôÀíÉ¸¹àõ5…Ñ ¹É…¹‘½´ ¥õÑà¹‰•¥¹A…Ñ  ¤íÑà¹µ½Ù•Q¼¡É¸¹à©\±É¸¹ä© ¤íÑà¹±¥¹•Q¼¡É¸¹à©\´Ô±É¸¹ä© ­É¸¹°© ¤íÑà¹ÍÑÉ½­” ¥ô¤ì(€€¼¼™½œÉ¥‰‰½¹Ì(€™½È¡±•Ğ¤ôÀí¤ğÌí¤¬¬¥í½¹ÍĞåäõ ¨ ¸ÔØ­¤¨¸Àà¤­5…Ñ ¹Í¥¸¡Ğ¨¸ÀÀÀÌ­¤¤¨ÄØí±•Ğ™œõÑà¹É•…Ñ•1¥¹•…ÉÉ…‘¥•¹Ğ À±åä±\±åä¤í™œ¹…‘‘½±½ÉMÑ½À À°É‰„ ÄäÀ°ÈÀÔ°ÈÌÀ°À¤œ¤í™œ¹…‘‘½±½ÉMÑ½À ¸Ô±É‰„ ÄäÀ°ÈÀÔ°ÈÌÀ°‘ì¸ÀÈÔ¬¸ÀÈ©5…Ñ ¹Í¥¸¡Ğ¨¸ÀÀÀÔ­¤¥ô¥€¤í™œ¹…‘‘½±½ÉMÑ½À Ä°É‰„ ÄäÀ°ÈÀÔ°ÈÌÀ°À¤œ¤íÑà¹™¥±±MÑå±”õ™œíÑà¹™¥±±I•Ğ À±åä±\°Èà¥ô(€¥˜¡™±…Í øÀ¥íÑà¹™¥±±MÑå±”õÉ‰„ ÈÔÔ°ÈÈĞ°ÄÜÀ°‘í™±…Í¡ô¥€íÑà¹™¥±±I•Ğ À°À±\± ¤í™±…Í ¨ô¸äÍô)ô)™Õ¹Ñ¥½¸±½½À¡µÌ¥íĞõµÌíÍ•¹•5½½¹Ù…±Õ”¬ô¡Í•¹•5½½¹Ñ…É•ĞµÍ•¹•5½½¹Ù…±Õ”¤¨¸ÀÄàíÑà¹±•…ÉI•Ğ À°À±\± ¤íÍ­å±¥¹” ¤íÉ•ÅÕ•ÍÑ¹¥µ…Ñ¥½¹É…µ”¡±½½À¥ô)™Õ¹Ñ¥½¸‰ÕÉÍĞ ¥í™±…Í ô¸ÄàíÍ¡½İQ½…ÍĞ ‰Q¡”¥ÑäÉ•µ•µ‰•ÉÌ¸ˆ¤íô((¼¼½¹ÍÑ•±±…Ñ¥½¸)½¹ÍĞÍŒõ‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% ½¹ÍÑ•±±…Ñ¥½¸œ¤±ÍÑàõÍŒ¹•Ñ½¹Ñ•áĞ œÉœ¤ì±•ĞM\±M ì)™Õ¹Ñ¥½¸É•Í¥é•MÑ…ÉÌ ¥í½¹ÍĞÈõÍŒ¹•Ñ	½Õ¹‘¥¹±¥•¹ÑI•Ğ ¤íM\õÈ¹İ¥‘Ñ íM õÈ¹¡•¥¡ĞíÍŒ¹İ¥‘Ñ õM\©AHíÍŒ¹¡•¥¡ĞõM ©AHíÍÑà¹Í•ÑQÉ…¹Í™½É´¡AH°À°À±AH°À°À¤í‘É…İMÑ…ÉÌ ¥ô)™Õ¹Ñ¥½¸‘É…İMÑ…ÉÌ ¥ì(€ÍÑà¹±•…ÉI•Ğ À°À±M\±M ¤ì(€½¹ÍĞ¸õ5…Ñ ¹µ…à Ì±ÍÑ…Ñ”¹Ñ¡É•…‘Ì¹±•¹Ñ ¬Ì¤°ÁÑÌõmtì(€™½È¡±•Ğ¤ôÀí¤ñ¸í¤¬¬¥í½¹ÍĞ„õ¤¨È¸Ìää±É…ô Äà¬¡¤¨Ü¤•5…Ñ ¹µ…à ÈÈ±M\¨¸ÌØ¤¤íÁÑÌ¹ÁÕÍ ¡mM\¼È­5…Ñ ¹½Ì¡„¤©É…±M ¼È­5…Ñ ¹Í¥¸¡„¤©É…‘t¥ô(€ÍÑà¹ÍÑÉ½­•MÑå±”ôÉ‰„ ÄàÀ°ÈÀÔ°ÈÔÔ°¸ÄĞ¤œíÍÑà¹±¥¹•]¥‘Ñ ôÄíÍÑà¹‰•¥¹A…Ñ  ¤íÁÑÌ¹™½É…  ¡À±¤¤ôù¤ıÍÑà¹±¥¹•Q¼ ¸¸¹À¤éÍÑà¹µ½Ù•Q¼ ¸¸¹À¤¤íÍÑà¹ÍÑÉ½­” ¤ì(€ÁÑÌ¹™½É…  ¡À±¤¤ôùíÍÑà¹‰•¥¹A…Ñ  ¤íÍÑà¹™¥±±MÑå±”õ¤ñÍÑ…Ñ”¹Ñ¡É•…‘Ì¹±•¹Ñ üÉ‰„ ÈÔÔ°ÈÈÄ°ÄÔÔ°¸äÔ¤œèÉ‰„ ÄàÀ°ÈÀÀ°ÈÌÔ°¸ÈÈ¤œíÍÑà¹…ÉŒ¡ÁlÁt±ÁlÅt±¤ñÍÑ…Ñ”¹Ñ¡É•…‘Ì¹±•¹Ñ üÈ¸ĞèÄ¸È°À±5…Ñ ¹A$¨È¤íÍÑà¹™¥±° ¥ô¤)ô)Í•Ñ%¹Ñ•ÉÙ…°¡‘É…İMÑ…ÉÌ°ÄÈÀÀ¤ì)É•Í¥é” ¤íÉ•ÅÕ•ÍÑ¹¥µ…Ñ¥½¹É…µ”¡±½½À¤íÍÑ…ÉĞ ¤ì(ğ½ÍÉ¥ÁĞø(ğ½‰½‘äø(ğ½¡Ñµ°ø(
+<script src="app.js"></script>
+<script src="world.js"></script>
+</body>
+</html>
