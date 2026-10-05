@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+<!-- Original editable painted night landscape; authored for STILL HERE, no downloaded source. -->
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#24364f"/><stop offset=".66" stop-color="#688494"/><stop offset="1" stop-color="#b7b6a8"/></linearGradient>
+ <linearGradient id="water" x2="0" y2="1"><stop stop-color="#6f8f9b"/><stop offset="1" stop-color="#243e56"/></linearGradient>
+ <filter id="wash"><feTurbulence type="fractalNoise" baseFrequency=".015 .085" numOctaves="3" seed="6"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".14"/></feComponentTransfer><feBlend in="SourceGraphic" mode="soft-light"/></filter>
+</defs>
+<g filter="url(#wash)"><rect width="1200" height="700" fill="url(#sky)"/><path d="M0 225Q210 171 380 230T770 211T1200 196L1200 264Q954 284 760 263T368 273T0 279Z" fill="#a5b1b1" opacity=".24"/><path d="M0 306Q180 285 430 302T828 287T1200 300" fill="none" stroke="#bbbec0" stroke-width="18" opacity=".1"/>
+<circle cx="919" cy="130" r="43" fill="#eee0b1"/><circle cx="905" cy="118" r="40" fill="#41556c" opacity=".15"/>
+<path d="M0 416L82 372 141 391 258 343 388 394 451 366 558 403 655 351 718 369 814 333 944 388 1052 349 1200 405V700H0Z" fill="#536a7c"/>
+<path d="M0 433L161 417 234 427 331 407 393 434 502 420 635 440 764 404 894 424 1058 402 1200 444V700H0Z" fill="#3b536b"/>
+<rect y="453" width="1200" height="247" fill="url(#water)"/>
+<path d="M0 463Q219 441 400 460T748 460T1200 459M0 491Q202 471 410 490T809 485T1200 488M0 538Q169 519 364 540T702 537T1200 550M0 583Q210 558 463 589T900 578T1200 590" fill="none" stroke="#96afac" stroke-width="5" opacity=".35"/>
+<path d="M784 490H960M819 508H942M801 531H972M849 555H936M868 579H952M847 612H989" stroke="#d5c898" stroke-width="7" opacity=".42"/>
+<path d="M0 457H107L94 424H72V385H42V424H25Z M162 457V428H225V413H248V442H290V457 M1055 457V431H1081V407H1119V431H1200V457" fill="#273f55"/>
+<g fill="#e7c58b" opacity=".9"><rect x="47" y="403" width="8" height="11"/><rect x="63" y="432" width="7" height="8"/><rect x="183" y="438" width="10" height="8"/><rect x="209" y="438" width="8" height="8"/><rect x="233" y="425" width="7" height="8"/><rect x="1092" y="420" width="8" height="9"/><rect x="1127" y="440" width="8" height="8"/></g>
+<path d="M0 618Q167 586 307 619T627 613T969 633T1200 620V700H0Z" fill="#1f3549"/>
+<g stroke="#8c9d9f" stroke-width="2" opacity=".24"><path d="M64 118L126 269M421 93L493 274M695 64L735 219M1079 210L1119 334"/></g></g>
+</svg>

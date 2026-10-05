@@ -1,0 +1,19 @@
+{
+  "milestone": "STILL HERE: Playable Cast and Transit Delivery",
+  "base_source_commit": "d9dc1d68b383189bde76aa4d479833da9a3aeec0",
+  "date_utc": "2026-10-05",
+  "engine": "Godot 4.6.3 Standard",
+  "headless_godot_checks": 44871,
+  "python_asset_validation_scripts": 5,
+  "native_campaign_journey_checks": 120,
+  "native_route_kind": "scripted graphical renderer and synthetic controller; not human playtest acceptance",
+  "clip_seconds": 14.25,
+  "failure_count": 0,
+  "linux_exported": true,
+  "linux_smoke_frames": 180,
+  "source_only": false,
+  "known_cosmetic_issue": "Old failed-save warning can remain after a successful Start new journey reset until next successful persist",
+  "limits": "Seven authored chapters and ten bounded Journey destinations. Original procedural art; no full 15\u201325-hour/mobile/store-readiness claim. Physical controllers, target hardware/GPU, Windows/Web/macOS runtime and human audio/playtesting remain unverified.",
+  "source_commit": "d5c4d3e7fcde02dc8149db28bb627831c61d94b3",
+  "linux_native_keyboard_smoke": "Boot, W movement, P pause and normal quit verified through CUA; screenshot retained"
+}

@@ -1,0 +1,1043 @@
+{
+  "schema_version": 1,
+  "dimensions": [
+    "joy",
+    "calm",
+    "connection",
+    "wonder",
+    "agency",
+    "energy",
+    "future_pull",
+    "meaning"
+  ],
+  "scope": "Authored fictional story weights only. No real-player assessment, clinical inference, absence decay, streaks or leaderboard.",
+  "choices": [
+    {
+      "choice_id": "platform_six.camera.take",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "camera_choice"
+      ],
+      "consequences": {
+        "dimensions": {
+          "joy": 2,
+          "wonder": 3,
+          "agency": 1
+        },
+        "npc": {
+          "mira": {
+            "camera_memory": "take"
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "platform_six.camera.lend",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "camera_choice"
+      ],
+      "consequences": {
+        "dimensions": {
+          "connection": 3,
+          "wonder": 2
+        },
+        "npc": {
+          "mira": {
+            "camera_memory": "lend"
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "platform_six.camera.unused",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "camera_choice"
+      ],
+      "consequences": {
+        "dimensions": {
+          "calm": 3,
+          "agency": 2
+        },
+        "npc": {
+          "mira": {
+            "camera_memory": "unused"
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "platform_six.optional.continue",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "optional_action"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.finish",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "complete"
+      ],
+      "consequences": {
+        "dimensions": {
+          "meaning": 3,
+          "future_pull": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.umbrella_question",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "roof"
+      ],
+      "consequences": {
+        "dimensions": {
+          "wonder": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.umbrella_quiet",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "roof"
+      ],
+      "consequences": {
+        "dimensions": {
+          "calm": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.passenger_boats",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "passenger"
+      ],
+      "consequences": {
+        "dimensions": {
+          "wonder": 2,
+          "connection": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.passenger_quiet",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "passenger"
+      ],
+      "consequences": {
+        "dimensions": {
+          "calm": 2,
+          "agency": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.shore_lighthouse_joke",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "overlook"
+      ],
+      "consequences": {
+        "dimensions": {
+          "joy": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.shore_arch_joke",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "overlook"
+      ],
+      "consequences": {
+        "dimensions": {
+          "joy": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.shore_stars_reply",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "overlook"
+      ],
+      "consequences": {
+        "dimensions": {
+          "wonder": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.breakfast_postcard",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "breakfast"
+      ],
+      "consequences": {
+        "dimensions": {
+          "future_pull": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.begin",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {
+          "wonder": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.greeting.ducks",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {
+          "joy": 3,
+          "connection": 1
+        },
+        "npc": {
+          "mira": {
+            "connection": 1
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.greeting.watch",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {
+          "calm": 3,
+          "agency": 1
+        },
+        "npc": {
+          "mira": {
+            "connection": 1
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.greeting.how",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {
+          "wonder": 3,
+          "agency": 1
+        },
+        "npc": {
+          "mira": {
+            "connection": 1
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.rudder.left",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "agency": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.rudder.straight",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "agency": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.rudder.right",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "agency": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.sail.triangle",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "wonder": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.sail.square",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "agency": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.sail.folded",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "joy": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.mode.operate",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "agency": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.mode.watch",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "calm": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.mode.cooperate",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop",
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "connection": 2
+        },
+        "npc": {
+          "ada": {
+            "connection": 1
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.race.crooked",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {
+          "joy": 2,
+          "wonder": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.inspect.boat",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "crooked_race",
+        "level_pond"
+      ],
+      "consequences": {
+        "dimensions": {
+          "wonder": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.inspect.wedge",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "crooked_race",
+        "level_pond"
+      ],
+      "consequences": {
+        "dimensions": {
+          "agency": 2
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.inspect.together",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "crooked_race",
+        "level_pond"
+      ],
+      "consequences": {
+        "dimensions": {
+          "connection": 2
+        },
+        "npc": {
+          "ada": {
+            "connection": 1
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.inspect.watch",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "crooked_race",
+        "level_pond"
+      ],
+      "consequences": {
+        "dimensions": {
+          "calm": 2
+        },
+        "npc": {
+          "ada": {
+            "connection": 1
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.level.self",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "level_pond"
+      ],
+      "consequences": {
+        "dimensions": {
+          "agency": 2
+        },
+        "npc": {
+          "ada": {
+            "connection": 1
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.level.ada",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "level_pond"
+      ],
+      "consequences": {
+        "dimensions": {
+          "connection": 2,
+          "agency": 1
+        },
+        "npc": {
+          "ada": {
+            "connection": 1
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.race.canonical",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "race_ready"
+      ],
+      "consequences": {
+        "dimensions": {
+          "joy": 2,
+          "energy": 1,
+          "meaning": 1
+        },
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "the_small_fair.departure.card",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "result"
+      ],
+      "consequences": {
+        "dimensions": {
+          "meaning": 2
+        },
+        "npc": {
+          "mira": {
+            "destination": "lower_mill",
+            "independent_decision": true
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.departure.speak",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "result"
+      ],
+      "consequences": {
+        "dimensions": {
+          "connection": 2
+        },
+        "npc": {
+          "mira": {
+            "destination": "lower_mill",
+            "independent_decision": true
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "the_small_fair.departure.wait",
+      "campaign_chapter": "the_small_fair",
+      "checkpoints": [
+        "result"
+      ],
+      "consequences": {
+        "dimensions": {
+          "calm": 2
+        },
+        "npc": {
+          "mira": {
+            "destination": "lower_mill",
+            "independent_decision": true
+          }
+        }
+      }
+    },
+    {
+      "choice_id": "paper_sky.begin",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.greeting",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.raise",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.finish",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "raised"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.star.crooked",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.star.clean",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.star.empty",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.layout.leaf_boat_star",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.layout.boat_star_leaf",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.layout.star_leaf_boat",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.length.short",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.length.medium",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.length.long",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.mode.assemble",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.mode.direct",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.mode.watch",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.fold.keep",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.fold.wider",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.fold.enough",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.layout.leaf_star_boat",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.layout.boat_leaf_star",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "paper_sky.layout.star_boat_leaf",
+      "campaign_chapter": "paper_sky",
+      "checkpoints": [
+        "workshop"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.begin",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.mode.sit",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.mode.help",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.mode.watch",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.exchange.bread",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "supper"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.exchange.cup",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "supper"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.exchange.pepper",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "supper"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.exchange.watch",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "supper"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.departure.ask",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "conversation"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.departure.wish",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "conversation"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "night_kitchen.departure.listen",
+      "campaign_chapter": "night_kitchen",
+      "checkpoints": [
+        "conversation"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "quiet_orchard.begin",
+      "campaign_chapter": "quiet_orchard",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "quiet_orchard.route.cart",
+      "campaign_chapter": "quiet_orchard",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "quiet_orchard.route.walk",
+      "campaign_chapter": "quiet_orchard",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "quiet_orchard.route.bench",
+      "campaign_chapter": "quiet_orchard",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "quiet_orchard.beat.1",
+      "campaign_chapter": "quiet_orchard",
+      "checkpoints": [
+        "rest"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "quiet_orchard.beat.2",
+      "campaign_chapter": "quiet_orchard",
+      "checkpoints": [
+        "rest"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "quiet_orchard.beat.3",
+      "campaign_chapter": "quiet_orchard",
+      "checkpoints": [
+        "rest"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "quiet_orchard.finish",
+      "campaign_chapter": "quiet_orchard",
+      "checkpoints": [
+        "rest"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "platform_six.dialogue.train_window",
+      "campaign_chapter": "platform_six",
+      "checkpoints": [
+        "passenger"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    }
+  ]
+}

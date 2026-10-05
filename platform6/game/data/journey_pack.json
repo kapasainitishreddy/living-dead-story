@@ -1,0 +1,1456 @@
+{
+  "pack_id": "platform6_journeys_v1",
+  "version": 1,
+  "emotional_texture_tags": [
+    "wistful",
+    "playful",
+    "tender",
+    "quiet",
+    "awe",
+    "bittersweet",
+    "hopeful",
+    "ordinary"
+  ],
+  "content_policy": {
+    "authored_only": true,
+    "consequence_scope": "local_destination_scene",
+    "real_world_hooks": "optional_untracked_equivalent_access",
+    "absence_changes": false,
+    "rewards": false,
+    "clinical_claims": false,
+    "npc_dependence_on_player": false
+  },
+  "npc_lives": {
+    "mira": {
+      "name": "Mira",
+      "independent_life": "Mira chose the Lower Mill workshop herself. She travels for her own repairs, meals and visits; company does not create or remove her plans.",
+      "current_work": "Clock escapements and the stubborn wind-up boats at her new bench.",
+      "home_base": "Lower Mill workshop"
+    },
+    "ada": {
+      "name": "Ada",
+      "independent_life": "Mira’s aunt runs the courtyard fair, borrows tools and visits neighbouring shops. The fair has ordinary maintenance whether or not a visitor joins in.",
+      "current_work": "A repaired bell, pond supplies and the Failed Things Festival.",
+      "home_base": "Courtyard fair"
+    },
+    "noor": {
+      "name": "Noor",
+      "independent_life": "Noor makes paper work, keeps the shared kitchen and takes on small repairs. She visits the library and station on errands that are already her own.",
+      "current_work": "Library cloth spines, lamp shades and lanterns for a community supper.",
+      "home_base": "Conservatory and Night Kitchen"
+    },
+    "jo": {
+      "name": "Jo",
+      "independent_life": "Jo carries the yellow umbrella and makes ordinary trips for family, neighbours and the packing shed. The paper star stays under its canopy.",
+      "current_work": "A cabinet hinge delivery, tool labels and a borrowed saucepan to return.",
+      "home_base": "The streets around Central Station"
+    }
+  },
+  "destinations": [
+    {
+      "journey_id": "rain_town",
+      "title": "Rain Town",
+      "location_scene": "rain_town",
+      "scene_kind": "rain_lane",
+      "available_time_states": [
+        "day",
+        "dusk",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "rain",
+          "mist"
+        ],
+        "intensity": 0.35,
+        "wet_surfaces": true,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "day",
+        "warmth": 0.35,
+        "fog": 0.12
+      },
+      "music_profile": {
+        "track": "res://assets/original/rain_roof.wav",
+        "gain_db": -17.0,
+        "ambience": "roof drops and a small waterwheel"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "jo"
+      ],
+      "npc": "jo",
+      "story_theme_tags": [
+        "maintenance",
+        "shared_shelter"
+      ],
+      "emotional_texture_tags": [
+        "ordinary",
+        "playful",
+        "quiet"
+      ],
+      "activity_tags": [
+        "rain_routing",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "rain_routing",
+      "activity_prompt": "Turn the three labelled channel pieces to route roof water toward the pot or the little wheel. Change them as often as you like, or watch the existing flow.",
+      "palette": [
+        "#243A54",
+        "#72A6AD",
+        "#F0C777"
+      ],
+      "entry_variants": {
+        "first": "Rain fills the narrow town with separate little sounds: a drainpipe, a shop awning, Jo’s yellow umbrella. Jo has stopped outside a closed repair shop with a parcel tied in string.",
+        "return": "The umbrella is propped against the same shop. Jo is copying a street number onto another parcel; the rain has its own route along the kerb."
+      },
+      "story_nodes": [
+        "Jo tilts the parcel away from the rain. “Replacement hinge for my sister’s cabinet. She says the old one has started announcing itself.” A paper star hangs beneath the umbrella, safely inside its little sky.",
+        "Three shallow channels carry roof water across a stone table beside the shop. One ends at a flowerpot, one at a tiny waterwheel, and one rejoins the drain. Jo sets the parcel down on a dry shelf to look.",
+        "A shutter lifts farther along the lane. The shopkeeper waves Jo over; the hinge has an address to reach. A bus makes a soft fan of water at the corner, then the small sounds separate again."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.rain_town.pot_route",
+          "label": "Leave the water going to the pot",
+          "response": "You turn the last channel toward the pot. Water darkens the soil around a sprig that was already growing. Jo leaves the dry shelf clear.",
+          "state_id": "pot_route"
+        },
+        {
+          "choice_id": "journey.rain_town.wheel_route",
+          "label": "Leave the little wheel turning",
+          "response": "The last channel points at the wheel. Its paddles make an uneven, busy sound; Jo listens long enough to notice the missing beat.",
+          "state_id": "wheel_route"
+        },
+        {
+          "choice_id": "journey.rain_town.as_found",
+          "label": "Leave it as it is",
+          "response": "The roof water follows its original channel to the drain. The pot and wheel remain beside it.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.rain_town.pot_route",
+          "scope": "destination",
+          "set_state": "pot_route",
+          "callback": "The shallow channels still lead to the pot. The shopkeeper has put a saucer beneath it."
+        },
+        {
+          "choice_id": "journey.rain_town.wheel_route",
+          "scope": "destination",
+          "set_state": "wheel_route",
+          "callback": "The little wheel keeps its uneven rhythm. A dry parcel shelf remains beside the channels."
+        },
+        {
+          "choice_id": "journey.rain_town.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The roof water follows its original channel to the drain. The pot and wheel remain beside it."
+        }
+      ],
+      "returning_location_states": [
+        "The roof water follows its original channel to the drain. The pot and wheel remain beside it.",
+        "The shallow channels still lead to the pot. The shopkeeper has put a saucer beneath it.",
+        "The little wheel keeps its uneven rhythm. A dry parcel shelf remains beside the channels."
+      ],
+      "local_scene_states": {
+        "as_found": "The roof water follows its original channel to the drain. The pot and wheel remain beside it.",
+        "pot_route": "The shallow channels still lead to the pot. The shopkeeper has put a saucer beneath it.",
+        "wheel_route": "The little wheel keeps its uneven rhythm. A dry parcel shelf remains beside the channels."
+      },
+      "callback_pool": {
+        "camera": "A shop window catches the lane upside down, like the lighthouse reflected at the first shore.",
+        "fair": "The little wheel has the same earnest scale as Ada’s pond. Its whole sea fits on one table.",
+        "sign": "The repair-shop board is carefully measured. BOATS WITH OPINIONS would fit beneath its awning.",
+        "mira": "A repair ticket reads LOWER MILL. Mira’s workshop has sent a hinge back along the line."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.rain_town.optional_invitation",
+          "text": "If you feel like it another day, listen for two different sounds of rain. There is nothing to count or report.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 5,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "unsent_letters_library",
+      "title": "The Unsent Letters Library",
+      "location_scene": "unsent_letters_library",
+      "scene_kind": "letter_stacks",
+      "available_time_states": [
+        "day",
+        "dusk",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "rain",
+          "clear"
+        ],
+        "intensity": 0.35,
+        "wet_surfaces": true,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "day",
+        "warmth": 0.35,
+        "fog": 0.05
+      },
+      "music_profile": {
+        "track": "res://assets/original/rain_window.wav",
+        "gain_db": -17.0,
+        "ambience": "page edges and rain on high windows"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "noor"
+      ],
+      "npc": "noor",
+      "story_theme_tags": [
+        "unsent_words",
+        "private_space"
+      ],
+      "emotional_texture_tags": [
+        "wistful",
+        "tender",
+        "bittersweet"
+      ],
+      "activity_tags": [
+        "letter_arrangement",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "letter_arrangement",
+      "activity_prompt": "Swap the left or right neighbouring pair of public practice cards: STAMP, LETTER, ENVELOPE. Try another order or leave them alone. No sealed letter is opened, and no order is needed to continue.",
+      "palette": [
+        "#43374F",
+        "#B0A0B3",
+        "#E9CDA4"
+      ],
+      "entry_variants": {
+        "first": "The library has a shelf marked LETTERS THAT MAY STAY HERE. Noor is repairing the cloth spine of its catalogue. A lamp lights three public practice cards on the worktable.",
+        "return": "Noor has a new cloth spine under the lamp. The public worktable is still clear; the private envelopes stay in their closed drawers."
+      },
+      "story_nodes": [
+        "“None of the sealed ones are for us to open,” Noor says. She slides three public practice cards across the table: STAMP, LETTER, ENVELOPE. The librarian uses them to show where the post goes, without reading anybody’s words.",
+        "The practice cards have worn corners from being swapped around. There is room to put them in another order. Noor presses the repaired catalogue spine beneath a heavy book; the private drawers stay shut.",
+        "A reader returns a key to the desk without returning an envelope. Noor writes only the key number in the ledger. Behind her, the catalogue cover lies flat again."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.unsent_letters_library.cards_together",
+          "label": "Keep the practice cards together",
+          "response": "You clip the three public cards together. Noor puts a blank sheet beside them so the next reader can try another order.",
+          "state_id": "cards_together"
+        },
+        {
+          "choice_id": "journey.unsent_letters_library.cards_apart",
+          "label": "Give the cards separate places",
+          "response": "Each public card gets its own space on the felt board. Noor lowers the lamp so none of the three sits in the shadow.",
+          "state_id": "cards_apart"
+        },
+        {
+          "choice_id": "journey.unsent_letters_library.as_found",
+          "label": "Leave it as it is",
+          "response": "The public practice cards rest loose on the worktable. No private letter has been opened.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.unsent_letters_library.cards_together",
+          "scope": "destination",
+          "set_state": "cards_together",
+          "callback": "The public practice cards stay clipped beside a blank sheet. The private drawers remain shut."
+        },
+        {
+          "choice_id": "journey.unsent_letters_library.cards_apart",
+          "scope": "destination",
+          "set_state": "cards_apart",
+          "callback": "The three public practice cards have separate places on the felt board, each within the lamplight."
+        },
+        {
+          "choice_id": "journey.unsent_letters_library.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The public practice cards rest loose on the worktable. No private letter has been opened."
+        }
+      ],
+      "returning_location_states": [
+        "The public practice cards rest loose on the worktable. No private letter has been opened.",
+        "The public practice cards stay clipped beside a blank sheet. The private drawers remain shut.",
+        "The three public practice cards have separate places on the felt board, each within the lamplight."
+      ],
+      "local_scene_states": {
+        "as_found": "The public practice cards rest loose on the worktable. No private letter has been opened.",
+        "cards_together": "The public practice cards stay clipped beside a blank sheet. The private drawers remain shut.",
+        "cards_apart": "The three public practice cards have separate places on the felt board, each within the lamplight."
+      },
+      "callback_pool": {
+        "camera": "The lamp makes a small bright rectangle. The first shore had another frame, and more room outside it.",
+        "fair": "A public envelope is addressed to THE FAIR, COURTYARD BOOTH. Its stamp shows a wooden duck.",
+        "sign": "Noor uses an offcut from the sign rail as a straight edge. It has a tiny fleck of the old paint.",
+        "mira": "A note on the noticeboard says Mira found the Lower Mill kettle. She has drawn its ambitious lid."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.unsent_letters_library.optional_invitation",
+          "text": "If you ever want to, write a sentence that does not have to be sent. Keeping it private is enough; skipping is fine.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 5,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "arcade",
+      "title": "The Last-Light Arcade",
+      "location_scene": "arcade",
+      "scene_kind": "arcade_cabinet",
+      "available_time_states": [
+        "day",
+        "dusk",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "rain",
+          "clear"
+        ],
+        "intensity": 0.35,
+        "wet_surfaces": true,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "day",
+        "warmth": 0.35,
+        "fog": 0.05
+      },
+      "music_profile": {
+        "track": "res://assets/original/fair_clockwork.wav",
+        "gain_db": -17.0,
+        "ambience": "soft cabinet clicks and a muted bell"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "ada"
+      ],
+      "npc": "ada",
+      "story_theme_tags": [
+        "play",
+        "old_machines"
+      ],
+      "emotional_texture_tags": [
+        "playful",
+        "hopeful",
+        "ordinary"
+      ],
+      "activity_tags": [
+        "arcade_paddle",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "arcade_paddle",
+      "activity_prompt": "Move the broad paddle left or right with the labelled buttons and launch the ball, or watch the cabinet demonstrate. Start a new rally whenever you like. No score is saved and no win is needed.",
+      "palette": [
+        "#342B60",
+        "#EF7EAF",
+        "#7ADBCB"
+      ],
+      "entry_variants": {
+        "first": "One arcade cabinet is lit among rows of sleeping screens. Ada kneels beside its open coin box, retrieving the small washers somebody mistook for tokens.",
+        "return": "The same cabinet is lit. Ada has brought a labelled tin for washers, and the machine’s painted stars still have more points than any stars outside."
+      },
+      "story_nodes": [
+        "“The cabinet takes neither coins nor sensible advice,” Ada says. She closes the empty box. On screen, a white ball waits beside a broad paddle. A second paddle belongs to the machine.",
+        "Ada has a repair invoice for the fair’s bell in her coat pocket. She came to collect the bell from the shop next door; the arcade owner asked her to test this cabinet while he fetched it.",
+        "The owner appears with the bell wrapped in a tea towel. Ada taps it once with a knuckle, then puts it away before another test. The cabinet carries on with its little geometry."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.arcade.practice_card",
+          "label": "Leave a practice card beside the controls",
+          "response": "You set the public practice card beside the buttons. Ada straightens its edge: “A cabinet should explain at least one of its opinions.”",
+          "state_id": "practice_card"
+        },
+        {
+          "choice_id": "journey.arcade.demo_notice",
+          "label": "Set the demonstration notice upright",
+          "response": "You put the demonstration notice upright in its clip. Ada checks that it can be read without leaning over the glass.",
+          "state_id": "demo_notice"
+        },
+        {
+          "choice_id": "journey.arcade.as_found",
+          "label": "Leave it as it is",
+          "response": "The cabinet keeps its original gentle rally. No match result is stored.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.arcade.practice_card",
+          "scope": "destination",
+          "set_state": "practice_card",
+          "callback": "A public practice card rests beside the broad-paddle controls. The demonstration button remains available."
+        },
+        {
+          "choice_id": "journey.arcade.demo_notice",
+          "scope": "destination",
+          "set_state": "demo_notice",
+          "callback": "The demonstration notice sits upright beside the cabinet, within reading distance of the controls."
+        },
+        {
+          "choice_id": "journey.arcade.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The cabinet keeps its original gentle rally. No match result is stored."
+        }
+      ],
+      "returning_location_states": [
+        "The cabinet keeps its original gentle rally. No match result is stored.",
+        "A public practice card rests beside the broad-paddle controls. The demonstration button remains available.",
+        "The demonstration notice sits upright beside the cabinet, within reading distance of the controls."
+      ],
+      "local_scene_states": {
+        "as_found": "The cabinet keeps its original gentle rally. No match result is stored.",
+        "practice_card": "A public practice card rests beside the broad-paddle controls. The demonstration button remains available.",
+        "demo_notice": "The demonstration notice sits upright beside the cabinet, within reading distance of the controls."
+      },
+      "callback_pool": {
+        "camera": "The glass reflects a square of light rather than the whole room. The first shore was larger than its frame too.",
+        "fair": "Ada turns the repaired bell in its cloth. “Pageantry is portable. I’ve checked.”",
+        "sign": "The cabinet name fits its frame by about a finger’s width. Noor would have measured before painting.",
+        "mira": "Ada has promised to show Mira the cabinet mechanism when her Lower Mill tram brings her through."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.arcade.optional_invitation",
+          "text": "If a small game appeals another day, you can play just a little or watch someone else. No result needs keeping.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 4,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text.",
+        "Keep the broad paddle and watch-demonstration alternative; no rally result is stored and a new rally is always available."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "beach_before_sunrise",
+      "title": "The Beach Before Sunrise",
+      "location_scene": "beach_before_sunrise",
+      "scene_kind": "tidal_dawn",
+      "available_time_states": [
+        "dawn",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "clear",
+          "mist"
+        ],
+        "intensity": 0.12,
+        "wet_surfaces": false,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "dawn",
+        "warmth": 0.35,
+        "fog": 0.12
+      },
+      "music_profile": {
+        "track": "res://assets/original/surf.wav",
+        "gain_db": -17.0,
+        "ambience": "small waves and distant bread trays"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "mira"
+      ],
+      "npc": "mira",
+      "story_theme_tags": [
+        "unfinished_skies",
+        "ordinary_arrivals"
+      ],
+      "emotional_texture_tags": [
+        "awe",
+        "wistful",
+        "hopeful"
+      ],
+      "activity_tags": [
+        "constellation_tracing",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "constellation_tracing",
+      "activity_prompt": "Trace the fixed numbered star points 1, 2, 3 in sequence. Undo the last point, start again or leave the points unjoined. The beach remains open either way.",
+      "palette": [
+        "#283858",
+        "#9BA8BE",
+        "#F1BA92"
+      ],
+      "entry_variants": {
+        "first": "The beach is still blue at its edges. Mira has come off the early Lower Mill tram with a paper bag of breakfast rolls and a small gear wrapped in cloth.",
+        "return": "A pale strip rests above the water. Mira is checking a workshop sketch on the seawall; the bag beside her now holds a crumb and a folded napkin."
+      },
+      "story_nodes": [
+        "Mira turns the gear in her palm. “This one meshes properly. I brought it out because I’m not spending every morning explaining wheels to other wheels.” She sets it on the cloth and finds a roll that has not flattened.",
+        "Three stars remain above the dark pier. A brass viewing frame marks them with little numbered points; the frame belongs to the promenade, not to a puzzle that unlocks the sun.",
+        "A delivery van stops at the closed cafe. Someone stacks empty bread trays beside its door. Mira folds the cloth around her gear before the salt reaches it. The horizon keeps its own pace."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.beach_before_sunrise.traced_line",
+          "label": "Keep the traced line in the frame",
+          "response": "You leave the three-point line on the frame. Mira names it The Very Patient Screwdriver, then admits the handle needs work.",
+          "state_id": "traced_line"
+        },
+        {
+          "choice_id": "journey.beach_before_sunrise.unjoined_points",
+          "label": "Leave the frame points unjoined",
+          "response": "You leave the frame points unjoined. Mira looks through the spaces between them, all the way out to the pale water.",
+          "state_id": "unjoined_points"
+        },
+        {
+          "choice_id": "journey.beach_before_sunrise.as_found",
+          "label": "Leave it as it is",
+          "response": "The brass frame marks three points without joining them. The sea lies beyond all three.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.beach_before_sunrise.traced_line",
+          "scope": "destination",
+          "set_state": "traced_line",
+          "callback": "The viewing frame keeps its three-point star line. The real sky remains beyond the brass edge."
+        },
+        {
+          "choice_id": "journey.beach_before_sunrise.unjoined_points",
+          "scope": "destination",
+          "set_state": "unjoined_points",
+          "callback": "The three frame points stay unjoined, with space around each one and water beyond them."
+        },
+        {
+          "choice_id": "journey.beach_before_sunrise.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The brass frame marks three points without joining them. The sea lies beyond all three."
+        }
+      ],
+      "returning_location_states": [
+        "The brass frame marks three points without joining them. The sea lies beyond all three.",
+        "The viewing frame keeps its three-point star line. The real sky remains beyond the brass edge.",
+        "The three frame points stay unjoined, with space around each one and water beyond them."
+      ],
+      "local_scene_states": {
+        "as_found": "The brass frame marks three points without joining them. The sea lies beyond all three.",
+        "traced_line": "The viewing frame keeps its three-point star line. The real sky remains beyond the brass edge.",
+        "unjoined_points": "The three frame points stay unjoined, with space around each one and water beyond them."
+      },
+      "callback_pool": {
+        "camera": "The reflected lighthouse from your first shore comes back to mind when a harbour light touches the water.",
+        "fair": "Mira’s breakfast roll has acquired a circular dent. “The boat would approve. A very short race.”",
+        "sign": "A temporary cafe board leans against the wall. Its folded-paper corner could be a small cousin of the sign you made.",
+        "mira": "The gear on the cloth is from Lower Mill. Mira’s work has a morning beyond this beach, and she intends to catch her tram."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.beach_before_sunrise.optional_invitation",
+          "text": "If you happen to see a morning sky another day, there is no particular color you need to find. A glance or no glance is fine.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 6,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text.",
+        "Use fixed numbered points with explicit undo; moving lights are never interaction targets."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "winter_orchard",
+      "title": "The Winter Orchard",
+      "location_scene": "winter_orchard",
+      "scene_kind": "snow_orchard",
+      "available_time_states": [
+        "dawn",
+        "day",
+        "dusk"
+      ],
+      "weather_profile": {
+        "states": [
+          "snow",
+          "clear"
+        ],
+        "intensity": 0.12,
+        "wet_surfaces": false,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "dawn",
+        "warmth": 0.35,
+        "fog": 0.05
+      },
+      "music_profile": {
+        "track": "res://assets/original/orchard_hush.wav",
+        "gain_db": -17.0,
+        "ambience": "snow-softened rails and a packing shed"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "jo"
+      ],
+      "npc": "jo",
+      "story_theme_tags": [
+        "seasonal_work",
+        "waiting_without_tasks"
+      ],
+      "emotional_texture_tags": [
+        "quiet",
+        "bittersweet",
+        "ordinary"
+      ],
+      "activity_tags": [
+        "observation",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "observation",
+      "activity_prompt": "Watch the shed, the bare branches or the handcart from the station bench. Advance the scene when you want; nothing here needs arranging.",
+      "palette": [
+        "#536879",
+        "#C2D1D4",
+        "#D9B48C"
+      ],
+      "entry_variants": {
+        "first": "The pear trees have no fruit to carry. Snow gathers in the old crate handles. Jo is helping the packing-shed workers label boxes for the spring tools.",
+        "return": "The trees keep their bare outlines. Jo has another stack of labels; a worker has brushed the snow off one end of the station bench."
+      },
+      "story_nodes": [
+        "Jo presses a label down with the side of a mitten. “I thought they’d be labels for pears. Turns out pears are only some of what happens to a pear place.” The shed door opens and the warm smell of cut wood reaches the first tree.",
+        "A worker tests a handcart brake, walks beside it, then wheels it back beneath the awning. The rail, path and bench still look toward the same long window of the waiting train.",
+        "Jo goes inside to find the box marked HAND TOOLS and returns with the one marked HAND TOWELS. The worker laughs, makes room for both, and starts another label."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.winter_orchard.bench_cloth",
+          "label": "Leave the folded cloth on the dry bench",
+          "response": "You move a folded cloth onto the dry end of the bench. Jo uses the other end as a momentary desk for the labels.",
+          "state_id": "bench_cloth"
+        },
+        {
+          "choice_id": "journey.winter_orchard.crate_stack",
+          "label": "Help set two empty crates side by side",
+          "response": "The two empty crates stand side by side beneath the awning. A worker checks that the path past them is still clear.",
+          "state_id": "crate_stack"
+        },
+        {
+          "choice_id": "journey.winter_orchard.as_found",
+          "label": "Leave it as it is",
+          "response": "The bench, handcart and empty crates stay where the workers left them. The shed carries on.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.winter_orchard.bench_cloth",
+          "scope": "destination",
+          "set_state": "bench_cloth",
+          "callback": "A folded cloth keeps its place at the dry end of the bench. The tool labels are stacked inside."
+        },
+        {
+          "choice_id": "journey.winter_orchard.crate_stack",
+          "scope": "destination",
+          "set_state": "crate_stack",
+          "callback": "Two empty crates stand side by side under the awning, well clear of the path."
+        },
+        {
+          "choice_id": "journey.winter_orchard.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The bench, handcart and empty crates stay where the workers left them. The shed carries on."
+        }
+      ],
+      "returning_location_states": [
+        "The bench, handcart and empty crates stay where the workers left them. The shed carries on.",
+        "A folded cloth keeps its place at the dry end of the bench. The tool labels are stacked inside.",
+        "Two empty crates stand side by side under the awning, well clear of the path."
+      ],
+      "local_scene_states": {
+        "as_found": "The bench, handcart and empty crates stay where the workers left them. The shed carries on.",
+        "bench_cloth": "A folded cloth keeps its place at the dry end of the bench. The tool labels are stacked inside.",
+        "crate_stack": "Two empty crates stand side by side under the awning, well clear of the path."
+      },
+      "callback_pool": {
+        "camera": "Bare branches make a different picture from the first coast. Both places extend beyond any little frame.",
+        "fair": "A crate label reads POND CLOTHS. Ada has sent them for washing before the fair opens again.",
+        "sign": "A careful paper label is held by two strings. It reminds you how much a small length of string can change a hanging thing.",
+        "mira": "The tool box contains a repaired crank from Lower Mill, with Mira’s neat note about which way it turns."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.winter_orchard.optional_invitation",
+          "text": "Another day, if it suits you, notice a tree in whatever season it already is. There is no better season to choose.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 4,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text.",
+        "This scene has no required puzzle, timing target or hidden observation checklist."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "rest_room",
+      "title": "The Rest Room",
+      "location_scene": "rest_room",
+      "scene_kind": "quiet_lounge",
+      "available_time_states": [
+        "dawn",
+        "day",
+        "dusk",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "rain",
+          "clear"
+        ],
+        "intensity": 0.35,
+        "wet_surfaces": true,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "dawn",
+        "warmth": 0.6,
+        "fog": 0.05
+      },
+      "music_profile": {
+        "track": "res://assets/original/rain_window.wav",
+        "gain_db": -17.0,
+        "ambience": "quiet kettle and rain beyond the station wall"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "noor"
+      ],
+      "npc": "noor",
+      "story_theme_tags": [
+        "room_without_duties",
+        "small_preferences"
+      ],
+      "emotional_texture_tags": [
+        "quiet",
+        "tender",
+        "ordinary"
+      ],
+      "activity_tags": [
+        "tea_mixing",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "tea_mixing",
+      "activity_prompt": "Add or remove amber leaf, mint and hibiscus for an imaginary cup, then pour the blend if you like. Every mixture is welcome. You can leave the cup empty or change the mixture again.",
+      "palette": [
+        "#665E78",
+        "#B6AAAC",
+        "#F2D4A5"
+      ],
+      "entry_variants": {
+        "first": "A room off the station has three chairs, a low lamp and a kettle on a safe back counter. The sign on the door simply reads REST ROOM. Noor is replacing a shade she made too narrow.",
+        "return": "The lamp has the wider shade now. Noor has returned to mend a loose seam in another one; there are still three chairs and no appointment book."
+      },
+      "story_nodes": [
+        "Noor puts the needle down on its felt square. “A lamp should manage one lamp’s worth of light.” She checks the shade from each chair, then leaves the chair nearest the wall where it was.",
+        "The tea tray holds labelled tins: amber leaf, mint and hibiscus. Empty cups sit beneath them. The room also has water, and the door does not ask whether you drank anything.",
+        "A porter leaves a folded newspaper on the table and sits quietly at the far end. Noor takes her shade to the window, where the last seam is easier to see. Nobody gives the room a speech."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.rest_room.mint_tin",
+          "label": "Leave mint beside the cups",
+          "response": "You put the mint tin within easy reach of the cups. Noor moves the spoon beside it, away from the lamp cloth.",
+          "state_id": "mint_tin"
+        },
+        {
+          "choice_id": "journey.rest_room.plain_tray",
+          "label": "Leave the tray plain and clear",
+          "response": "You clear the center of the tray, leaving the tins along its back edge. Noor puts a fresh cloth in the empty space.",
+          "state_id": "plain_tray"
+        },
+        {
+          "choice_id": "journey.rest_room.as_found",
+          "label": "Leave it as it is",
+          "response": "The labelled tins and empty cups stay on the tea tray. The chairs remain available.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.rest_room.mint_tin",
+          "scope": "destination",
+          "set_state": "mint_tin",
+          "callback": "The mint tin rests beside the cups, with a dry spoon on the tray."
+        },
+        {
+          "choice_id": "journey.rest_room.plain_tray",
+          "scope": "destination",
+          "set_state": "plain_tray",
+          "callback": "The tray has a clear center and a fresh cloth. The labelled tins stay along its back edge."
+        },
+        {
+          "choice_id": "journey.rest_room.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The labelled tins and empty cups stay on the tea tray. The chairs remain available."
+        }
+      ],
+      "returning_location_states": [
+        "The labelled tins and empty cups stay on the tea tray. The chairs remain available.",
+        "The mint tin rests beside the cups, with a dry spoon on the tray.",
+        "The tray has a clear center and a fresh cloth. The labelled tins stay along its back edge."
+      ],
+      "local_scene_states": {
+        "as_found": "The labelled tins and empty cups stay on the tea tray. The chairs remain available.",
+        "mint_tin": "The mint tin rests beside the cups, with a dry spoon on the tray.",
+        "plain_tray": "The tray has a clear center and a fresh cloth. The labelled tins stay along its back edge."
+      },
+      "callback_pool": {
+        "camera": "The lamp makes a bright little circle on the tray. The first night had its own patch of light by the sea.",
+        "fair": "An old fair rosette is being used to test a shade color. Noor has written SAMPLE on its back.",
+        "sign": "One spare paper leaf lies beside the sewing cloth, an offcut from the work on BOATS WITH OPINIONS.",
+        "mira": "A workshop parcel sits by Noor’s coat. It is for Mira’s new bench at Lower Mill; Noor will take it on her own next trip."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.rest_room.optional_invitation",
+          "text": "If you feel like it another day, leave a little space on a table or do nothing to it. This invitation has no record to fill in.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 4,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "failed_things_festival",
+      "title": "The Failed Things Festival",
+      "location_scene": "failed_things_festival",
+      "scene_kind": "crooked_festival",
+      "available_time_states": [
+        "day",
+        "dusk",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "clear",
+          "rain"
+        ],
+        "intensity": 0.35,
+        "wet_surfaces": true,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "day",
+        "warmth": 0.35,
+        "fog": 0.05
+      },
+      "music_profile": {
+        "track": "res://assets/original/fair_clockwork.wav",
+        "gain_db": -17.0,
+        "ambience": "cloth bunting and small clockwork clicks"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "ada"
+      ],
+      "npc": "ada",
+      "story_theme_tags": [
+        "imperfect_objects",
+        "shared_jokes"
+      ],
+      "emotional_texture_tags": [
+        "playful",
+        "bittersweet",
+        "hopeful"
+      ],
+      "activity_tags": [
+        "letter_arrangement",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "letter_arrangement",
+      "activity_prompt": "Swap the left or right neighbouring pair of demonstration cards: STAMP, LETTER, ENVELOPE. The postal sorter can keep its single, overconfident tray. No order is needed to continue.",
+      "palette": [
+        "#754D58",
+        "#E7A45D",
+        "#79AFA0"
+      ],
+      "entry_variants": {
+        "first": "The festival bunting hangs a little low in one corner. Ada is putting labels beneath an umbrella that opens inside out, a square wheel and a toast rack with one grand slot.",
+        "return": "The square wheel has not become round. Ada is adding an exhibit: a bell whose clapper is too polite to reach either side."
+      },
+      "story_nodes": [
+        "“We rejected nothing for failure,” Ada says. “We did reject a perfectly good ladder. It was taking the wall space.” She puts its application form beneath the toast rack so it cannot blow away.",
+        "A postal sorter stands beside the exhibits. It sends every item into the same tray. Its three public demonstration cards read STAMP, LETTER, ENVELOPE; Ada keeps them loose so visitors can try another order without putting real post through it.",
+        "A repairer carries the silent bell to a second table. She intends to mend it after the festival; it can still have an afternoon on display first. Ada finds a taller peg for the low bunting."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.failed_things_festival.letter_first",
+          "label": "Leave LETTER at the front",
+          "response": "You put LETTER at the front of the demonstration stack. Ada writes “Correspondence first” on a spare exhibit card and leaves the real post elsewhere.",
+          "state_id": "letter_first"
+        },
+        {
+          "choice_id": "journey.failed_things_festival.stamp_first",
+          "label": "Leave STAMP at the front",
+          "response": "STAMP leads the demonstration stack. Ada adds a handwritten card: “Very good at being the first thing you notice.”",
+          "state_id": "stamp_first"
+        },
+        {
+          "choice_id": "journey.failed_things_festival.as_found",
+          "label": "Leave it as it is",
+          "response": "The three public demonstration cards stay loose on the sorter table. The exhibits are already welcome.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.failed_things_festival.letter_first",
+          "scope": "destination",
+          "set_state": "letter_first",
+          "callback": "LETTER leads the public demonstration stack. The postal sorter still offers its single tray."
+        },
+        {
+          "choice_id": "journey.failed_things_festival.stamp_first",
+          "scope": "destination",
+          "set_state": "stamp_first",
+          "callback": "STAMP leads the public demonstration stack, beside Ada’s small handwritten exhibit card."
+        },
+        {
+          "choice_id": "journey.failed_things_festival.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The three public demonstration cards stay loose on the sorter table. The exhibits are already welcome."
+        }
+      ],
+      "returning_location_states": [
+        "The three public demonstration cards stay loose on the sorter table. The exhibits are already welcome.",
+        "LETTER leads the public demonstration stack. The postal sorter still offers its single tray.",
+        "STAMP leads the public demonstration stack, beside Ada’s small handwritten exhibit card."
+      ],
+      "local_scene_states": {
+        "as_found": "The three public demonstration cards stay loose on the sorter table. The exhibits are already welcome.",
+        "letter_first": "LETTER leads the public demonstration stack. The postal sorter still offers its single tray.",
+        "stamp_first": "STAMP leads the public demonstration stack, beside Ada’s small handwritten exhibit card."
+      },
+      "callback_pool": {
+        "camera": "The silent bell would look splendid in a picture. Looking at it here also reveals the clapper’s tiny, hopeless gap.",
+        "fair": "The fair’s bent brass propeller has a place on the festival map, still labelled BOATS WITH OPINIONS.",
+        "sign": "One exhibit label was cut from an offcut of Noor’s sign board. Its measured edge survived its new job.",
+        "mira": "Mira has sent a stripped gear from Lower Mill. Her note explains the fault and asks for it back after the festival."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.failed_things_festival.optional_invitation",
+          "text": "If it amuses you later, remember an object that once did something unexpected. It can stay an ordinary story; no lesson is required.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 5,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "sunrise_cafe",
+      "title": "The Sunrise Cafe",
+      "location_scene": "sunrise_cafe",
+      "scene_kind": "morning_cafe",
+      "available_time_states": [
+        "dawn",
+        "day"
+      ],
+      "weather_profile": {
+        "states": [
+          "clear",
+          "mist",
+          "rain"
+        ],
+        "intensity": 0.35,
+        "wet_surfaces": true,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "dawn",
+        "warmth": 0.6,
+        "fog": 0.12
+      },
+      "music_profile": {
+        "track": "res://assets/original/kitchen_simmer.wav",
+        "gain_db": -17.0,
+        "ambience": "quiet cups, toast rack and distant tram"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "mira"
+      ],
+      "npc": "mira",
+      "story_theme_tags": [
+        "breakfast",
+        "work_of_ones_own"
+      ],
+      "emotional_texture_tags": [
+        "tender",
+        "hopeful",
+        "ordinary"
+      ],
+      "activity_tags": [
+        "tea_mixing",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "tea_mixing",
+      "activity_prompt": "Add or remove amber leaf, mint and hibiscus for an imaginary breakfast tea. Pour the blend, try another mixture or leave the cup empty. There is no preferred recipe.",
+      "palette": [
+        "#8F655F",
+        "#E8B875",
+        "#EADACA"
+      ],
+      "entry_variants": {
+        "first": "Sunrise reaches the cafe counter before it reaches the tables. Mira is drawing a repaired clock escapement on a paper napkin. Her workshop shift starts after breakfast.",
+        "return": "Mira has chosen the table by the ordinary window this time. The cafe owner is counting clean cups while toast leans against the warming rack."
+      },
+      "story_nodes": [
+        "“It loses six seconds,” Mira says, looking at her drawing. “Yesterday it gained forty. I’m suspicious of improvement with such a large opinion.” She folds the napkin before the owner sets a plate beside it.",
+        "The counter has labelled tins of amber leaf, mint and hibiscus. A handwritten card says CHOOSE WHAT YOU LIKE. Below it, in smaller writing: WATER IS ALSO WATER.",
+        "Mira finishes the last crust and checks her tram time. The owner asks about the clock in the workshop window; she answers while packing the drawing into her own tool roll."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.sunrise_cafe.hibiscus_tin",
+          "label": "Leave hibiscus beside the other tea tins",
+          "response": "You move the hibiscus tin beside the others. The owner puts its label where people can see it from either side of the counter.",
+          "state_id": "hibiscus_tin"
+        },
+        {
+          "choice_id": "journey.sunrise_cafe.window_cup",
+          "label": "Leave an empty cup by the window seat",
+          "response": "You set a clean empty cup by the window seat. The owner adds a saucer; Mira checks that her drawing is out of the way.",
+          "state_id": "window_cup"
+        },
+        {
+          "choice_id": "journey.sunrise_cafe.as_found",
+          "label": "Leave it as it is",
+          "response": "The cafe counter keeps its labelled tea tins and clean cups in their original places.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.sunrise_cafe.hibiscus_tin",
+          "scope": "destination",
+          "set_state": "hibiscus_tin",
+          "callback": "The hibiscus tin rests beside the other tea tins, with its label facing the room."
+        },
+        {
+          "choice_id": "journey.sunrise_cafe.window_cup",
+          "scope": "destination",
+          "set_state": "window_cup",
+          "callback": "A clean empty cup and saucer wait at the window seat. The table has room beside them."
+        },
+        {
+          "choice_id": "journey.sunrise_cafe.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The cafe counter keeps its labelled tea tins and clean cups in their original places."
+        }
+      ],
+      "returning_location_states": [
+        "The cafe counter keeps its labelled tea tins and clean cups in their original places.",
+        "The hibiscus tin rests beside the other tea tins, with its label facing the room.",
+        "A clean empty cup and saucer wait at the window seat. The table has room beside them."
+      ],
+      "local_scene_states": {
+        "as_found": "The cafe counter keeps its labelled tea tins and clean cups in their original places.",
+        "hibiscus_tin": "The hibiscus tin rests beside the other tea tins, with its label facing the room.",
+        "window_cup": "A clean empty cup and saucer wait at the window seat. The table has room beside them."
+      },
+      "callback_pool": {
+        "camera": "Morning light puts the cafe window briefly on the tabletop. The first shore had a reflection worth looking at too.",
+        "fair": "The cafe owner has borrowed Ada’s kettle label. OPEN WHEN THE KETTLE BOILS is crossed out; the actual hours are underneath.",
+        "sign": "A small paper boat hangs above the toast rack. Noor made it from a spare timetable, as she did for the sign.",
+        "mira": "Mira has a workshop shift and a clock of her own to finish. Breakfast is one part of the morning she chose."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.sunrise_cafe.optional_invitation",
+          "text": "Another day, if you want, let an ordinary drink have a moment of your attention. You do not need to change what you drink.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 5,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "no_destination_road",
+      "title": "The No Destination Road",
+      "location_scene": "no_destination_road",
+      "scene_kind": "open_road",
+      "available_time_states": [
+        "dawn",
+        "day",
+        "dusk"
+      ],
+      "weather_profile": {
+        "states": [
+          "clear",
+          "mist",
+          "rain"
+        ],
+        "intensity": 0.35,
+        "wet_surfaces": true,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "dawn",
+        "warmth": 0.35,
+        "fog": 0.12
+      },
+      "music_profile": {
+        "track": "res://assets/original/rails.wav",
+        "gain_db": -17.0,
+        "ambience": "distant wheels and roadside grass"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "jo"
+      ],
+      "npc": "jo",
+      "story_theme_tags": [
+        "open_ends",
+        "walking_for_its_own_sake"
+      ],
+      "emotional_texture_tags": [
+        "quiet",
+        "wistful",
+        "hopeful"
+      ],
+      "activity_tags": [
+        "observation",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "observation",
+      "activity_prompt": "Look through the gaps in the wall, watch the road or stay by the gate. There is no route puzzle and no destination to earn.",
+      "palette": [
+        "#596571",
+        "#A8B4A3",
+        "#D9BE8C"
+      ],
+      "entry_variants": {
+        "first": "The road leaves the station without a destination board. Jo has a folded shopping list and enough time to take the longer way to the market.",
+        "return": "The road still has no destination board. Jo is returning a borrowed saucepan by the long route; the lid rattles once against the bag."
+      },
+      "story_nodes": [
+        "“It gets places,” Jo says, looking down the road. “It just doesn’t put them on this end.” A low wall has three gaps, each showing another piece of the same fields.",
+        "A cyclist pulls over to tighten a shoe strap, then rides on. Jo checks the list and finds soap written twice. “Two soaps could be a plan. I’ll ask.” The roadside grass moves without settling the question.",
+        "The road curves past a white gate. Jo takes the market turn and lifts the saucepan hand in a goodbye. Beyond the gate, the track continues to ordinary houses."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.no_destination_road.gate_note",
+          "label": "Straighten the loose gate notice",
+          "response": "You turn the notice upright in its existing clip. It reads PLEASE SHUT THE GATE, with a drawing for anyone who misses the words.",
+          "state_id": "gate_note"
+        },
+        {
+          "choice_id": "journey.no_destination_road.wall_stone",
+          "label": "Set the loose stone beside the wall",
+          "response": "You set the loose stone on the grass beside the wall, clear of the path. Jo tests the saucepan lid again and carries on.",
+          "state_id": "wall_stone"
+        },
+        {
+          "choice_id": "journey.no_destination_road.as_found",
+          "label": "Leave it as it is",
+          "response": "The gate notice leans in its clip. The loose stone lies at the wide edge of the path.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.no_destination_road.gate_note",
+          "scope": "destination",
+          "set_state": "gate_note",
+          "callback": "The gate notice sits upright in its clip. The road still has no destination board."
+        },
+        {
+          "choice_id": "journey.no_destination_road.wall_stone",
+          "scope": "destination",
+          "set_state": "wall_stone",
+          "callback": "The loose stone rests on the grass beside the wall, well clear of the path."
+        },
+        {
+          "choice_id": "journey.no_destination_road.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The gate notice leans in its clip. The loose stone lies at the wide edge of the path."
+        }
+      ],
+      "returning_location_states": [
+        "The gate notice leans in its clip. The loose stone lies at the wide edge of the path.",
+        "The gate notice sits upright in its clip. The road still has no destination board.",
+        "The loose stone rests on the grass beside the wall, well clear of the path."
+      ],
+      "local_scene_states": {
+        "as_found": "The gate notice leans in its clip. The loose stone lies at the wide edge of the path.",
+        "gate_note": "The gate notice sits upright in its clip. The road still has no destination board.",
+        "wall_stone": "The loose stone rests on the grass beside the wall, well clear of the path."
+      },
+      "callback_pool": {
+        "camera": "The fields do not fit into one view. The first night’s coast extended beyond its frame in much the same way.",
+        "fair": "A roadside delivery box bears Ada’s fair address. The parcel has a route even when the road has no board.",
+        "sign": "The gate’s little drawing uses the same generous spaces Noor left around the paper pieces on the sign.",
+        "mira": "At the junction, an arrow points toward the tram for Lower Mill. Mira’s route has a name of its own."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.no_destination_road.optional_invitation",
+          "text": "If a different ordinary route appeals another day, you can take it when convenient. Keeping your usual route is fine too.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 4,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text.",
+        "This scene has no required puzzle, timing target or hidden observation checklist."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "fireflies",
+      "title": "Fireflies at the Field Edge",
+      "location_scene": "fireflies",
+      "scene_kind": "lantern_meadow",
+      "available_time_states": [
+        "dusk",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "clear",
+          "mist"
+        ],
+        "intensity": 0.12,
+        "wet_surfaces": false,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "dusk",
+        "warmth": 0.35,
+        "fog": 0.12
+      },
+      "music_profile": {
+        "track": "res://assets/original/orchard_hush.wav",
+        "gain_db": -17.0,
+        "ambience": "soft reeds and distant evening train"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "noor"
+      ],
+      "npc": "noor",
+      "story_theme_tags": [
+        "light_that_wanders",
+        "unfinished_patterns"
+      ],
+      "emotional_texture_tags": [
+        "awe",
+        "tender",
+        "quiet"
+      ],
+      "activity_tags": [
+        "constellation_tracing",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "constellation_tracing",
+      "activity_prompt": "Trace the fixed numbered stars 1, 2, 3 in sequence while the fireflies wander below. Undo the last point or leave the stars unjoined. The insects are observation, never targets.",
+      "palette": [
+        "#203D49",
+        "#81A497",
+        "#E4D186"
+      ],
+      "entry_variants": {
+        "first": "A few fireflies appear above the field ditch. Noor is testing a paper lantern for the community supper; she has put it down well away from the dry grass.",
+        "return": "The field has the same low fence. Noor is testing a second lantern with a wider paper seam, letting the first one stay in its carrying box."
+      },
+      "story_nodes": [
+        "“I’m checking the seam, not persuading the whole field to be a dining room,” Noor says. Her lantern is battery lit. She turns it once, notices a pale line, and writes a measurement on the box.",
+        "A fixed brass frame on the fence marks three stars above the moving lights. The fireflies do not hold still for joining, and the frame does not pretend they do. You can trace the distant stars while the nearer lights wander.",
+        "Noor closes the lantern box and leaves the field as she found it. One firefly rises beyond the fence; another disappears into the dark reeds. Neither waits for the other to finish a shape."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.fireflies.star_line",
+          "label": "Keep the three-point star line",
+          "response": "You leave a three-point line in the brass frame. Noor looks through it at the ditch, then puts her measurement pencil away.",
+          "state_id": "star_line"
+        },
+        {
+          "choice_id": "journey.fireflies.unjoined_points",
+          "label": "Leave the frame points separate",
+          "response": "The frame points stay separate. Noor holds the lantern box against the fence briefly, then lifts it clear.",
+          "state_id": "unjoined_points"
+        },
+        {
+          "choice_id": "journey.fireflies.as_found",
+          "label": "Leave it as it is",
+          "response": "The fixed frame keeps three unjoined star points. The field lights remain untracked.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.fireflies.star_line",
+          "scope": "destination",
+          "set_state": "star_line",
+          "callback": "A three-point star line stays on the fixed frame. The fireflies move freely below it."
+        },
+        {
+          "choice_id": "journey.fireflies.unjoined_points",
+          "scope": "destination",
+          "set_state": "unjoined_points",
+          "callback": "The three fixed frame points stay separate, with open sky around them."
+        },
+        {
+          "choice_id": "journey.fireflies.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The fixed frame keeps three unjoined star points. The field lights remain untracked."
+        }
+      ],
+      "returning_location_states": [
+        "The fixed frame keeps three unjoined star points. The field lights remain untracked.",
+        "A three-point star line stays on the fixed frame. The fireflies move freely below it.",
+        "The three fixed frame points stay separate, with open sky around them."
+      ],
+      "local_scene_states": {
+        "as_found": "The fixed frame keeps three unjoined star points. The field lights remain untracked.",
+        "star_line": "A three-point star line stays on the fixed frame. The fireflies move freely below it.",
+        "unjoined_points": "The three fixed frame points stay separate, with open sky around them."
+      },
+      "callback_pool": {
+        "camera": "A moving light leaves a different impression from a still image. The first shore had room for both looking and letting it pass.",
+        "fair": "Noor’s lantern box still carries a fair delivery label. Ada has crossed out BOOTH and written SUPPER.",
+        "sign": "The lantern seam is measured as carefully as the sign rail. Noor checks it without needing the whole sky to fit.",
+        "mira": "One lantern is destined for the Lower Mill workshop supper. Mira asked about its seam, not whether the field was brighter."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.fireflies.optional_invitation",
+          "text": "If you notice a small light another day, you can let it stay a passing thing. Nothing needs photographing or proving.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 5,
+      "accessibility_notes": [
+        "Story advances at the player’s pace; narrative choices have no time limit.",
+        "The activity is optional. Observation, leaving and a later visit keep the same access.",
+        "Label activity controls in text; palette color is never the sole instruction.",
+        "Keep reduced-motion presentation available; ambience is supplementary to readable text.",
+        "Use fixed numbered points with explicit undo; moving lights are never interaction targets."
+      ],
+      "performance_tier": "low"
+    }
+  ]
+}

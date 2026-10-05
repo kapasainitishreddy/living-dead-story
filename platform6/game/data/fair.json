@@ -1,0 +1,303 @@
+{
+  "dialogues": {
+    "fair_arrival": {
+      "title": "Open when the kettle boils",
+      "text": "A little courtyard holds a raised pond, a painted booth and a kettle on a dry back counter. The conservatory and kitchen doors have ordinary signs. Mira's aunt, Ada, pours water into the kettle.\nAda: “We are nearly open.”\nMira: “You said that on the postcard.”\nAda: “That was anticipation. This is logistics.”\nMira sets a repaired clockwork boat on the counter, keeping its paper sail clear of the steam.\nMira: “One boat. New spring. Clean shaft. Please don't oil it with whatever you put in the hinges.”\nAda: “The hinges are excellent.”\nMira: “The hinges smell of soup.”\nAda turns a stool toward the pond.\nAda: “Would you like a race? We offer competition, pageantry and approximately two inches of water.”",
+      "choices": [
+        {
+          "label": "“I was promised suspicious ducks.”",
+          "action": "fair_greeting",
+          "value": "ducks"
+        },
+        {
+          "label": "“I’ll watch the first one.”",
+          "action": "fair_greeting",
+          "value": "watch"
+        },
+        {
+          "label": "“Show me how it works.”",
+          "action": "fair_greeting",
+          "value": "how"
+        }
+      ]
+    },
+    "fair_greeting_ducks": {
+      "title": "The duck declines",
+      "text": "Ada: “The ducks declined an interview. Very suspicious.”\nA painted wooden duck bobs at one corner of the pond. Mira gives it a look, then opens the boat box.\nMira: “We'll start with the boats. They have accessible screws.”",
+      "choices": [
+        {
+          "label": "Look at the boat setup",
+          "action": "fair_continue",
+          "value": "fair_setup"
+        }
+      ]
+    },
+    "fair_greeting_watch": {
+      "title": "A good viewing spot",
+      "text": "Ada shifts the stool until its feet sit flat and its view of the pond is clear.\nAda: “A discerning audience. Worse than a rival.”\nMira sets a boat at the starting rail.\nMira: “I'll wind it. You can choose the rudder and sail, or leave this one as it is.”",
+      "choices": [
+        {
+          "label": "Look at the boat setup",
+          "action": "fair_continue",
+          "value": "fair_setup"
+        }
+      ]
+    },
+    "fair_greeting_how": {
+      "title": "Three parts",
+      "text": "Mira places one tiny boat beside the other and rests a finger beside its rudder.\nMira: “Three parts. One of them is usually lying to me. The spring moves it, the rudder bends its route, and the paper sail catches the current.”\nAda unrolls a very small starting ribbon.\nAda: “Pageantry is the fourth part. No screws required.”",
+      "choices": [
+        {
+          "label": "Look at the boat setup",
+          "action": "fair_continue",
+          "value": "fair_setup"
+        }
+      ]
+    },
+    "fair_setup": {
+      "title": "Boats with opinions",
+      "text": "The boat sits on the dry starting rail. Mira holds its winding key still while Ada smooths three paper sails with the edge of a postcard.\nMira: “Choose the rudder and a sail, then one winding press. No speed contest with the key.”\nThe setup menu shows Left / Straight / Right with route arrows. Triangle catches the fixed current; Square is broad and steady; Folded brings the boat round in a circle on a solo run.\nYou can release your own configuration, watch Mira demonstrate it, or work together on a steady route. You can change your choice before release.\nAda: “The duck has chosen to supervise.”",
+      "choices": [
+        {
+          "label": "Choose rudder and paper sail",
+          "action": "fair_config",
+          "value": "main"
+        },
+        {
+          "label": "Wind and release",
+          "action": "release_boat"
+        },
+        {
+          "label": "Mira releases; I’ll watch",
+          "action": "set_race_mode",
+          "value": "watch"
+        },
+        {
+          "label": "Set a steady route with Mira",
+          "action": "set_race_mode",
+          "value": "cooperate"
+        }
+      ]
+    },
+    "fair_crooked": {
+      "title": "A finish at the duck",
+      "text": "Three little boats arc gently toward the same corner. The wooden duck rocks once as their bows arrive. Nothing is damaged.\nAda lifts a blue rosette.\nAda: “A close finish.”\nMira: “They all finished at the duck.”\nAda: “It has an excellent view.”\nMira retrieves the boats from the dry edge and lays yours on a cloth. The rudder is still where it was set. The waterline is higher at one end of the deck.",
+      "choices": [
+        {
+          "label": "Inspect the boat",
+          "action": "inspect_fair",
+          "value": "boat"
+        },
+        {
+          "label": "Look beneath the pond deck",
+          "action": "inspect_fair",
+          "value": "wedge"
+        },
+        {
+          "label": "Check it together with Mira",
+          "action": "inspect_fair",
+          "value": "together"
+        },
+        {
+          "label": "Watch while Ada checks it",
+          "action": "inspect_fair",
+          "value": "watch"
+        }
+      ]
+    },
+    "fair_inspect_boat": {
+      "title": "The rudder tells the truth",
+      "text": "Mira turns the boat over in her palm. She touches the rudder without moving it, then sets the boat back on the cloth.\nMira: “The rudder's where we left it. Let's look at what the boat's standing in.”\nAda leans down to the deck edge. A packing wedge is still tucked beneath one foot.\nAda: “Ah. Yesterday's ambitious sea.”",
+      "choices": [
+        {
+          "label": "Look at the packing wedge",
+          "action": "fair_continue",
+          "value": "fair_level"
+        }
+      ]
+    },
+    "fair_inspect_wedge": {
+      "title": "Your sea is uphill",
+      "text": "From the inspection spot, a packing wedge is plainly visible beneath one end of the pond deck. The line of water agrees with it.\nYou: “Your sea is uphill.”\nAda: “Only at one end.”\nShe puts the boats safely on the counter, leaving room to shift the wedge from the dry side.",
+      "choices": [
+        {
+          "label": "Look at the packing wedge",
+          "action": "fair_continue",
+          "value": "fair_level"
+        }
+      ]
+    },
+    "fair_inspect_together": {
+      "title": "A dry-edge investigation",
+      "text": "Mira crouches beside the dry deck edge, leaving the inspection spot open beside her. She points to a packing wedge under one foot.\nMira: “Here. The boats aren't all disagreeing independently.”\nAda bends to look at the waterline.\nAda: “A regrettable loss of character. Let's make the sea level.”",
+      "choices": [
+        {
+          "label": "Look at the packing wedge",
+          "action": "fair_continue",
+          "value": "fair_level"
+        }
+      ]
+    },
+    "fair_inspect_watch": {
+      "title": "Ada notices the waterline",
+      "text": "Ada retrieves a boat, pauses, then holds its hull level beside the slanting waterline.\nAda: “That's not how water usually sits.”\nShe looks beneath the deck and finds the packing wedge. Mira moves the boat box clear with one foot.\nMira: “We'll leave the duck out of the repair.”",
+      "choices": [
+        {
+          "label": "Look at the packing wedge",
+          "action": "fair_continue",
+          "value": "fair_level"
+        }
+      ]
+    },
+    "fair_level": {
+      "title": "Shift the wedge",
+      "text": "The packing wedge raises one foot of the pond deck. The indicator reads TILTED, with a slanted line beside the word.\nMira keeps the boats dry on the counter. Ada steadies the light deck from its safe side.\nAda: “One packing wedge. A whole inland geography.”\nOne press shifts it into its proper storage slot. The indicator will read LEVEL; there is no balancing or timing test.",
+      "choices": [
+        {
+          "label": "Shift the wedge",
+          "action": "level_pond",
+          "value": "self"
+        },
+        {
+          "label": "Let Ada adjust it",
+          "action": "level_pond",
+          "value": "ada"
+        }
+      ]
+    },
+    "fair_leveller_self": {
+      "title": "A level little sea",
+      "text": "You slide the wedge into its storage slot while Ada steadies the deck. The water settles against a level line.\nMira retrieves the starting ribbon from Ada's sleeve.\nMira: “There. Now we can disagree with a boat on its own merits.”",
+      "choices": [
+        {
+          "label": "Return to the starting rail",
+          "action": "fair_continue",
+          "value": "fair_ready"
+        }
+      ]
+    },
+    "fair_leveller_ada": {
+      "title": "Ada adjusts the geography",
+      "text": "Ada shifts the wedge into its storage slot and presses a palm to the deck. The water settles against a level line.\nAda: “We are now offering horizontal water.”\nMira lifts the boat from its cloth.\nMira: “An extravagant improvement.”",
+      "choices": [
+        {
+          "label": "Return to the starting rail",
+          "action": "fair_continue",
+          "value": "fair_ready"
+        }
+      ]
+    },
+    "fair_ready": {
+      "title": "Horizontal water",
+      "text": "The pond indicator reads LEVEL. Ada has stored the wedge beside the boat box; the duck still occupies its corner, with no duties.\nMira puts the winding key within reach and leaves a clear place beside the rail.\nMira: “Same boats. More cooperative sea.”\nFor a solo run, the rudder and paper sail produce different fixed routes: Triangle catches the current, Square stays steady, and Folded circles. The preview arrows show your choice. Watching uses Mira's demonstration; working together uses a steady middle route.\nAda: “Every route is eligible for precisely the same button.”",
+      "choices": [
+        {
+          "label": "Choose rudder and paper sail",
+          "action": "fair_config",
+          "value": "main"
+        },
+        {
+          "label": "Wind and release",
+          "action": "release_boat"
+        },
+        {
+          "label": "Mira releases; I’ll watch",
+          "action": "set_race_mode",
+          "value": "watch"
+        },
+        {
+          "label": "Set a steady route with Mira",
+          "action": "set_race_mode",
+          "value": "cooperate"
+        }
+      ]
+    },
+    "fair_result": {
+      "title": "A button and a sign card",
+      "text": "Mira takes back the bent brass propeller. She holds it above the boat stall rather than trying to straighten it.\nMira: “If I put this on the sign, at least people will know which stall turns left.”\nAda: “Noor can make you something splendid. Tell her it needs to fit over that door.”\nAda writes the booth's actual width on a card and points to the labelled conservatory door.\nMira: “I also need to tell you something.”\nSteam rises visibly from the kettle. Ada lifts a cloth for the handle.\nAda: “And we are open. Could you hold that thought until I've stopped boiling the attraction?”\nMira looks at the dimension card, then tucks it beside the propeller. The fair button is yours on every route.",
+      "choices": [
+        {
+          "label": "“We can take the sign card over.”",
+          "action": "fair_departure",
+          "value": "card"
+        },
+        {
+          "label": "“You can tell her before we go.”",
+          "action": "fair_departure",
+          "value": "speak"
+        },
+        {
+          "label": "Wait beside the boats",
+          "action": "fair_departure",
+          "value": "wait"
+        },
+        {
+          "label": "Replay the pond race",
+          "action": "replay_race"
+        }
+      ]
+    },
+    "fair_complete": {
+      "title": "Chapter Two complete · The Unfinished Fair",
+      "text": "Mira checks a workshop note tucked into her own tool roll: LOWER MILL · BIG CLOCK MECHANISMS.\nMira: “I've chosen a workshop at Lower Mill. Three weeks on the big clock mechanisms. I made that choice myself. I'll tell Ada properly at supper.”\nShe closes the roll and keeps the sign card with the bent propeller. Ada turns the little OPEN board toward the courtyard.\nSouvenirs kept: the Platform 6 ticket and the fair button. Every boat route and the watched race reach this same checkpoint.\nChapter Two is complete. The available build continues into the conservatory. Save and leave here, explore the courtyard, or continue through the conservatory door to make the sign. The conservatory leads onward to supper in the Night Kitchen. Mira’s supper conversation is still ahead in this journey.\nYou can replay the fair race or close this completion panel and keep exploring the courtyard. Saved progress remains at this checkpoint.",
+      "choices": [
+        {
+          "label": "Replay the pond race",
+          "action": "replay_race"
+        },
+        {
+          "label": "Save this chapter · return to courtyard",
+          "action": "fair_end"
+        }
+      ]
+    },
+    "fair_hours": {
+      "title": "Opening hours",
+      "text": "OPEN WHEN THE KETTLE BOILS\nCLOSE WHEN I REMEMBER\nA small sliding arrow waits beside OPEN. The kettle is on a safe back counter, out of the walkway.\nAda: “The arrow is recent. Before that, people had to inspect the tea.”",
+      "choices": [
+        {
+          "label": "Back to the courtyard",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "fair_prizes": {
+      "title": "The prize shelf",
+      "text": "Four blue rosettes, one button and a jar marked PRESTIGE sit on a shelf. The jar is empty apart from a paper label.\nAda: “Prestige travels well. Doesn't rattle.”\nThe same little fair button is available after every race route, including watching. The rosettes are part of the display.",
+      "choices": [
+        {
+          "label": "Back to the courtyard",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "fair_bird": {
+      "title": "The painted bird",
+      "text": "A wooden bird has been secured with two careful screws. One wing is newly painted. Its beak points slightly down at the booth roof.\nMira looks up while folding the boat cloth.\nMira: “A better place to perch than the hinge. The hinge smells of soup.”\nThe brush marks and screws are there to look at. The fair can continue without asking about them.",
+      "choices": [
+        {
+          "label": "Back to the courtyard",
+          "action": "dismiss"
+        }
+      ]
+    }
+  },
+  "camera_callbacks": {
+    "take": "Mira puts the camera on the dry counter, away from the kettle. “You kept your thumb out of the coast photograph,” she says. “I'm trying to maintain that standard of craftsmanship.” She nudges the boat box clear of the lens.",
+    "lend": "Mira takes the camera from her pocket, then sets it on the dry counter. “I took one wave through the arch,” she says. “No thumb. A modest beginning.” She keeps the lens turned away from the kettle steam.",
+    "unused": "Mira places the still-unopened camera box beside her tool roll, safely away from the kettle. “It made it to the fair unopened. Better packaging discipline than the boats.” She moves the winding key within reach.",
+    "unselected": "Mira lays her tool roll on a dry part of the counter and leaves the winding key within reach. Ada moves the kettle cloth away from the boat box."
+  },
+  "outcomes": {
+    "first": "Your boat crosses first and comes to rest against the soft end rail. Ada awards you the fair button.\nAda: “The rosettes are reserved for ceremonial indecision.”\nMira folds the starting ribbon before it can drift into the pond.",
+    "second": "Your boat crosses second and rests beside the other two. Ada awards you the fair button.\nAda: “Participation in a navigable body of water.”\nMira: “The water is new to the role. Give it a moment.”",
+    "third": "Your boat crosses third and rests at the soft end rail. Ada awards you the fair button.\nAda: “Participation in a navigable body of water.”\nMira lifts a strand of starting ribbon from the bow.\nMira: “Pageantry was following it.”",
+    "circle": "Your boat makes a gentle circle and returns to the near rail. Mira catches its bow against the cloth.\nMira: “A reliable boat. Wrong ambition.”\nAda sets the same fair button beside it.\nAda: “A very thorough inspection of the middle.”",
+    "spectator": "Mira releases the demonstration boats while you watch from the clear viewing spot. They cross the level pond and settle at the end rail. Ada sets the same fair button within reach.\nAda: “For the audience. It stayed to the end of both turns.”\nMira takes a loose paper sail out of the water and lets it drip onto the cloth."
+  },
+  "departures": {
+    "card": "Mira folds the dimension card once and slips the bent propeller alongside it.\nMira: “Conservatory's through that door. After that, I'm finding supper.”\nShe points to the labelled door, then waits by the dry starting rail while Ada sets the kettle down.",
+    "speak": "Mira looks toward Ada, then back at the card.\nMira: “I can. I want to say it without competing with a kettle. I'll catch her at supper.”\nAda puts the kettle safely on its counter. Mira leaves her conversation for the quieter moment she chose.",
+    "wait": "Mira rests her tool roll on the dry rail and watches the duck settle. Ada pours the first cup.\nMira: “Conservatory's through that door. After that, I'm finding supper.”\nThere is room to wait beside the boats before closing this chapter."
+  }
+}

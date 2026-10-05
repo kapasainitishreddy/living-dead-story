@@ -1,0 +1,295 @@
+{
+  "ada": {
+    "glb": "game/assets/characters/ada/ada.glb",
+    "bytes": 740824,
+    "sha256": "568a857de547c0f6f122242f6b2c86629738a233b87b09a7189591eec8022817",
+    "bones": [
+      "BrowLeft",
+      "BrowRight",
+      "Chest",
+      "EyeLeft",
+      "EyeRight",
+      "FootLeft",
+      "FootRight",
+      "ForearmLeft",
+      "ForearmRight",
+      "HandLeft",
+      "HandRight",
+      "Head",
+      "Hips",
+      "Mouth",
+      "Neck",
+      "Root",
+      "ShinLeft",
+      "ShinRight",
+      "ShoulderLeft",
+      "ShoulderRight",
+      "Spine",
+      "ThighLeft",
+      "ThighRight",
+      "UpperArmLeft",
+      "UpperArmRight"
+    ],
+    "mesh_nodes": 89,
+    "export_vertices": 10894,
+    "triangles": 20610,
+    "verified_weight_rows": 10894,
+    "bounds_min": [
+      -0.2978418171405792,
+      0.0,
+      -0.23226743936538696
+    ],
+    "bounds_max": [
+      0.2978418171405792,
+      1.7000000476837158,
+      0.18186046183109283
+    ],
+    "clip_seconds": {
+      "idle": 5,
+      "walk": 1
+    },
+    "checks": "passed",
+    "face_geometry_sha256": "f17fc467fe447c0169cbe118d8ba36709e4ba1a9664c46b0b100bfdf078b9303",
+    "authored_markers": [
+      "AgeCreaseLeft",
+      "ApronPocket",
+      "LowWorkBun",
+      "SweptBunHair",
+      "WorkApron"
+    ]
+  },
+  "noor": {
+    "glb": "game/assets/characters/noor/noor.glb",
+    "bytes": 748284,
+    "sha256": "7fd1973c2425679272457276365fd6fcb594299c593b95a9be124484608f8838",
+    "bones": [
+      "BrowLeft",
+      "BrowRight",
+      "Chest",
+      "EyeLeft",
+      "EyeRight",
+      "FootLeft",
+      "FootRight",
+      "ForearmLeft",
+      "ForearmRight",
+      "HandLeft",
+      "HandRight",
+      "Head",
+      "Hips",
+      "Mouth",
+      "Neck",
+      "Root",
+      "ShinLeft",
+      "ShinRight",
+      "ShoulderLeft",
+      "ShoulderRight",
+      "Spine",
+      "ThighLeft",
+      "ThighRight",
+      "UpperArmLeft",
+      "UpperArmRight"
+    ],
+    "mesh_nodes": 85,
+    "export_vertices": 11106,
+    "triangles": 21098,
+    "verified_weight_rows": 11106,
+    "bounds_min": [
+      -0.2978418171405792,
+      0.0,
+      -0.15009912848472595
+    ],
+    "bounds_max": [
+      0.2978418171405792,
+      1.7000000476837158,
+      0.18186046183109283
+    ],
+    "clip_seconds": {
+      "idle": 5,
+      "walk": 1
+    },
+    "checks": "passed",
+    "face_geometry_sha256": "c32742c2b8b11dbc61126eb2d82dd1fccefc72dac1a6e13c2421157a9685a0ac",
+    "authored_markers": [
+      "ApronPocket",
+      "GlassesBridge",
+      "GlassesFrameLeft",
+      "TuckedBobHair",
+      "WorkApron"
+    ]
+  },
+  "rafi": {
+    "glb": "game/assets/characters/rafi/rafi.glb",
+    "bytes": 641664,
+    "sha256": "1e2b3deec17979fa0bdc0b34966322c88b4969158e71c79758c280d37c954a40",
+    "bones": [
+      "BrowLeft",
+      "BrowRight",
+      "Chest",
+      "EyeLeft",
+      "EyeRight",
+      "FootLeft",
+      "FootRight",
+      "ForearmLeft",
+      "ForearmRight",
+      "HandLeft",
+      "HandRight",
+      "Head",
+      "Hips",
+      "Mouth",
+      "Neck",
+      "Root",
+      "ShinLeft",
+      "ShinRight",
+      "ShoulderLeft",
+      "ShoulderRight",
+      "Spine",
+      "ThighLeft",
+      "ThighRight",
+      "UpperArmLeft",
+      "UpperArmRight"
+    ],
+    "mesh_nodes": 80,
+    "export_vertices": 9229,
+    "triangles": 17410,
+    "verified_weight_rows": 9229,
+    "bounds_min": [
+      -0.2969878017902374,
+      0.0,
+      -0.1418561041355133
+    ],
+    "bounds_max": [
+      0.2969878017902374,
+      1.7000000476837158,
+      0.18186046183109283
+    ],
+    "clip_seconds": {
+      "idle": 5,
+      "walk": 1
+    },
+    "checks": "passed",
+    "face_geometry_sha256": "3868113329de477fdbd3ccf0504d3d2ce9822bf87885247eb6159ab95b993a54",
+    "authored_markers": [
+      "CroppedWorkHair",
+      "RolledCuffLeft",
+      "WorkPatchPocketLeft",
+      "WorkShirt"
+    ]
+  },
+  "conductor": {
+    "glb": "game/assets/characters/conductor/conductor.glb",
+    "bytes": 730536,
+    "sha256": "3e9a82c9d72d6ed34d7d66ee67581c1a519c51ce1369d9b69d77fe6ca8c0a39b",
+    "bones": [
+      "BrowLeft",
+      "BrowRight",
+      "Chest",
+      "EyeLeft",
+      "EyeRight",
+      "FootLeft",
+      "FootRight",
+      "ForearmLeft",
+      "ForearmRight",
+      "HandLeft",
+      "HandRight",
+      "Head",
+      "Hips",
+      "Mouth",
+      "Neck",
+      "Root",
+      "ShinLeft",
+      "ShinRight",
+      "ShoulderLeft",
+      "ShoulderRight",
+      "Spine",
+      "ThighLeft",
+      "ThighRight",
+      "UpperArmLeft",
+      "UpperArmRight"
+    ],
+    "mesh_nodes": 88,
+    "export_vertices": 10630,
+    "triangles": 20080,
+    "verified_weight_rows": 10630,
+    "bounds_min": [
+      -0.2978418171405792,
+      0.0,
+      -0.14942722022533417
+    ],
+    "bounds_max": [
+      0.2978418171405792,
+      1.7000000476837158,
+      0.21341854333877563
+    ],
+    "clip_seconds": {
+      "idle": 5,
+      "walk": 1
+    },
+    "checks": "passed",
+    "face_geometry_sha256": "999ca05fdb5b1d4278296ee0ee35ab95e266c12de63058fd06f298fb181b5d6c",
+    "authored_markers": [
+      "ConductorCapCrown",
+      "ConductorCapVisor",
+      "MoustacheLeft",
+      "UniformCoat",
+      "UniformLapelLeft"
+    ]
+  },
+  "jo": {
+    "glb": "game/assets/characters/jo/jo.glb",
+    "bytes": 751084,
+    "sha256": "00c539d34bb53afd8a103dd981182759cc6e15f7caf7274d41075b72a15f7843",
+    "bones": [
+      "BrowLeft",
+      "BrowRight",
+      "Chest",
+      "EyeLeft",
+      "EyeRight",
+      "FootLeft",
+      "FootRight",
+      "ForearmLeft",
+      "ForearmRight",
+      "HandLeft",
+      "HandRight",
+      "Head",
+      "Hips",
+      "Mouth",
+      "Neck",
+      "Root",
+      "ShinLeft",
+      "ShinRight",
+      "ShoulderLeft",
+      "ShoulderRight",
+      "Spine",
+      "ThighLeft",
+      "ThighRight",
+      "UpperArmLeft",
+      "UpperArmRight"
+    ],
+    "mesh_nodes": 92,
+    "export_vertices": 11396,
+    "triangles": 21699,
+    "verified_weight_rows": 11396,
+    "bounds_min": [
+      -0.2978418171405792,
+      0.0,
+      -0.148349791765213
+    ],
+    "bounds_max": [
+      0.2978418171405792,
+      1.7000000476837158,
+      0.18186046183109283
+    ],
+    "clip_seconds": {
+      "idle": 5,
+      "walk": 1
+    },
+    "checks": "passed",
+    "face_geometry_sha256": "e904e693576ba78b784c88bbf520060a56750af18a28e5ab77d814ccb0976865",
+    "authored_markers": [
+      "CoiledStationHair",
+      "StationBadge",
+      "StationShirt",
+      "StationWaistcoat"
+    ]
+  }
+}

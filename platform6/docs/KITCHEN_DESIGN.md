@@ -1,0 +1,11 @@
+# Chapter Four · A Place Before a Task
+
+Approved scope: a warm Night Kitchen with an already-set place; sit immediately, help, and watch are equally complete. Belonging is shown through physical staging rather than a stated lesson. Mira keeps her independently chosen Lower Mill departure. Camera, fair button, and exact paper sign remain continuous. No earned access, scoring, real-world disclosure, online service, paid art, hosting, or pushes.
+
+The preserved Chapter Three completion offers an explicit supper continuation. On arrival, a bowl, spoon, cup, folded cloth, and drawn-back chair already await the player. Sit lets Noor serve soup; help moves the ladle while the set place stays intact; watch lets the room carry on and brings the same bowl. A physical dinner exchange (bread, cup, pepper, or simply watching the exchange) leads into Mira's workshop conversation. Every route reaches the same closing checkpoint and keeps every existing souvenir and autonomous decision.
+
+The room layers soup steam, a moving ladle, bread tearing, a passed bowl and cup, a pepper shaker, small seated gestures, chair movement and glass condensation. Characters converse during these actions. A stable optional table close view can be left immediately. Decorative motion freezes and functional gestures settle instantly with reduced motion. Menus retain scrolling 2× text, keyboard/controller focus, cancellation and pause context.
+
+Schema stays 2. Neutral optional kitchen fields permit older snapshots. Each accepted action is saved before bounded presentation; a reload rebuilds a coherent dinner stage and never strands the player behind an animation. Main integration delegates state validation to the existing chapter model and presentation to a separate world. New tests cover all 36 mode/exchange/departure routes, prior-state preservation, malformed snapshots, reload/interruption, reachable dinner targets, pauses and reduced-motion rendering. Original 12,149 checks must remain green.
+
+This milestone stops after tested playable Chapter Four. Art remains intermediate; cloud Linux graphics and synthetic controller events do not establish phone, physical controller, hardware GPU, or listening acceptance.

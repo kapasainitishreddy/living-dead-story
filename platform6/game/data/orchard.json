@@ -1,0 +1,86 @@
+{
+  "chapter_id": "quiet_orchard",
+  "dialogues": {
+    "orchard_arrival": {
+      "title": "The Quiet Orchard",
+      "text": "Beyond the kitchen, pear trees lean over the little station. A handcart stands on the narrow track. Its driver shifts a folded coat to make room. A path follows the rails; a bench rests under the station awning.\n\nThe train will be here when it is here. The workers carry on at the packing shed. All three places are yours for a while.",
+      "choices": [
+        {
+          "label": "Ride the handcart",
+          "action": "orchard_route",
+          "value": "cart"
+        },
+        {
+          "label": "Walk beside the trees",
+          "action": "orchard_route",
+          "value": "walk"
+        },
+        {
+          "label": "Stay on the station bench",
+          "action": "orchard_route",
+          "value": "bench"
+        }
+      ]
+    },
+    "orchard_rest_0": {
+      "title": "Under the pear trees",
+      "text": "The handcart wheels, the path and the station bench share the same view: pear trees, the packing shed, the long window of a waiting train. Nothing here needs finishing.",
+      "choices": [
+        {
+          "label": "Let the scene carry on",
+          "action": "orchard_advance"
+        }
+      ]
+    },
+    "orchard_rest_1": {
+      "title": "Under the pear trees",
+      "text": "A pear drops from a low branch. It lands in the grass with a small, solid sound. A worker glances over, then goes back to stacking the wooden boxes.",
+      "choices": [
+        {
+          "label": "Let the scene carry on",
+          "action": "orchard_advance"
+        }
+      ]
+    },
+    "orchard_rest_2": {
+      "title": "Under the pear trees",
+      "text": "Two workers cross the distant doorway of the packing shed. One carries an empty crate; the other holds the door with a shoulder. Their conversation travels only as far as the first tree.",
+      "choices": [
+        {
+          "label": "Let the scene carry on",
+          "action": "orchard_advance"
+        }
+      ]
+    },
+    "orchard_rest_3": {
+      "title": "Under the pear trees",
+      "text": "A light in the train changes. Its reflection slides across the dark tree trunks, pauses on the packing-shed window, then moves beyond it. The driver folds her coat again and sets it beside her.",
+      "choices": [
+        {
+          "label": "Continue the journey",
+          "action": "orchard_finish"
+        }
+      ]
+    },
+    "orchard_complete": {
+      "title": "The Quiet Orchard",
+      "text": "The train door opens. The handcart driver lifts a hand; the workers are still moving crates behind the trees. The orchard keeps its ordinary evening as the journey carries on.",
+      "choices": [
+        {
+          "label": "Return to the orchard",
+          "action": "dismiss"
+        }
+      ]
+    }
+  },
+  "route_callbacks": {
+    "cart": "The handcart driver taps the brake with her heel. The wheels settle into their grooves; she leaves the folded coat beside you.",
+    "walk": "The path follows the track without hurrying it. Your shoes leave a little dust on the grass at the edge.",
+    "bench": "The bench stays under the station awning. A porter rolls an empty trolley past, and the driver carries on tending the handcart."
+  },
+  "camera_callbacks": {
+    "take": "The camera rests against your coat. The orchard goes on beyond its little glass window.",
+    "lend": "The borrowed camera is still with Mira and her tools. Somewhere along the line, her own journey is continuing.",
+    "unused": "The unopened camera stays in your pocket. The pear trees shift in the ordinary evening light."
+  }
+}

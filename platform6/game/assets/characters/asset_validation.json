@@ -1,0 +1,111 @@
+{
+  "protagonist": {
+    "glb": "game/assets/characters/protagonist/protagonist.glb",
+    "bytes": 747156,
+    "sha256": "fe500ad4fe7daa568f61402779af3decd81bb4c55dac49b9df832de891c0c4bd",
+    "bones": [
+      "BrowLeft",
+      "BrowRight",
+      "Chest",
+      "EyeLeft",
+      "EyeRight",
+      "FootLeft",
+      "FootRight",
+      "ForearmLeft",
+      "ForearmRight",
+      "HandLeft",
+      "HandRight",
+      "Head",
+      "Hips",
+      "Mouth",
+      "Neck",
+      "Root",
+      "ShinLeft",
+      "ShinRight",
+      "ShoulderLeft",
+      "ShoulderRight",
+      "Spine",
+      "ThighLeft",
+      "ThighRight",
+      "UpperArmLeft",
+      "UpperArmRight"
+    ],
+    "mesh_nodes": 87,
+    "export_vertices": 10861,
+    "triangles": 20500,
+    "verified_weight_rows": 10861,
+    "bounds_min": [
+      -0.2978418171405792,
+      0.0,
+      -0.14330023527145386
+    ],
+    "bounds_max": [
+      0.2978418171405792,
+      1.7000000476837158,
+      0.18186046183109283
+    ],
+    "clip_seconds": {
+      "idle": 5,
+      "walk": 1
+    },
+    "checks": "passed"
+  },
+  "mira": {
+    "glb": "game/assets/characters/mira/mira.glb",
+    "bytes": 747388,
+    "sha256": "9e93fa8f12eecf9a38ae4db07320c635a6bfe208ca47ce4f7019e82f067ead3c",
+    "bones": [
+      "BrowLeft",
+      "BrowRight",
+      "Chest",
+      "EyeLeft",
+      "EyeRight",
+      "FootLeft",
+      "FootRight",
+      "ForearmLeft",
+      "ForearmRight",
+      "HandLeft",
+      "HandRight",
+      "Head",
+      "Hips",
+      "Mouth",
+      "Neck",
+      "Root",
+      "ShinLeft",
+      "ShinRight",
+      "ShoulderLeft",
+      "ShoulderRight",
+      "Spine",
+      "ThighLeft",
+      "ThighRight",
+      "UpperArmLeft",
+      "UpperArmRight"
+    ],
+    "mesh_nodes": 75,
+    "export_vertices": 11133,
+    "triangles": 21216,
+    "verified_weight_rows": 11133,
+    "bounds_min": [
+      -0.2978004813194275,
+      0.0,
+      -0.14293745160102844
+    ],
+    "bounds_max": [
+      0.2978418171405792,
+      1.7000000476837158,
+      0.20846986770629883
+    ],
+    "clip_seconds": {
+      "idle": 5,
+      "walk": 1
+    },
+    "checks": "passed"
+  },
+  "camera": {
+    "glb": "game/assets/characters/mira/camera.glb",
+    "bytes": 21648,
+    "sha256": "919313bb6c39820de64e8603e0619d3ba3bce0aa743fe1c0682b46c7bd8c6f30",
+    "mesh_nodes": 11,
+    "checks": "passed"
+  }
+}

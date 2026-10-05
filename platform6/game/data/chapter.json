@@ -1,0 +1,385 @@
+{
+  "dialogues": {
+    "leave_apartment": {
+      "title": "3:17",
+      "text": "Rain at the window. A kettle left on the counter. Somewhere above you, a door opens into the night.",
+      "choices": [
+        {
+          "label": "Go up to the roof",
+          "action": "leave_apartment"
+        }
+      ]
+    },
+    "meet_stranger": {
+      "title": "The stranger with the yellow umbrella",
+      "text": "“You couldn’t sleep either?”\nThe stranger shifts a yellow umbrella to make room. A crooked paper star hangs from its handle.\n“I’m taking this to someone who insists every umbrella needs a night sky. Platform 6, if you fancy a walk.”",
+      "choices": [
+        {
+          "label": "“Does the train go somewhere particular?”",
+          "action": "dialogue",
+          "value": "umbrella_question"
+        },
+        {
+          "label": "Stand under the umbrella for a moment",
+          "action": "dialogue",
+          "value": "umbrella_quiet"
+        },
+        {
+          "label": "Walk to Central Station",
+          "action": "meet_stranger"
+        }
+      ]
+    },
+    "read_board": {
+      "title": "WHERE DO YOU WANT TO GO",
+      "text": "The letters glow like a question someone has been saving for you.\nA blank ticket waits on the bench. There is room for an answer later.",
+      "choices": [
+        {
+          "label": "Take the blank ticket",
+          "action": "read_board"
+        }
+      ]
+    },
+    "board_train": {
+      "title": "The conductor",
+      "text": "The conductor studies the blank ticket without trying to read it.\n“No need to fill it in yet. You can keep the window seat. The latch sticks; lift it first.”\nInside, amber lamps warm the carriage. There is no hurry to answer anyone.",
+      "choices": [
+        {
+          "label": "Board the train",
+          "action": "board_train"
+        }
+      ]
+    },
+    "meet_passenger": {
+      "title": "Mira and the unopened camera",
+      "text": "“I’m Mira. I mend wind-up boats. Mostly I explain to them that a circle is not a race.”\nShe taps a small unopened camera box against her knee, then catches herself and puts it down.\n“I bought this for somewhere I haven’t been. I was expecting to know what to photograph by now. Would you like company at the next stop?”",
+      "choices": [
+        {
+          "label": "Ask about the boats",
+          "action": "dialogue",
+          "value": "passenger_boats"
+        },
+        {
+          "label": "“Company is fine. I’m a bit quiet tonight.”",
+          "action": "dialogue",
+          "value": "passenger_quiet"
+        },
+        {
+          "label": "“Yes. Let’s see where we stop.”",
+          "action": "meet_passenger"
+        }
+      ]
+    },
+    "arrive_shore": {
+      "title": "A moonlit shore",
+      "text": "The carriage door opens on salt air. A lighthouse, a stone arch and a scatter of stars wait beyond the low platform.\nMira tucks the camera under her arm.\n“Oh. The water’s put the lighthouse upside down. Can we find where the two lights meet?”",
+      "choices": [
+        {
+          "label": "Explore the shore",
+          "action": "arrive_shore"
+        }
+      ]
+    },
+    "return_train": {
+      "title": "Back in the carriage",
+      "text": "The conductor sets down two cups. One rattles on the table; Mira folds a spare timetable under the saucer.\n“Precision marine engineering,” she says. “Usually costs more than a timetable.”\nThe conductor slides the toast within reach. “Orange marmalade, or the mysterious jar? It’s plum. I ought to label it.”",
+      "choices": [
+        {
+          "label": "Sit together",
+          "action": "return_train"
+        }
+      ]
+    },
+    "have_breakfast": {
+      "title": "Breakfast at night",
+      "text": "Toast, plum jam and wheels finding their rhythm. Mira opens the window a crack; the sea stays with you a little longer.\nA postcard rests by the jam: THE UNFINISHED FAIR. Its tiny painted boats lean stubbornly sideways.\n“My next delivery,” Mira says. “One repaired boat. Three still sulking. I wonder if the fair has opened yet.”",
+      "choices": [
+        {
+          "label": "Turn over the fair postcard",
+          "action": "dialogue",
+          "value": "breakfast_postcard"
+        },
+        {
+          "label": "Let the train carry you on",
+          "action": "have_breakfast"
+        }
+      ]
+    },
+    "finish": {
+      "title": "A journey to keep",
+      "text": "You keep a small ticket stamped PLATFORM 6.\nThere is no right way to have spent the night.\nOutside, another station is beginning to glow.",
+      "choices": [
+        {
+          "label": "Keep the ticket",
+          "action": "finish"
+        }
+      ]
+    },
+    "ending": {
+      "title": "STILL HERE",
+      "text": "Chapter one complete\nSouvenir: a ticket from Platform 6\nThank you for being here.",
+      "choices": [
+        {
+          "label": "Stay a little longer",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "camera": {
+      "title": "“I thought it would feel bigger.”",
+      "text": "“I thought it would feel bigger,” Mira says.\nShe means the moment, then laughs at how difficult that is to explain. A wave folds quietly through the arch.\nThe little camera waits between you. You can decide what to do with it.",
+      "choices": [
+        {
+          "label": "Take one photograph",
+          "action": "choose_camera",
+          "value": "take"
+        },
+        {
+          "label": "Let Mira take a photograph",
+          "action": "choose_camera",
+          "value": "lend"
+        },
+        {
+          "label": "Leave the camera unopened",
+          "action": "choose_camera",
+          "value": "unused"
+        }
+      ]
+    },
+    "optional": {
+      "title": "A small invitation · entirely optional",
+      "text": "If you feel like it, notice one ordinary thing near you for a moment: a cup, a window, the room around you.\nNothing to prove or record. The journey continues either way.",
+      "choices": [
+        {
+          "label": "Done",
+          "action": "resolve_action",
+          "value": "completed"
+        },
+        {
+          "label": "Not tonight",
+          "action": "resolve_action",
+          "value": "skipped"
+        }
+      ]
+    }
+  },
+  "landmarks": [
+    "lighthouse",
+    "arch",
+    "constellation"
+  ],
+  "alignment": 2,
+  "local_dialogues": {
+    "umbrella_question": {
+      "title": "A paper sky",
+      "text": "“Tonight? The coast,” the stranger says. “After that, I consult the board. I’m excellent at reading departure times and terrible at packing sandwiches.”\nThey straighten the paper star. “This is for my sister. She’s covering the late shift.”",
+      "checkpoint": "roof",
+      "choices": [
+        {
+          "label": "Walk to Central Station",
+          "action": "meet_stranger"
+        }
+      ]
+    },
+    "umbrella_quiet": {
+      "title": "Under the umbrella",
+      "text": "Rain ticks on the yellow canopy. The stranger hums two notes, loses the tune, and lets it go.\nAfter a while they tilt the umbrella toward the stair door. “Ready when you are.”",
+      "checkpoint": "roof",
+      "choices": [
+        {
+          "label": "Walk to Central Station",
+          "action": "meet_stranger"
+        }
+      ]
+    },
+    "passenger_boats": {
+      "title": "Boats with opinions",
+      "text": "“Little clockwork ones. My aunt built a pond at her traveling fair. Every boat turns left. I’ve checked the gears, the rudders, even the pond.”\nMira smiles. “I’m beginning to suspect the ducks.”\nShe makes room by the window. “We can investigate a much bigger body of water first.”",
+      "checkpoint": "passenger",
+      "choices": [
+        {
+          "label": "Share the journey",
+          "action": "meet_passenger"
+        }
+      ]
+    },
+    "passenger_quiet": {
+      "title": "Room for quiet",
+      "text": "“That works. I sometimes need a while before the words catch up.”\nMira moves her tool roll from the empty seat. Inside are miniature screwdrivers and a bent brass propeller.\n“I might point at things. You don’t have to produce a speech.”",
+      "checkpoint": "passenger",
+      "choices": [
+        {
+          "label": "Share the journey",
+          "action": "meet_passenger"
+        }
+      ]
+    },
+    "shore_lighthouse": {
+      "title": "Two lights",
+      "text": "A tall line of amber reaches down into the sea. Mira crouches beside you, far back from the water.\n“There. When the wave flattens, the lamp and its reflection almost touch. Like someone joining two halves of a drawing.”\nFrom the viewing marker, the lighthouse is the tall shape on the left.",
+      "checkpoint": "overlook",
+      "choices": [
+        {
+          "label": "“A very long candle.”",
+          "action": "dialogue",
+          "value": "shore_lighthouse_joke"
+        },
+        {
+          "label": "Watch the reflection together",
+          "action": "dismiss"
+        },
+        {
+          "label": "Keep exploring",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "shore_lighthouse_joke": {
+      "title": "A candle for the coast",
+      "text": "“We’d need a magnificent cake,” Mira says. “And a less windy birthday.”\nThe next small wave separates the two lights again.",
+      "checkpoint": "overlook",
+      "choices": [
+        {
+          "label": "Keep exploring",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "shore_arch": {
+      "title": "A doorway for waves",
+      "text": "A small wave threads the stone arch, then fans into a silver line.\nMira traces its path with one finger. “The doorway stays still. Everything passing through it changes shape.”\nFrom the viewing marker, the arch is the middle shape; the lighthouse is to its left.",
+      "checkpoint": "overlook",
+      "choices": [
+        {
+          "label": "Follow the next wave with your eyes",
+          "action": "dismiss"
+        },
+        {
+          "label": "“The sea takes the scenic route.”",
+          "action": "dialogue",
+          "value": "shore_arch_joke"
+        },
+        {
+          "label": "Keep exploring",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "shore_arch_joke": {
+      "title": "No timetable",
+      "text": "“And it never apologizes for the delay.” Mira turns her unopened camera box over. “I could learn that part. The boats could not.”",
+      "checkpoint": "overlook",
+      "choices": [
+        {
+          "label": "Keep exploring",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "shore_constellation": {
+      "title": "The crooked trail",
+      "text": "Five stars climb above the water. Mira holds up the bent brass propeller from her tool roll, matching its crooked angle to the trail.\n“Not a useful measurement. But it’s a good shape.”\nThe rising stars are the shape on the right. Together with the lighthouse and arch, they make one picture.",
+      "checkpoint": "overlook",
+      "choices": [
+        {
+          "label": "Trace the shape in the air",
+          "action": "dismiss"
+        },
+        {
+          "label": "“Keep the crooked propeller.”",
+          "action": "dialogue",
+          "value": "shore_stars_reply"
+        },
+        {
+          "label": "Keep exploring",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "shore_stars_reply": {
+      "title": "A spare shape",
+      "text": "“I was going to straighten it. Maybe I’ll make it a sign for the boat stall instead.”\nMira slips it back into the tool roll, leaving the decision for another day.",
+      "checkpoint": "overlook",
+      "choices": [
+        {
+          "label": "Keep exploring",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "train_window": {
+      "title": "The window seat",
+      "text": "You lift the latch before sliding it. Rain beads run sideways over the outside glass; a lit signal passes, then another.\nA paper timetable has been folded into a little boat on the windowsill. Someone has written NOT SEAWORTHY beneath it.",
+      "checkpoint": "passenger",
+      "choices": [
+        {
+          "label": "Leave the paper boat for the next passenger",
+          "action": "dismiss"
+        },
+        {
+          "label": "Look out a little longer",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "breakfast_postcard": {
+      "title": "The Unfinished Fair",
+      "text": "On the back, a hand-drawn arrow points to a pond. OPEN WHEN THE KETTLE BOILS, someone has written.\nMira adds, “My aunt’s opening hours are unusually specific and completely unreliable.”\nThe conductor checks the dark window. “We’ll find out when we arrive.”\nFor now, there is still warm toast.",
+      "checkpoint": "breakfast",
+      "choices": [
+        {
+          "label": "Let the train carry you on",
+          "action": "have_breakfast"
+        }
+      ]
+    }
+  },
+  "objectives": {
+    "apartment": "The roof door is open. Go upstairs when you’re ready.",
+    "roof": "Meet the stranger beneath the yellow umbrella.",
+    "platform": "Read the station board and take the blank ticket.",
+    "conductor": "Show the conductor your ticket and board Platform 6.",
+    "passenger": "Meet Mira by the window. There’s room for quiet company.",
+    "shoreline": "The train has stopped by the sea. Walk to the carriage door.",
+    "overlook": "Explore the three shore shapes, then frame them at the viewing marker",
+    "camera_choice": "Mira’s camera is waiting. Choose how to keep this moment.",
+    "optional_action": "A small invitation is optional. Both answers continue the night.",
+    "return_train": "The warm carriage is waiting. Join Mira at the breakfast table.",
+    "breakfast": "Share breakfast. The fair postcard has a next-stop hint.",
+    "complete": "Keep the Platform 6 ticket, then choose whether to continue to the fair."
+  },
+  "callbacks": {
+    "arrive_shore": [
+      {
+        "choice_id": "platform_six.dialogue.passenger_quiet",
+        "text": "Mira points toward the reflected lighthouse, then leaves a quiet space beside you."
+      },
+      {
+        "choice_id": "platform_six.dialogue.passenger_boats",
+        "text": "“A much bigger pond,” Mira says. “And fewer suspicious ducks.”"
+      }
+    ],
+    "camera": [
+      {
+        "choice_id": "platform_six.dialogue.shore_stars_reply",
+        "text": "The crooked brass propeller stays tucked in her tool roll, waiting for its possible life as a sign."
+      }
+    ],
+    "return_train": [
+      {
+        "choice_id": "platform_six.dialogue.passenger_quiet",
+        "text": "Mira slides a cup into the empty place without filling the quiet with a question."
+      },
+      {
+        "choice_id": "platform_six.dialogue.passenger_boats",
+        "text": "“If only all the boats needed was a folded timetable,” Mira says."
+      }
+    ],
+    "finish": [
+      {
+        "choice_id": "platform_six.dialogue.breakfast_postcard",
+        "text": "The postcard’s arrow points toward the pond at the Unfinished Fair. Mira has one repaired boat ready to deliver."
+      }
+    ]
+  }
+}

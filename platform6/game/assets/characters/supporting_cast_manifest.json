@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "authorship": "Original sculpted supporting cast authored with project-owned contour, topology, materials, weights and animation tools",
+  "source_generator": "tools/author_supporting_cast.py",
+  "base_contour_generator": "tools/author_characters.py",
+  "binary_validator": "tools/test_supporting_character_assets.py",
+  "external_assets": [],
+  "palette_only_variants": [],
+  "units": "metres",
+  "height_metres": 1.7,
+  "ground_origin_y": 0,
+  "godot_forward_axis": "+Z",
+  "godot_up_axis": "+Y",
+  "rig": "Original 25-bone protagonist rig with unchanged names/parents",
+  "animations": {
+    "idle": {
+      "duration_seconds": 5,
+      "loop": true
+    },
+    "walk": {
+      "duration_seconds": 1,
+      "loop": true,
+      "in_place": true
+    }
+  },
+  "characters": {
+    "ada": {
+      "glb": "res://assets/characters/ada/ada.glb",
+      "source": "game/assets/characters/ada/source/ada.blend",
+      "role": "Ada, the fair and kitchen caretaker",
+      "individual_sculpt_changes": [
+        "Broader softened jaw and lowered cheek silhouette",
+        "Swept gray crown with a low asymmetric sculpted bun",
+        "Wide curved linen work apron, separate bib, straps and worn pocket",
+        "Eye creases and restrained silver hair flow"
+      ],
+      "palette": {
+        "skin": [
+          0.69,
+          0.45,
+          0.31
+        ],
+        "hair": [
+          0.36,
+          0.35,
+          0.31
+        ],
+        "coat": [
+          0.42,
+          0.255,
+          0.17
+        ],
+        "pants": [
+          0.095,
+          0.115,
+          0.105
+        ]
+      }
+    },
+    "noor": {
+      "glb": "res://assets/characters/noor/noor.glb",
+      "source": "game/assets/characters/noor/source/noor.blend",
+      "role": "Noor, the paper/kitchen artist",
+      "individual_sculpt_changes": [
+        "Narrower chin, taller face and fuller nose plane",
+        "Tucked side-parted bob with individually swept locks",
+        "Curved rounded-square glasses, bridge and temple arms",
+        "Practical shorter apron with utensil pocket and offset ties"
+      ],
+      "palette": {
+        "skin": [
+          0.49,
+          0.285,
+          0.18
+        ],
+        "hair": [
+          0.045,
+          0.062,
+          0.058
+        ],
+        "coat": [
+          0.23,
+          0.34,
+          0.27
+        ],
+        "pants": [
+          0.055,
+          0.095,
+          0.102
+        ]
+      }
+    },
+    "rafi": {
+      "glb": "res://assets/characters/rafi/rafi.glb",
+      "source": "game/assets/characters/rafi/source/rafi.blend",
+      "role": "Rafi, the workshop worker; generic Journey workers",
+      "individual_sculpt_changes": [
+        "Wider angular jaw and broader nose contour",
+        "Cropped uneven hair with five authored tousled clumps",
+        "Shaped work overshirt and two chest patch pockets",
+        "Shortened rolled sleeves with skinned exposed forearms"
+      ],
+      "palette": {
+        "skin": [
+          0.58,
+          0.315,
+          0.18
+        ],
+        "hair": [
+          0.067,
+          0.041,
+          0.029
+        ],
+        "coat": [
+          0.18,
+          0.29,
+          0.355
+        ],
+        "pants": [
+          0.14,
+          0.145,
+          0.13
+        ]
+      }
+    },
+    "conductor": {
+      "glb": "res://assets/characters/conductor/conductor.glb",
+      "source": "game/assets/characters/conductor/source/conductor.blend",
+      "role": "The conductor at the return platform",
+      "individual_sculpt_changes": [
+        "Longer square lower face and quiet age creases",
+        "Neat salt-and-pepper hair and separate sculpted moustache",
+        "Original tailored conductor cap with curved visor and band",
+        "Long green uniform coat, broad lapels and brass closure"
+      ],
+      "palette": {
+        "skin": [
+          0.65,
+          0.435,
+          0.29
+        ],
+        "hair": [
+          0.22,
+          0.24,
+          0.225
+        ],
+        "coat": [
+          0.14,
+          0.235,
+          0.2
+        ],
+        "pants": [
+          0.055,
+          0.09,
+          0.078
+        ]
+      }
+    },
+    "jo": {
+      "glb": "res://assets/characters/jo/jo.glb",
+      "source": "game/assets/characters/jo/source/jo.blend",
+      "role": "Jo at the station; generic Journey keepers",
+      "individual_sculpt_changes": [
+        "Small tapered jaw, fuller cheek plane and wider soft nose",
+        "Short coiled crown with original interlocking raised curl paths",
+        "Fitted station waistcoat over cream work shirt",
+        "Brass station badge, inset front panels and tailored back silhouette"
+      ],
+      "palette": {
+        "skin": [
+          0.365,
+          0.19,
+          0.105
+        ],
+        "hair": [
+          0.024,
+          0.026,
+          0.03
+        ],
+        "coat": [
+          0.55,
+          0.415,
+          0.255
+        ],
+        "pants": [
+          0.075,
+          0.105,
+          0.135
+        ]
+      }
+    }
+  },
+  "generic_cast_mapping": {
+    "Journey worker": "rafi",
+    "Journey keeper": "jo"
+  },
+  "limits": [
+    "Simplified project-authored stylized geometry, no borrowed assets",
+    "Original 25 bones; no finger bones, facial blendshapes or terrain IK",
+    "Aprons are skinned cloth without cloth simulation",
+    "Target-device performance requires runtime testing"
+  ]
+}

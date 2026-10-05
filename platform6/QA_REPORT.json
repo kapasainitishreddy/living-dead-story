@@ -1,0 +1,233 @@
+{
+  "status": "passed",
+  "scope": "Final headless regression verification after native portrait, hand attachment and scenic-depth polish corrections",
+  "recovery_commit": "b5b72cbe13b7068b8f3690ec7606f220004872c4",
+  "runner_command": "env HOME=<isolated>/home XDG_DATA_HOME=<isolated>/data XDG_CONFIG_HOME=<isolated>/config XDG_CACHE_HOME=<isolated>/cache XDG_STATE_HOME=<isolated>/state XDG_RUNTIME_DIR=<isolated>/runtime LP_NUM_THREADS=2 OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 taskset -c 0,1 ./game/run_tests.sh",
+  "runner_exit": 0,
+  "runner_steps": {
+    "godot_test_scripts": 80,
+    "python_suites": 7,
+    "editor_import_validation": 1
+  },
+  "godot_engine_headers": 81,
+  "error_signals": [],
+  "opening_results": {
+    "opening_depth": {
+      "checks": 190,
+      "failures": 0
+    },
+    "opening_depth_mesh": {
+      "checks_in_source": 9,
+      "failures": 0
+    },
+    "opening_story_flow": {
+      "checks": 38,
+      "failures": 0
+    },
+    "opening_dialogue_controls": {
+      "checks": 16,
+      "failures": 0
+    },
+    "opening_story_regressions": {
+      "checks": 24,
+      "failures": 0
+    },
+    "opening_tool_attachment": {
+      "checks": 18,
+      "failures": 0
+    },
+    "python_soundtrack": {
+      "tests": 6,
+      "failures": 0
+    },
+    "python_depth_art": {
+      "tests": 2,
+      "failures": 0
+    },
+    "opening_soundtrack": {
+      "checks": 23,
+      "failures": 0
+    },
+    "opening_camera_readability": {
+      "checks": 9,
+      "failures": 0
+    },
+    "opening_readability": {
+      "checks": 31,
+      "failures": 0
+    },
+    "independent_opening_regressions": {
+      "checks": 30,
+      "failures": 0
+    }
+  },
+  "logs": {
+    "aggregate": "evidence/final-regression-20261005/full-run.log",
+    "independent": "evidence/final-regression-20261005/independent-final.log",
+    "context": "evidence/final-regression-20261005/run-context.txt"
+  },
+  "source_stability": {
+    "changed_frozen_files": [
+      "game/ASSET_LICENSES.md",
+      "game/README.md"
+    ],
+    "added_files": [
+      "game/tests/opening_camera_lifecycle.gd",
+      "game/tests/opening_camera_lifecycle.gd.uid",
+      "game/tests/opening_tool_attachment.gd.uid"
+    ],
+    "removed_files": [],
+    "changed_runtime_files": [],
+    "before_manifest": "evidence/final-regression-20261005/source-sha256-frozen.json",
+    "after_manifest": "evidence/final-regression-20261005/source-sha256-after.json"
+  },
+  "documented_original_oracle_updates": [
+    "chapter_enrichment keeps checkpoint equality and explicitly requires the approved durable dialogue trace; fresh repeated-reading and save/reload tests verify idempotence",
+    "audio_shutdown covers both music slots, current crossfade gain and both score/ambience caches",
+    "home_sound and return_sound retain original music-free contract, strengthened to both music slots; re-entry accepts the audible slot using max(primary,secondary)"
+  ],
+  "resolved_findings": [
+    "Actual interaction followed by same-room advance originally retained temporary dialogue-camera yaw; the implementation fixes preservation of the pre-dialogue normal_yaw/normal_pitch. Independent final probe confirms .75 chosen yaw restored after .67474 temporary framing.",
+    "Later Chapter Six return and Chapter Seven home were initially given audible new reprise; the implementation restores both-slot silence and original staging assertions.",
+    "Initial independent position probes incorrectly treated gravity settling of y=.1 as a failure. Corrected horizontal continuity probes pass and log y settling. No original suite was weakened for this.",
+    "Native review led to a dedicated lower-card-safe portrait camera. Fresh independent probes confirm portrait pause/resume, Back restoring chosen yaw/pitch and protagonist visibility, reduced-motion avoiding portrait motion, same-room cleanup and scenic-preview cleanup.",
+    "New physical hand sockets and one original camera GLB preserve exact ownership for take/lend/unused; aggregate opening_tool_attachment passes18/18 including real bone-pose motion.",
+    "Native rooftop/shore defects were corrected with dark irregular wet patches, offscreen ridge endpoints and curved SVG cloud contours. Aggregate depth190 and depth-art2 tests pass; visual quality itself remains documented separately."
+  ],
+  "source_review": [
+    "game/main.gd",
+    "game/core/chapter_model.gd",
+    "game/data/chapter.json",
+    "game/data/choices.json",
+    "game/ui/hud.gd",
+    "game/player/player.gd",
+    "game/world/world_factory.gd",
+    "game/world/opening_story.gd",
+    "game/world/opening_depth.gd",
+    "game/audio/audio_director.gd",
+    "game/assets/original/generate_audio.py",
+    "tools/author_opening_depth.py",
+    "tools/test_opening_soundtrack.py",
+    "game/tests/opening_tool_attachment.gd",
+    "tools/test_opening_depth_art.py"
+  ],
+  "preserved_contract_evidence": [
+    "Original full campaign/model/save-failure/accessibility suites completed in aggregate",
+    "Independent new local-dialogue failed-write, exact retry and reread idempotence passed",
+    "Independent invalid preview rollback, preview pause/resume/Back and reset passed",
+    "Independent Done/Not Tonight exact non-label equality and Mira autonomy passed; aggregate checks all camera routes",
+    "Independent portrait lifecycle probes passed on corrected final source",
+    "Full final aggregate includes original later departure/home music-free tests7/0 each"
+  ],
+  "not_established_by_this_report": [
+    "Native rendered/UI screenshot QA",
+    "Human listening quality assessment",
+    "Native exported-binary/package verification"
+  ],
+  "notes": [
+    "Native captures and package export are documented separately. Headless assertions cannot establish visual composition or subjective listening quality.",
+    "An earlier pre-correction aggregate was interrupted on the correction request with exit130; retained separately and not counted as the final result.",
+    "QA utility and logs are under ignored evidence; copy the report into delivery evidence .",
+    "The first green aggregate preceded subsequent native visual corrections; its report/logs are retained under evidence/final-regression-20261005/first-green-162625 and are superseded by this final run.",
+    "Parent reported final native movie1/0 with Chapter One ending and stereo PCM audio; this worker did not execute or independently view that native movie."
+  ],
+  "summary_lines": [
+    "Checks: 191; failures: 0",
+    "Runtime world checks: 85; failures: 0",
+    "Integration checks: 53; failures: 0",
+    "Station physics checks: 6; failures: 0",
+    "PAINTERLY STATION: 27 checks, 0 failures",
+    "Chapter enrichment checks: 21; failures: 0",
+    "Sound/motion checks: 15; failures: 0",
+    "Enrichment regression checks: 7; failures: 0",
+    "Character performance checks: 68; failures: 0",
+    "Fair model checks: 679; failures: 0",
+    "Fair world checks: 85; failures: 0",
+    "Fair physics checks: 7; failures: 0",
+    "Fair runtime checks: 21 failures: 0",
+    "Fair sound checks: 1; failures: 0",
+    "Fair branch matrix: 27 routes; 1404 checks; failures: 0",
+    "Paper model checks: 7223; failures: 0",
+    "Paper world checks: 2178; failures: 0",
+    "PAPER RUNTIME 27 checks 0 failures",
+    "Paper physics checks: 27; failures: 0",
+    "Paper metadata interaction checks: 10; failures: 0",
+    "AUDIO SHUTDOWN 16 checks 0 failures",
+    "Kitchen model checks: 1968; failures: 0",
+    "Kitchen world checks: 287; failures: 0",
+    "Kitchen physics checks: 87; failures: 0",
+    "KITCHEN RUNTIME 114 checks 0 failures",
+    "KITCHEN SAVE FAILURE 49 checks 0 failures",
+    "KITCHEN SOUND 8 checks 0 failures",
+    "Character rest pose checks: 26; failures: 0",
+    "Orchard model checks: 248; failures: 0",
+    "Orchard world checks: 138; failures: 0",
+    "Orchard physics checks: 160; failures: 0",
+    "ORCHARD RUNTIME 117 checks 0 failures",
+    "ORCHARD SAVE FAILURE 10 checks 0 failures",
+    "ORCHARD SOUND 9 checks 0 failures",
+    "Return model checks: 14702; failures: 0",
+    "Return world scene checks: 44; failures: 0",
+    "Return animation checks: 46; failures: 0",
+    "Return physics checks: 26; failures: 0",
+    "Return farewell acting checks: 30; failures: 0",
+    "RETURN RUNTIME 173 checks 0 failures",
+    "RETURN SAVE FAILURE 9 checks 0 failures",
+    "RETURN SOUND 7 checks 0 failures",
+    "RETURN REACHABILITY 170 checks 0 failures",
+    "Home model checks: 5087; failures: 0",
+    "Home world scene checks: 225; failures: 0",
+    "Home world physics checks: 164; failures: 0",
+    "HOME RUNTIME 425 checks 0 failures",
+    "HOME SAVE FAILURE 14 checks 0 failures",
+    "HOME SOUND 7 checks 0 failures",
+    "FULL CAMPAIGN 4849 checks 0 failures",
+    "CAMPAIGN SAVE FAILURE 436 checks 0 failures",
+    "CHARACTER_POLISH_EXPORTED_CONTRACT passed",
+    "Character motion polish checks: 32; failures: 0",
+    "SUPPORTING CONVERSATION 10 checks 0 failures",
+    "JourneyPack content checks: 987; failures: 0",
+    "JOURNEY MODEL 618 checks; 0 failures",
+    "Journey world checks: 320; failures: 0",
+    "JOURNEY ACTIVITY 23 checks 0 failures",
+    "JOURNEY RUNTIME 291 checks 0 failures",
+    "FIREFLY VISUAL CONTRACT 26 checks 0 failures",
+    "FIREFLY RENDER COST 292 checks 0 failures",
+    "HERO_EXPRESSION 10 checks; failures: 0",
+    "HERO_WARMTH_EXPORTED_CONTRACT passed",
+    "HERO_BODY_POSE 15 checks; failures: 0",
+    "HERO_BODY_EXPORTED_CONTRACT passed",
+    "Opening scene checks: 76; failures: 0",
+    "SUPPORTING_CAST_EXPORT_CONTRACT passed",
+    "SUPPORTING_CAST 131 checks; failures: 0",
+    "SUPPORTING_PAUSE 5 checks; failures: 0",
+    "SUPPORTING_JOURNEY 34 checks; failures: 0",
+    "ACCESSIBILITY_CONTROLS 34 checks; failures: 0",
+    "Transit presentation: 179 checks; 0 failures",
+    "SUPPORTING_CAST_FLOOR 4 checks; failures: 0",
+    "Opening depth: 190 checks; 0 failures",
+    "Opening depth mesh: failures=0",
+    "Opening story flow: 38 checks; 0 failures",
+    "Opening dialogue controls: 16 checks; 0 failures",
+    "Opening story regressions: 24 checks; 0 failures",
+    "Opening tool attachment: 18 checks; 0 failures",
+    "Ran 6 tests in 0.919s",
+    "OK",
+    "OPENING SOUNDTRACK 23 checks 0 failures",
+    "OPENING_CAMERA 9 checks; failures: 0",
+    "OPENING_READABILITY 31 checks; failures: 0",
+    "Ran 2 tests in 0.001s",
+    "OK"
+  ],
+  "warning_signals": [],
+  "separate_worker_verification": {
+    "test": "game/tests/opening_camera_lifecycle.gd",
+    "checks": 39,
+    "failures": 0,
+    "executed_by": "story worker, separately from aggregate",
+    "log_reviewed_by_this_worker": true,
+    "error_signals": [],
+    "retained_log": "evidence/final-regression-20261005/separate-camera-lifecycle-worker.log",
+    "included_in_aggregate": false
+  }
+}

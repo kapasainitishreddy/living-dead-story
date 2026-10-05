@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "chapter_id": "return_platform",
+  "dimensions": [
+    "joy",
+    "calm",
+    "connection",
+    "wonder",
+    "agency",
+    "energy",
+    "future_pull",
+    "meaning"
+  ],
+  "dialogues": {
+    "return_arrival": {
+      "title": "The Return Platform",
+      "text": "Central Station is quieter than it was before. Water ticks from the edge of the canopy. Platform 6 is still written above the same narrow stair.\n\nMira sets her tool roll on the bench and tightens its strap. The next train has Lower Mill on its little destination board.\n\n“Two windows, a staircase and a box of boats that refuse to turn left,” she says. “I said I’d go in the morning. Looks like this is my morning.”",
+      "choices": [
+        {
+          "label": "Stay while Mira gets ready",
+          "action": "return_arrival"
+        },
+        {
+          "label": "Look around the platform",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "return_farewell": {
+      "title": "The train for Lower Mill",
+      "text": "The indicator reads LOWER MILL. Mira has lifted her tool roll and settled the strap on her shoulder. She looks toward you.\n\n“I’ll write when I’ve found the kettle,” she says. “If the staircase doesn’t have it.”\n\nThere is time for a goodbye. The train is hers to catch.",
+      "choices": [
+        {
+          "label": "Wish her luck at Lower Mill",
+          "action": "return_farewell",
+          "value": "luck"
+        },
+        {
+          "label": "Make one last joke about the boats",
+          "action": "return_farewell",
+          "value": "joke"
+        },
+        {
+          "label": "Thank her for the company",
+          "action": "return_farewell",
+          "value": "thanks"
+        },
+        {
+          "label": "Wave goodbye",
+          "action": "return_farewell",
+          "value": "wave"
+        },
+        {
+          "label": "Say little and stay beside her",
+          "action": "return_farewell",
+          "value": "little"
+        }
+      ]
+    },
+    "return_selected": {
+      "title": "A goodbye to keep",
+      "text": "Your goodbye stays with Mira. She has her tools in one hand and her ticket in the other. The rail hum grows beyond the canopy.",
+      "choices": [
+        {
+          "label": "Let the train carry her on",
+          "action": "return_departure"
+        }
+      ]
+    },
+    "return_departed": {
+      "title": "The platform after the train",
+      "text": "The last carriage passes the signal. Its amber windows narrow to a line and disappear beyond the station roof.\n\nThe bench is empty where Mira set her tools. A porter wheels a trolley toward the stairs. Somewhere below, somebody tests a stubborn door handle.\n\nPlatform 6 remains on the sign. The ordinary sounds of the station return.",
+      "choices": [
+        {
+          "label": "Stay for a moment, then continue",
+          "action": "return_finish"
+        },
+        {
+          "label": "Look around the platform",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "return_complete": {
+      "title": "The Return Platform",
+      "text": "A light changes above the stairs. The timetable stirs in the draught from the passage. Mira’s train is on its way to Lower Mill.\n\nThere is still a way home from here. For now, the station has room for you.",
+      "choices": [
+        {
+          "label": "Return to the platform",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "return_conductor": {
+      "title": "Beside the timetable",
+      "text": "The conductor is folding a timetable along creases that no longer agree.\n\n“I was a passenger once,” he says. “Spent the whole journey wondering whether I’d missed my stop.”\n\nHe turns the paper over and tries the fold again.\n\n“That’s why I check the doors twice.”",
+      "choices": [
+        {
+          "label": "Leave him to his timetable",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "return_jo": {
+      "title": "The yellow umbrella",
+      "text": "Jo is sitting beneath the canopy, winding a loose thread around the umbrella handle. The crooked paper star is still there.\n\n“It survived the rain,” Jo says, holding it up. “Mostly by being under an umbrella.”\n\nA drop lands on the bench. Jo moves the umbrella an inch and goes back to the thread.",
+      "choices": [
+        {
+          "label": "Stay a moment, then look around",
+          "action": "dismiss"
+        }
+      ]
+    }
+  },
+  "farewell_callbacks": {
+    "luck": "“Good luck at Lower Mill.”\n\nMira gives the tool roll a small lift. “I’ve brought three screwdrivers. That should account for most of it.” She checks the carriage step and turns toward the door.",
+    "joke": "“Tell the boats a circle still isn’t a race.”\n\nMira laughs. “I’ll put it in writing. They’ve been asking for a second opinion.” She tucks the ticket beside her tools and turns toward the door.",
+    "thanks": "“Thanks for the company.”\n\nMira rests her hand on the carriage rail. “You too. I’ll miss having someone to blame the timetable on.” She lifts her tools onto the step.",
+    "wave": "You lift a hand. Mira lifts hers back, the ticket caught between two fingers.\n\n“Mind the latch on the way home,” she says. “Lift it first.” She catches the carriage rail and steps aboard.",
+    "little": "You stand beside her for the last few moments. Mira shifts the tool roll to her other hand.\n\n“Well,” she says, and nods once. You stay close enough to return the nod as she steps toward the carriage."
+  },
+  "camera_callbacks": {
+    "take": "The camera rests against your coat. Mira notices the strap. “The staircase had better hold still for its portrait,” she says.",
+    "lend": "Mira has packed the borrowed camera beside her tools. She touches its case once before lifting the roll. “I’ll find it a window at Lower Mill.”",
+    "unused": "The unopened camera stays in your pocket. Mira adjusts her grip on the tools and watches the destination board."
+  },
+  "jo_history_callbacks": {
+    "umbrella_question": "“You asked where the train went,” Jo says. The umbrella tip taps the station tiles. “I still check the board every time.”",
+    "umbrella_quiet": "Jo shifts the umbrella toward you, as on the roof. For a moment its yellow cloth makes a little ceiling under the station canopy.",
+    "unselected": "Jo makes room on the bench without asking where you have been."
+  },
+  "choices": [
+    {
+      "choice_id": "return_platform.begin",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.arrival",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.farewell.luck",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "farewell"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.farewell.joke",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "farewell"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.farewell.thanks",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "farewell"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.farewell.wave",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "farewell"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.farewell.little",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "farewell"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.departure",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "farewell"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.finish",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "departed"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.conductor",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "arrival",
+        "farewell",
+        "departed",
+        "complete"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "return_platform.jo",
+      "campaign_chapter": "return_platform",
+      "checkpoints": [
+        "arrival",
+        "farewell",
+        "departed",
+        "complete"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    }
+  ],
+  "arrival_camera_callbacks": {
+    "take": "The camera strap is still against your coat. Mira checks the fastening of her tool roll.",
+    "lend": "Mira has the borrowed camera beside her tools. Its strap catches against the canvas roll as she sets it down.",
+    "unused": "The box in your pocket is still unopened. Mira had passed it back after supper, before the orchard path. “Keep it dry,” she had said, brushing condensation off the kitchen windowsill."
+  },
+  "farewell_reply_captions": {
+    "luck": "Mira gives the tool roll a small lift. “Three screwdrivers. That should account for most of it.”",
+    "joke": "Mira laughs. “I’ll put it in writing. They’ve been asking for a second opinion.”",
+    "thanks": "“You too,” Mira says. “I’ll miss having someone to blame the timetable on.”",
+    "wave": "Mira lifts her hand back, the ticket between two fingers.",
+    "little": "“Well,” Mira says, and returns your small nod."
+  }
+}

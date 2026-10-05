@@ -1,0 +1,18 @@
+extends SceneTree
+func _initialize():
+	var model = load("res://core/chapter_model.gd").new()
+	for action in ["leave_apartment","meet_stranger","read_board","board_train","meet_passenger","arrive_shore","assist"]: model.apply(action)
+	model.apply("choose_camera", "take")
+	model.apply("resolve_action", "skipped")
+	for action in ["return_train","have_breakfast","finish","begin_fair"]: model.apply(action)
+	model.apply("fair_greeting", "ducks")
+	model.apply("set_sail", "folded")
+	model.apply("release_boat")
+	model.apply("inspect_fair", "wedge")
+	model.apply("level_pond", "self")
+	model.apply("release_boat")
+	model.apply("fair_departure", "card")
+	model.apply("begin_paper")
+	var result = load("res://core/save_store.gd").new().save_snapshot(model.snapshot(), "user://still_here/save_v1.json")
+	print("Manual arrival seed: ", result.ok)
+	quit(0 if result.ok else 1)

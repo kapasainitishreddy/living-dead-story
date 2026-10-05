@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "authorship": "Original project-authored contours, topology, materials, skin weights, motion and camera prop; no external source assets",
+  "units": "metres",
+  "godot_forward_axis": "+Z",
+  "godot_up_axis": "+Y",
+  "height_metres": 1.7,
+  "ground_origin_y": 0.0,
+  "characters": {
+    "protagonist": "res://assets/characters/protagonist/protagonist.glb",
+    "mira": "res://assets/characters/mira/mira.glb"
+  },
+  "camera_prop": {
+    "path": "res://assets/characters/mira/camera.glb",
+    "rigged": false,
+    "origin": "right-hand grip centre",
+    "front": "+Z",
+    "shell_centroid_local_x_metres": 0.042,
+    "bounds_width_height_depth_metres": [
+      0.151,
+      0.092,
+      0.0925
+    ]
+  },
+  "sockets": {
+    "head": "Head",
+    "hand_right": "HandRight"
+  },
+  "facial_bones": [
+    "EyeLeft",
+    "EyeRight",
+    "BrowLeft",
+    "BrowRight",
+    "Mouth"
+  ],
+  "facial_vertical_local_axis": "+Y",
+  "animations": {
+    "idle": {
+      "duration_seconds": 5.0,
+      "loop": true
+    },
+    "walk": {
+      "duration_seconds": 1.0,
+      "loop": true,
+      "in_place": true,
+      "reference_velocity_mps": 1.3165116279069766,
+      "stance_track_metres": 0.6582558139534883,
+      "stance_duration_seconds": 0.5,
+      "time_scale_at_4_2_mps": 3.190249072602014,
+      "terrain_ik": false,
+      "method": "Linear stance foot track, leg-shortening hip compensation, swing-only knee bend, foot counter-rotation, opposite arm swing"
+    }
+  },
+  "source_generator": "tools/author_characters.py",
+  "binary_validator": "tools/test_authored_character_assets.py",
+  "validation_metrics": "asset_validation.json",
+  "polish_checkpoint": {
+    "date": "2026-10-03",
+    "rig_compatibility": "Original 25-bone rig preserved; 1.7m height, +Z forward, idle/walk clips unchanged",
+    "geometry": "Smooth face stations, rounded nose, open smooth almond eye outlines, rounded hair crown and interpolated clumps, coherent skinned Mira coat patches and nested trousers",
+    "runtime_motion": "Varied asymmetric blink, eye-first gaze acquisition, held darts, restrained breathing/listening offsets, quicker locomotion start/stop settling",
+    "limits": [
+      "Character art remains intermediate",
+      "No terrain IK",
+      "No new running clip",
+      "Simplified camera grip retained",
+      "No target hardware performance claim"
+    ]
+  },
+  "hero_warmth_checkpoint": {
+    "date": "2026-10-04",
+    "rig_compatibility": "Original 25-bone names/parents, 1.7m height, +Z forward, idle/walk and grip socket preserved",
+    "geometry": "Matched curved upper eyelids, calmer irises/pupils/glints, tapered jaw, smaller nose, flattened fringe, asymmetrical bob ends, narrower sleeves, curved shorter collars",
+    "runtime_motion": "Listening expression rises, holds and softens; reduced motion immediately clears decorative brow/mouth acting",
+    "limits": [
+      "Intermediate original procedural character art",
+      "No facial blendshapes, terrain IK or running clip",
+      "Prop grip is simplified",
+      "Whole supporting cast and environments unchanged",
+      "No target hardware performance claim"
+    ]
+  },
+  "body_relax_checkpoint": {
+    "date": "2026-10-04",
+    "rig_contract": "Same 25 bone names and parents, 1.7 m height, +Z forward, floor origin. Arm rest transforms intentionally refined with near-baseline combined lengths.",
+    "geometry": "Relaxed elbow/wrist alignment; interpolated deltoid-elbow-forearm contours; blended tapered neck; curled fingers and corresponding creases",
+    "motion": "Body-led five-second idle with counterbalanced pelvis/spine and relaxed forearms/wrists. One-second walk timing and the existing leg/stance contract retained.",
+    "mira_carry": "Forward right-hand carrying stance keeps the unchanged camera grip origin and prop geometry; neutral prop front minimum is 0.107 m.",
+    "limits": [
+      "Intermediate original procedural art",
+      "Simplified hands/grip; no finger bones, terrain IK or running clip",
+      "No whole-cast or environment art changes",
+      "Final independent review unavailable due to model capacity; direct rig/socket/render/save verification completed"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "milestone": "STILL HERE: Opening story, depth and stereo soundtrack refresh",
+  "date_utc": "2026-10-05",
+  "recovered_library_source_commit": "d5c4d3e7fcde02dc8149db28bb627831c61d94b3",
+  "recovered_library_source_sha256": "81d7a779030972f0a45cca496fe2e6dc11fe9316528e31b8ab186437fef4ef02",
+  "recovery_git_commit": "b5b72cbe13b7068b8f3690ec7606f220004872c4",
+  "code_revision": "See SOURCE_COMMIT.txt; generated release identity after final code commit",
+  "engine": "Godot 4.6.3.stable.official.7d41c59c4 Standard",
+  "regression_runner": {
+    "godot_test_scripts": 80,
+    "python_suites": 7,
+    "editor_import_validation": 1
+  },
+  "runner_exit": 0,
+  "independent_opening_checks": 30,
+  "separate_camera_lifecycle_checks": 39,
+  "failure_count": 0,
+  "native_route": "Manual apartment/roof/reply/station/ticket; scripted full opening to chapter ending",
+  "comparison_seconds": 57.666667,
+  "comparison_audio": "Actual Godot engine stereo audio, 48kHz AAC in review MP4",
+  "audio_listening": "Unavailable in model runtime; no auditory quality acceptance claim",
+  "linux_export": "Supported Godot custom-template export with verified previously delivered 4.6.3 runtime",
+  "linux_smoke_frames": 180,
+  "linux_binary_sha256": "60ba96e6b904cad48a445932905447cde246275a1b56aecb3b353287c0101989",
+  "limits": "Refreshed opening, preserved seven chapters and ten bounded Journey destinations. Stylized procedural indie art; no full 15–25-hour, target-GPU/mobile/store-release or human playtesting acceptance. Later farewell/home remain music-free. Windows/Web/macOS and physical-controller hardware unverified.",
+  "source_code_commit": "0a536f32219d2493d0d00dadec8746774b384d0d",
+  "known_cosmetic_issue": "An old failed-save warning can remain after a successful Start new journey reset until the next successful persist; this opening-refresh scope did not alter that historical issue."
+}

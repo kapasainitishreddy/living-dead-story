@@ -1,0 +1,173 @@
+{
+  "title": "A Little Way Home",
+  "original": true,
+  "method": "local deterministic additive and filtered-noise synthesis; no samples",
+  "key": "D major",
+  "tempo_bpm": 80,
+  "loop_seconds": 48.0,
+  "motif_midi": [
+    [
+      1.5,
+      69,
+      0.83
+    ],
+    [
+      3.0,
+      66,
+      0.72
+    ],
+    [
+      4.5,
+      64,
+      0.78
+    ],
+    [
+      6.75,
+      62,
+      1.0
+    ],
+    [
+      13.5,
+      64,
+      0.72
+    ],
+    [
+      15.0,
+      66,
+      0.8
+    ],
+    [
+      17.25,
+      69,
+      1.1
+    ],
+    [
+      25.5,
+      71,
+      0.84
+    ],
+    [
+      27.0,
+      69,
+      0.78
+    ],
+    [
+      29.25,
+      66,
+      0.92
+    ],
+    [
+      37.5,
+      64,
+      0.75
+    ],
+    [
+      39.0,
+      62,
+      1.1
+    ],
+    [
+      42.0,
+      62,
+      0.6
+    ]
+  ],
+  "assets": {
+    "music_apartment": {
+      "duration_seconds": 48.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -17.587,
+      "rms_dbfs": -33.508,
+      "loop_step": 0.0
+    },
+    "music_umbrella": {
+      "duration_seconds": 48.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -16.35,
+      "rms_dbfs": -31.287,
+      "loop_step": 0.0
+    },
+    "night_train": {
+      "duration_seconds": 48.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -15.632,
+      "rms_dbfs": -30.597,
+      "loop_step": 0.0
+    },
+    "music_shore": {
+      "duration_seconds": 48.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -17.097,
+      "rms_dbfs": -31.04,
+      "loop_step": 0.0
+    },
+    "music_return": {
+      "duration_seconds": 48.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -16.585,
+      "rms_dbfs": -31.089,
+      "loop_step": 0.0
+    },
+    "rain_window": {
+      "duration_seconds": 24.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -19.443,
+      "rms_dbfs": -33.944,
+      "loop_step": 0.0
+    },
+    "rain_roof": {
+      "duration_seconds": 24.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -18.244,
+      "rms_dbfs": -32.893,
+      "loop_step": 0.0
+    },
+    "rails": {
+      "duration_seconds": 24.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -19.616,
+      "rms_dbfs": -34.261,
+      "loop_step": 0.0
+    },
+    "surf": {
+      "duration_seconds": 24.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -15.748,
+      "rms_dbfs": -31.863,
+      "loop_step": 0.0
+    },
+    "kitchen_simmer": {
+      "duration_seconds": 24.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -24.491,
+      "rms_dbfs": -38.417,
+      "loop_step": 0.0
+    },
+    "orchard_hush": {
+      "duration_seconds": 24.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -20.898,
+      "rms_dbfs": -36.579,
+      "loop_step": 0.0
+    },
+    "fair_clockwork": {
+      "duration_seconds": 24.0,
+      "channels": 2,
+      "sample_rate": 44100,
+      "peak_dbfs": -27.148,
+      "rms_dbfs": -40.907,
+      "loop_step": 0.0
+    }
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "chapter_id": "night_kitchen",
+  "dialogues": {
+    "kitchen_arrival": {
+      "title": "The Night Kitchen",
+      "text": "A line of wet coats hangs by the stove. Noor catches the door with her heel, a bowl in each hand.\n\n“Mind the umbrella. It’s attempting to occupy two chairs.”\n\nAt the end of the table: a spoon, a blue cup, a folded cloth. The chair is already drawn back. Noor sets a warm bowl beside them and turns to the stove.\n\nMira has spread her tool roll on the windowsill. Ada is arguing with the pepper mill while buttering somebody else’s bread.",
+      "choices": [
+        {
+          "label": "Sit at the set place",
+          "action": "kitchen_join",
+          "value": "sit"
+        },
+        {
+          "label": "Take the ladle for a moment",
+          "action": "kitchen_join",
+          "value": "help"
+        },
+        {
+          "label": "Watch the kitchen carry on",
+          "action": "kitchen_join",
+          "value": "watch"
+        }
+      ]
+    },
+    "kitchen_supper": {
+      "title": "At the table",
+      "text": "Noor sets the ladle across the pot. Ada nudges the bread basket past the umbrella.\n\nAda: “The duck has lodged a complaint.”\nNoor: “About the soup?”\nAda: “About finishing fourth in a field of three.”\n\nMira laughs into her cup, then wipes a drop from the handle. The bread, cups and pepper are within reach. The room carries on whether you reach for them or stay where you are.",
+      "choices": [
+        {
+          "label": "Stay while the food passes",
+          "action": "kitchen_share",
+          "value": "watch"
+        },
+        {
+          "label": "Look across the dinner table",
+          "action": "kitchen_view"
+        },
+        {
+          "label": "Return to the room",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "kitchen_bread": {
+      "title": "The crust",
+      "text": "Ada tears the loaf along its dark seam. A little flour lands on the cloth.\n\n“Two pieces or one very persuasive piece?”\n\nShe holds the basket toward Noor without waiting for an answer.",
+      "choices": [
+        {
+          "label": "Pass the torn bread",
+          "action": "kitchen_share",
+          "value": "bread"
+        },
+        {
+          "label": "Let the basket pass",
+          "action": "kitchen_share",
+          "value": "watch"
+        },
+        {
+          "label": "Leave it with Ada",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "kitchen_cup": {
+      "title": "The blue cup",
+      "text": "Noor lifts the kettle with a towel. Condensation gathers on the window above Mira’s tools.\n\nMira: “That cup leaks.”\nNoor: “It has a drip. A leak is a career.”\n\nMira turns the handle away from the tool roll and slides a dry cloth under it.",
+      "choices": [
+        {
+          "label": "Slide the cup toward the kettle",
+          "action": "kitchen_share",
+          "value": "cup"
+        },
+        {
+          "label": "Watch Noor pour",
+          "action": "kitchen_share",
+          "value": "watch"
+        },
+        {
+          "label": "Keep looking around",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "kitchen_pepper": {
+      "title": "A reluctant mill",
+      "text": "Ada taps the pepper mill against her palm. Noor holds out a hand while still balancing the ladle.\n\nAda: “It worked this morning.”\nNoor: “So did I.”\n\nA single grain falls. Ada considers that sufficient evidence of progress.",
+      "choices": [
+        {
+          "label": "Pass the pepper along",
+          "action": "kitchen_share",
+          "value": "pepper"
+        },
+        {
+          "label": "Leave them to the pepper",
+          "action": "kitchen_share",
+          "value": "watch"
+        },
+        {
+          "label": "Return to the room",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "kitchen_conversation": {
+      "title": "The road to Lower Mill",
+      "text": "Mira folds the tool roll, leaving the little screwdriver out. With her other hand, she holds the bread basket for Noor.\n\n“I’m taking the early tram to Lower Mill. There’s a bench by the workshop window. I asked if I could use it; they said bring the stubborn boats.”\n\nAda: “The duck too?”\nMira: “The duck is not under my jurisdiction.”\n\nShe eats the end of a crust and turns a screw between her fingers.\n\n“I want to see what happens when I have a whole morning for a repair.”",
+      "choices": [
+        {
+          "label": "Ask what she’ll repair first",
+          "action": "kitchen_departure",
+          "value": "ask"
+        },
+        {
+          "label": "Wish her a good morning there",
+          "action": "kitchen_departure",
+          "value": "wish"
+        },
+        {
+          "label": "Listen while she packs",
+          "action": "kitchen_departure",
+          "value": "listen"
+        }
+      ]
+    },
+    "kitchen_complete": {
+      "title": "The last of the soup",
+      "text": "Noor scrapes the pot with the edge of the ladle. Ada wraps the rest of the bread in a cloth. Mira puts the screwdriver into its own narrow pocket.\n\nOutside, rain has thinned to a few bright drops. Someone has moved your blue cup away from the damp patch on the table.\n\nChapter Four is complete. Beyond the next station, an orchard waits in the evening.",
+      "choices": [
+        {
+          "label": "Continue to the Quiet Orchard",
+          "action": "begin_orchard"
+        },
+        {
+          "label": "Look across the dinner table",
+          "action": "kitchen_view"
+        },
+        {
+          "label": "Keep this journey · explore",
+          "action": "dismiss"
+        },
+        {
+          "label": "Save and leave",
+          "action": "kitchen_leave"
+        }
+      ]
+    },
+    "kitchen_sign": {
+      "title": "A familiar sky",
+      "text": "Noor has hung the rail where it won’t catch a coat. BOATS WITH OPINIONS still carries the bent shore propeller. Your paper leaf, timetable boat and chosen space or star are exactly where you left them.\n\nAda leans around the bread basket. “It finally has an official address.”",
+      "choices": [
+        {
+          "label": "Look closely at the hanging sign",
+          "action": "kitchen_sign_view"
+        },
+        {
+          "label": "Back to the kitchen",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "kitchen_camera": {
+      "title": "Away from the kettle",
+      "text": "Mira shifts the camera things to the dry end of the windowsill, then reaches for her cup. She folds a corner of the cloth over the camera strap.",
+      "choices": [
+        {
+          "label": "Back to the kitchen",
+          "action": "dismiss"
+        }
+      ]
+    }
+  },
+  "camera_callbacks": {
+    "take": "Mira sets the coast photograph beside the dry tool roll. “The arch looks colder than it was.”",
+    "lend": "Mira props the photograph she took beside the tool roll. “There’s the doorway with no door.”",
+    "unused": "The unopened camera box stays on the dry windowsill. Mira moves her cup farther away from it."
+  },
+  "mode_callbacks": {
+    "sit": "Noor brings the soup over as you settle into the drawn-back chair. Mira shifts her elbow to make room for your cup.",
+    "help": "You lift the ladle. Noor takes the bowls, including the one already beside your spoon. When she returns, the chair is still drawn back.",
+    "watch": "Noor passes the ladle to Ada, who brings your bowl to the drawn-back chair. Mira slides the bread basket clear of your cup."
+  },
+  "exchange_callbacks": {
+    "bread": "The crust pulls apart in two uneven pieces. Ada takes the smaller one and keeps talking about the duck.",
+    "cup": "The blue cup slides over its cloth. Noor fills it, then moves the kettle clear of Mira’s hand.",
+    "pepper": "The pepper mill crosses the table. Noor shakes it once; Ada watches for the promised grain.",
+    "watch": "Bread, pepper and a blue cup change hands around the table. Noor catches the basket with her wrist while she speaks."
+  },
+  "departure_callbacks": {
+    "ask": "Mira: “The one with the stripped gear. If it keeps arguing, I’ll start with the quiet one.” She closes the tool roll.",
+    "wish": "Mira: “Thanks. I’ll go early enough to find the tram stop without pretending I meant to visit three other streets.”",
+    "listen": "Mira gives the roll a final tug. Ada points out a pocket she missed. “There. Now I can actually leave.”"
+  },
+  "gesture_lines": {
+    "join_sit": [
+      "Noor: “Careful, the bowl’s warmer than it looks.”",
+      "Ada tears the crust while Mira moves the blue cup closer."
+    ],
+    "join_help": [
+      "Noor holds two bowls beneath the ladle. “Not too much for Ada. She’s guarding the bread.”",
+      "Ada: “Guarding implies I intend to return it.”"
+    ],
+    "join_watch": [
+      "Ada brings the bowl over; Noor catches the bread basket with her wrist.",
+      "Mira: “The pepper is still in negotiations.”"
+    ],
+    "bread": [
+      "Ada: “The crust is the best part. Unless you ask Noor.”",
+      "Noor: “I am within asking distance.”"
+    ],
+    "cup": [
+      "Noor pours while Mira turns the cup handle clear of her tools.",
+      "Mira: “The window’s steamed up. That saves cleaning it.”"
+    ],
+    "pepper": [
+      "Ada: “One grain. A convincing start.”",
+      "Noor passes the mill on without putting down the ladle."
+    ],
+    "watch": [
+      "The bread moves past the kettle. Ada reaches around Mira’s tool roll.",
+      "Noor: “Move the screwdriver. It’s not a spoon.”"
+    ]
+  }
+}

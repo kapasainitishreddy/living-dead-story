@@ -1,0 +1,78 @@
+{
+  "dialogues": {
+    "paper_arrival": {
+      "title": "The wrong dimensions",
+      "text": "Noor holds a long sign sideways against the test doorway. Rafi holds the other end.\nNoor: “I asked for the width of the door.”\nRafi: “I brought the spirit of the door.”\nNoor: “The spirit is eight centimetres too wide.”\n\nRafi: “Platform 6 worked, then. I’m Rafi. This is my sister, Noor.”\nNoor: “Apparently I can’t be trusted with an ordinary umbrella.”\n\nRafi offers the crooked paper star. Noor unties its misplaced knot: “Structural optimism?”\nMira sets down the actual dimension card and bent propeller.\nMira: “BOATS WITH OPINIONS.”\nNoor: “That’s a sign I can defend.”",
+      "choices": [
+        {
+          "label": "Set the pieces on the worktable",
+          "action": "paper_greeting",
+          "value": "begin"
+        }
+      ]
+    },
+    "paper_workshop": {
+      "title": "Make it move",
+      "text": "The worktable holds a paper leaf, a spare-timetable boat and Rafi’s crooked star. The window’s paper boat stays where you left it.\n\nNoor: “We can use this one, cut another, or leave a space. Space is lighter to carry.”\n\nChoose how to make it at the worktable. The paper trays choose the star; the three rails choose the layout and string length. Mira has a fold to show you beside the drying rack. Raise the rail when the physical preview is yours. You can change any piece before raising it.",
+      "choices": [
+        {
+          "label": "Choose who arranges",
+          "action": "paper_config",
+          "value": "main"
+        },
+        {
+          "label": "Return to the worktable",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "paper_raised": {
+      "title": "A sky that fits",
+      "text": "The rail rises into the measured doorway. Your exact arrangement hangs there, with the bent propeller fixed beside BOATS WITH OPINIONS. Its shadow falls across the soup-stained dimension card.\n\nMira: “There. A boat that’ll stay where we put it.”\nNoor: “Until somebody leaves a door open.”\n\nRafi: “I’m going home. If I don’t put a plate under the umbrella, my floor develops a coast.”\nNoor: “Take a sandwich.”\nRafi: “I brought one.”\nNoor: “You brought two slices of bread in separate pockets.”\n\nShe packs them a kitchen sandwich. Rafi reties the umbrella’s star and says goodbye.",
+      "choices": [
+        {
+          "label": "Carry the sign to the booth",
+          "action": "finish_paper"
+        }
+      ]
+    },
+    "paper_complete": {
+      "title": "BOATS WITH OPINIONS",
+      "text": "Noor and Mira mount the finished sign over the booth doorway. The fair button stays with you; Mira’s Lower Mill plans stay her own.\n\nThe sign in the courtyard is the exact object you arranged here. You can return to the doorway display and inspect it whenever you revisit this milestone.\n\nNoor checks the kitchen clock. “There’s soup. Come through when you like.”\n\nChapter Three is complete. You can continue to the Night Kitchen or keep looking around.",
+      "choices": [
+        {
+          "label": "Continue to the Night Kitchen",
+          "action": "begin_kitchen"
+        },
+        {
+          "label": "Visit the mounted sign in the courtyard",
+          "action": "paper_courtyard"
+        },
+        {
+          "label": "Keep this journey · explore",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "paper_inspect": {
+      "title": "The sign you made",
+      "text": "The rail carries BOATS WITH OPINIONS and the bent propeller from the shore. The paper leaf and timetable boat settle beneath it. The arrangement is kept locally with your journey.\n\nNoor: “Fits. Even the opinions.”",
+      "choices": [
+        {
+          "label": "Back to the room",
+          "action": "dismiss"
+        }
+      ]
+    }
+  },
+  "camera_callbacks": {
+    "take": "Mira puts the coast photograph safely away from the paper glue. ‘No thumbs on this sign either, ideally.’",
+    "lend": "Mira sets the camera beside her tool roll. ‘That doorway through the arch might make a good shadow.’",
+    "unused": "Mira moves the unopened camera box clear of Noor’s scissors. ‘Still unopened. Still dry.’"
+  },
+  "star_callbacks": {
+    "crooked": "Rafi: ‘At last, an application for structural optimism.’ Noor cuts a little offcut star for the umbrella.",
+    "clean": "Rafi: ‘I accept the reviewer’s decision.’ Noor hangs the crooked gift star on her umbrella anyway.",
+    "empty": "Noor: ‘Then the rain can have a window.’ The crooked gift star hangs on her umbrella."
+  }
+}

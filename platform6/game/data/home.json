@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "chapter_id": "still_here",
+  "dialogues": {
+    "home_arrival": {
+      "title": "Still Here",
+      "text": "The latch lifts before it turns. The apartment opens around the same small table, the kettle and the window. Rain rests against the glass.\n\nThe room has kept its shape. Your coat is damp at the shoulders. The ticket is still in your hand.",
+      "choices": [
+        {
+          "label": "Find a place for the ticket",
+          "action": "home_ticket"
+        },
+        {
+          "label": "Look around the apartment",
+          "action": "dismiss"
+        }
+      ]
+    },
+    "home_ticket": {
+      "title": "The ticket",
+      "text": "The paper has softened along one fold. Platform 6 is printed above the little line of times.\n\nThere is room beside the kettle. The table drawer opens without a sound. Your coat has a dry inside pocket.",
+      "choices": [
+        {
+          "label": "Put it beside the kettle",
+          "action": "home_ticket",
+          "value": "kettle"
+        },
+        {
+          "label": "Put it in the drawer",
+          "action": "home_ticket",
+          "value": "drawer"
+        },
+        {
+          "label": "Keep it in your pocket",
+          "action": "home_ticket",
+          "value": "pocket"
+        }
+      ]
+    },
+    "home_ritual": {
+      "title": "The room at night",
+      "text": "The kettle waits on its stand. A narrow line of streetlight reaches the windowsill. The bed is where it was.\n\nYou can make tea, sit by the window, or leave the room as it is.",
+      "choices": [
+        {
+          "label": "Make tea",
+          "action": "home_ritual",
+          "value": "tea"
+        },
+        {
+          "label": "Sit by the window",
+          "action": "home_ritual",
+          "value": "window"
+        },
+        {
+          "label": "Do neither",
+          "action": "home_ritual",
+          "value": "neither"
+        }
+      ]
+    },
+    "home_settled": {
+      "title": "Still Here",
+      "text": "Rain moves softly down the glass. Somewhere beyond the houses, a train crosses the sleeping city.\n\nThe ticket keeps its place. There will be trains after this one. There is also a bed in this room.\n\nBoth choices finish this campaign. Neither asks you to earn tomorrow.",
+      "choices": [
+        {
+          "label": "TAKE THE TRAIN",
+          "action": "home_end",
+          "value": "train"
+        },
+        {
+          "label": "GO BACK TO SLEEP",
+          "action": "home_end",
+          "value": "sleep"
+        }
+      ]
+    }
+  },
+  "ticket_callbacks": {
+    "kettle": "You set the ticket beside the kettle, where the morning light will find it.",
+    "drawer": "You lay the ticket flat in the drawer. You leave the drawer a little open; the paper catches a narrow strip of lamplight.",
+    "pocket": "You slide the ticket into your dry inside pocket and leave the coat by the door."
+  },
+  "ritual_callbacks": {
+    "tea": "You fill the cup. Steam rises into the lamplight, then thins. The kettle settles on its stand.",
+    "window": "You sit by the window. A bicycle passes below, its small red light moving through the rain.",
+    "neither": "You leave the kettle and the window alone. The room needs nothing moved to make space for you."
+  },
+  "camera_callbacks": {
+    "take": "The camera comes home with you. One photograph waits inside it; the rest of the film is still blank.",
+    "lend": "The borrowed camera is on its way to Lower Mill with Mira. Her tool roll had room beside the screwdrivers.",
+    "unused": "The camera is still unopened. You put its box on the shelf, dry and undisturbed."
+  },
+  "endings": {
+    "train": "You take the train. You lift your coat from the hook and put your hand on the latch. The room stays warm behind you.\n\nOutside, the rain has become a fine mist. The station light is visible at the end of the street. You walk toward it.",
+    "sleep": "You go back to sleep. You leave your coat on the hook and turn the lamp down. The room holds the soft sound of rain.\n\nYour head finds the cool side of the pillow. Somewhere beyond the window, a train passes. You can let it pass."
+  },
+  "credits": "Credits\n\nSTILL HERE: PLATFORM 6\nOriginal story, apartment, environments, character rigs and synthesized sound created for this project.\nBuilt with Godot 4.6.3, MIT licensed. Font and source technique notices are included with the project.\n\nThank you for spending this night here.",
+  "availability": "PLATFORM 6 CONTINUES. The main story is finite. Journey Mode offers ten authored destinations, remembered returns and optional private words. Both endings have equal access. Return to the apartment or leave whenever you like."
+}

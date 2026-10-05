@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "chapter_id": "still_here",
+  "dimensions": [
+    "joy",
+    "calm",
+    "connection",
+    "wonder",
+    "agency",
+    "energy",
+    "future_pull",
+    "meaning"
+  ],
+  "choices": [
+    {
+      "choice_id": "still_here.begin",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "still_here.ticket.kettle",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "still_here.ticket.drawer",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "still_here.ticket.pocket",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "still_here.ritual.tea",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "still_here.ritual.window",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "still_here.ritual.neither",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "arrival"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "still_here.finish.train",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "settled"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    },
+    {
+      "choice_id": "still_here.finish.sleep",
+      "campaign_chapter": "still_here",
+      "checkpoints": [
+        "settled"
+      ],
+      "consequences": {
+        "dimensions": {},
+        "npc": {}
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+game/.godot/
+delivery/
+evidence/
+**/__pycache__/
+*.blend1
+game/override.cfg
