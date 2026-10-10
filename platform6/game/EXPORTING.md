@@ -1,3 +1,9 @@
+# Opening polish cloud checkpoint (2026-10-10)
+
+The current delivery provides `STILL-HERE-PLATFORM6.pck`, `run.sh` and editable source. Install Godot 4.6.3 Standard and run `godot --main-pack STILL-HERE-PLATFORM6.pck`, or open the source project at `platform6/game/project.godot`. The newly exported pack passed 180 headless boot frames and opened on the cloud X11 Compatibility renderer. Matching standalone templates are unavailable; official download requests returned HTTP 403. No new self-contained executable or mobile export is supplied. See [the fresh checkpoint report](../docs/OPENING_POLISH_2026-10-10.md). All earlier delivery notes below are historical.
+
+---
+
 # Opening refresh delivery (2026-10-05)
 
 The accompanying unsigned Linux x86-64 standalone contains the current opening refresh. Godot’s supported custom-template exporter used the SHA-256-verified Godot 4.6.3 runtime from the prior delivered Linux package. Fresh matching-template storage was unavailable. The original export presets are retained with empty custom-template paths; the temporary export path is not shipped. The newly embedded pack passed 180 headless boot frames and native apartment, roof, dialogue and station checks.

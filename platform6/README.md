@@ -1,3 +1,9 @@
+# Current cloud checkpoint · 2026-10-10
+
+The opening now includes touch exploration and dialogue controls, a staged window latch and postcard turn, readable object framing, and a regression-covered reset-warning fix. All seven campaign chapters and ten Journey destinations are preserved. See [the fresh checkpoint report](docs/OPENING_POLISH_2026-10-10.md) for tests, evidence and limits. Run `game/project.godot` with Godot 4.6.3 Standard; the current delivery supplies a playable PCK requiring that engine, plus editable source. Earlier export and verification reports below are historical.
+
+---
+
 # Current playable milestone · STILL HERE: authored campaign
 
 The Godot game in game/ now includes Chapters One, Two (The Unfinished Fair) Three (A Sky That Fits Through the Door) Four (A Place Before a Task) Five (The Quiet Orchard) and Six (The Return Platform). Save-v1 migration, local fictional consequences, a configurable animated pond race and all authored fair routes are implemented. Chapter Seven (STILL HERE) closes this authored campaign milestone. See game/README.md and docs/HOME_MILESTONE.md for controls, verification and limits.

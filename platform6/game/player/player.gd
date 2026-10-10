@@ -7,6 +7,8 @@ var arm: SpringArm3D
 var visual: Node3D
 const Performer = preload("res://characters/character_performer.gd")
 var nearest: Node3D
+var touch_move := Vector2.ZERO
+var touch_mode := OS.has_feature("mobile") or DisplayServer.is_touchscreen_available()
 func _ready():
 	var capsule = CapsuleShape3D.new()
 	capsule.radius = 0.3
@@ -36,10 +38,23 @@ func _ready():
 	_make_contact_shadow()
 func set_controls_enabled(value: bool):
 	enabled = value
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if value else Input.MOUSE_MODE_VISIBLE
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if value and not touch_mode else Input.MOUSE_MODE_VISIBLE
 	if not enabled:
+		touch_move = Vector2.ZERO
 		velocity = Vector3.ZERO
 		if visual: visual.set_locomotion(0.0)
+func set_touch_mode(value: bool):
+	if touch_mode == value: return
+	touch_mode = value
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if enabled and not value else Input.MOUSE_MODE_VISIBLE
+func look_by(relative: Vector2):
+	if not enabled: return
+	pivot.rotation.y -= relative.x * 0.003 * preferences.sensitivity
+	arm.rotation.x = clamp(arm.rotation.x - relative.y * 0.0025 * preferences.sensitivity,-0.65,0.65)
+func reset_view():
+	if not enabled: return
+	pivot.rotation.y = 0
+	arm.rotation.x = -0.22
 func set_preferences(settings: Dictionary):
 	preferences = settings.duplicate(true)
 	if visual: visual.apply_preferences(bool(preferences.get("reduced_motion",false)))
@@ -48,11 +63,9 @@ func set_preferences(settings: Dictionary):
 func _unhandled_input(event):
 	if not enabled: return
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		pivot.rotation.y -= event.relative.x * 0.003 * preferences.sensitivity
-		arm.rotation.x = clamp(arm.rotation.x - event.relative.y * 0.0025 * preferences.sensitivity,-0.65,0.65)
+		look_by(event.relative)
 	if event.is_action_pressed("reset_camera"):
-		pivot.rotation.y = 0
-		arm.rotation.x = -0.22
+		reset_view()
 	if event.is_action_pressed("interact") and is_instance_valid(nearest): interact.emit(nearest)
 func _physics_process(delta):
 	nearest = null
@@ -65,7 +78,7 @@ func _physics_process(delta):
 	if not enabled: return
 	pivot.rotation.y -= Input.get_axis("look_left","look_right") * delta * 1.8 * preferences.sensitivity
 	arm.rotation.x = clamp(arm.rotation.x + Input.get_axis("look_up","look_down") * delta * 1.2 * preferences.sensitivity,-0.65,0.65)
-	var input = Input.get_vector("move_left","move_right","move_forward","move_back")
+	var input = (Input.get_vector("move_left","move_right","move_forward","move_back") + touch_move).limit_length()
 	var direction = pivot.global_basis * Vector3(input.x,0,input.y)
 	velocity.x = move_toward(velocity.x,direction.x*4.2,delta*15)
 	velocity.z = move_toward(velocity.z,direction.z*4.2,delta*15)

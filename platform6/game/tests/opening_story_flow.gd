@@ -62,6 +62,7 @@ func run():
 	var latch = prop(game, "WindowLatch")
 	check(latch != null, "carriage latch described by the conductor exists physically")
 	game.dispatch("dialogue", "train_window")
+	await create_timer(1.1).timeout
 	latch = prop(game, "WindowLatch")
 	check(latch != null and abs(latch.rotation.z) > 0.1, "window observation physically lifts the latch")
 	var pane = prop(game, "SlidingWindow")
@@ -126,6 +127,7 @@ func run():
 	check(game.player.position.is_equal_approx(Vector3(0.3, 0.1, -2.0)), "sitting for breakfast does not teleport to the carriage entrance")
 	close(game)
 	game.dispatch("dialogue", "breakfast_postcard")
+	await create_timer(1.2).timeout
 	var card = world(game).get_node_or_null("FairPostcard")
 	check(card != null and abs(card.rotation.z) > 3.0, "turning the postcard physically shows its reverse")
 	close(game)

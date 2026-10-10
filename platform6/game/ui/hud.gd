@@ -26,6 +26,9 @@ var pause_active := false
 var paused_context = {}
 var holding: Control
 var layout_mode := "center"
+var touch_choices: Dictionary = {}
+var touch_read_finger := -1
+var touch_mouse_guard := 0
 func _ready():
 	authored = JSON.parse_string(FileAccess.get_file_as_string("res://data/chapter.json"))
 	if FileAccess.file_exists("res://data/fair.json"):
@@ -113,6 +116,7 @@ func _ready():
 		overlay_label.add_theme_constant_override("outline_size", 5)
 	modal.hide()
 func clear():
+	cancel_touch_choices()
 	layout_mode = "center"
 	modal.position.x = -360
 	modal.custom_minimum_size.x = 720
@@ -138,7 +142,7 @@ func text(value: String, size_: int = 23):
 func button(label: String, callback: Callable):
 	var b = Button.new()
 	b.text = label
-	b.custom_minimum_size.y = 46
+	b.custom_minimum_size.y = 52
 	b.set_meta("base_font_size",19)
 	b.add_theme_font_size_override("font_size",int(19*settings.get("text_scale",1.0)))
 	b.pressed.connect(callback)
@@ -166,12 +170,18 @@ func show_dialogue(id: String, snapshot: Dictionary = {}):
 		var b = button(option.label,func(): choice.emit(option.action,option.get("value",null)))
 		if first == null: first = b
 	button("Back · Esc / B",func(): close_modal(); dismissed.emit())
+	if id in ["train_window", "breakfast_postcard"] and settings.get("text_scale",1.0) <= 1.25:
+		layout_mode = "everyday"
+		modal.custom_minimum_size.x = 520
+		content.get_parent().custom_minimum_size.x = 460
+		for child in content.get_children(): child.custom_minimum_size.x = 460
 	first.grab_focus()
 func close_modal():
 	if pause_active:
 		resume_pause()
 	else: modal.hide()
 func close_all():
+	cancel_touch_choices()
 	pause_active = false
 	paused_context = {}
 	if is_instance_valid(holding): holding.queue_free()
@@ -202,6 +212,8 @@ func resume_pause():
 
 func modal_visible() -> bool: return modal.visible
 func set_prompt(value: String): prompt.text = value
+func set_control_mode(touch_mode: bool):
+	controls.text = "Touch circle · Walk    Drag right side · Look    Interact · Nearby object    Pause · Choices and settings" if touch_mode else "WASD / left stick · Move    Mouse / right stick · Look    E / A · Interact    R · Reset view    Esc / P / Menu · Pause"
 func set_chapter(data: Dictionary):
 	objective.visible = data.get("campaign_chapter", "platform_six") == "platform_six"
 	if objective.visible:
@@ -333,6 +345,7 @@ func set_subtitle(value: String):
 	subtitle.visible = settings.get("subtitles",true)
 
 func _process(delta):
+	touch_mouse_guard = maxi(0,touch_mouse_guard - 1)
 	var viewport_size = get_viewport().get_visible_rect().size
 	var notice_height = max(48,notice.get_minimum_size().y + 12)
 	notice.offset_top = -notice_height
@@ -348,24 +361,67 @@ func _process(delta):
 	modal.reset_size()
 	if layout_mode == "cinematic":
 		modal.position = Vector2((viewport_size.x - modal.size.x) * 0.5, max(12.0, viewport_size.y - modal.size.y - 38))
-	elif layout_mode == "shore":
+	elif layout_mode in ["shore", "everyday"]:
 		modal.position = Vector2(max(12.0, viewport_size.x - modal.size.x - 28), (viewport_size.y - modal.size.y) * 0.5)
 	else: modal.position = (viewport_size - modal.size) * 0.5
 	var stick = Input.get_axis("look_up","look_down")
 	if abs(stick) > 0.2: scroll.scroll_vertical += int(stick * delta * 600)
 
 func _input(event):
+	# Godot's mouse emulation follows only the primary touch. Handle authored
+	# choices directly so a second finger can choose while the first is held.
+	if event is InputEventMouseButton and event.device < 0 and touch_mouse_guard > 0:
+		get_viewport().set_input_as_handled()
+		return
 	if not modal.visible: return
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			for button_ in footer.get_children():
+				if button_ is Button and not button_.disabled and button_.get_global_rect().has_point(event.position):
+					touch_choices[event.index] = button_
+					button_.modulate = Color("e5c58c")
+					button_.grab_focus()
+					touch_mouse_guard = 2
+					get_viewport().set_input_as_handled()
+					return
+			if content.get_children().all(func(child): return child is Label) and content.get_parent().get_global_rect().has_point(event.position):
+				touch_read_finger = event.index
+				touch_mouse_guard = 2
+				get_viewport().set_input_as_handled()
+		elif touch_choices.has(event.index):
+			var button_: Button = touch_choices[event.index]
+			touch_choices.erase(event.index)
+			touch_mouse_guard = 2
+			get_viewport().set_input_as_handled()
+			if is_instance_valid(button_):
+				button_.modulate = Color.WHITE
+				if not event.canceled and not button_.disabled and button_.get_parent() == footer and button_.is_visible_in_tree() and button_.get_global_rect().has_point(event.position): button_.pressed.emit()
+		elif event.index == touch_read_finger:
+			touch_read_finger = -1
+			touch_mouse_guard = 2
+			get_viewport().set_input_as_handled()
+	elif event is InputEventScreenDrag and event.index == touch_read_finger:
+		content.get_parent().scroll_vertical -= int(event.relative.y)
+		get_viewport().set_input_as_handled()
 	if event.is_action_pressed("ui_page_down") or event.is_action_pressed("ui_page_up"):
 		content.get_parent().scroll_vertical += 180 if event.is_action_pressed("ui_page_down") else -180
 		get_viewport().set_input_as_handled()
+
+func cancel_touch_choices():
+	for button_ in touch_choices.values():
+		if is_instance_valid(button_): button_.modulate = Color.WHITE
+	touch_choices.clear()
+	touch_read_finger = -1
+
+func _notification(what):
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT: cancel_touch_choices()
 
 func show_controls():
 	clear()
 	modal.show()
 	text("Controls",28)
 	text("WASD / arrows or left stick: walk\nMouse or right stick: look around\nE / A: interact with the labelled nearby object\nEnter / A: choose; arrows / D-pad: change choice\nR / right-stick click: reset your view\nEsc / B: back; P / Menu: pause even during a conversation\nPageUp / PageDown, wheel or right stick: read long text",20)
-	text("Walk toward a label until the interaction prompt appears. There is no timer. The viewing marker also offers Assist. In Settings, Reduced motion keeps your chosen camera angle and quiets decorative movement.",18)
+	text("Touch: use the left circle to walk and drag the right side to look. Tap Interact near an object; Pause and Reset view stay within reach. Tap dialogue choices to continue or Back to leave.\n\nWalk toward a label until the interaction prompt appears. There is no timer. The viewing marker also offers Assist. In Settings, Reduced motion keeps your chosen camera angle and quiets decorative movement.",18)
 	var back = button("Back to pause",func(): show_pause(settings))
 	back.grab_focus()
 

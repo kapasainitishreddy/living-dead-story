@@ -1,3 +1,9 @@
+## Current opening polish · 2026-10-10
+
+Touch movement, independent camera drag, dialogue selection and prose scrolling now accompany desktop controls. The window latch lifts before sliding; the postcard lifts and turns to reveal its kettle hint. Pause, dismissal, reload and reduced motion preserve settled states. Successful new-journey reset clears stale failed-save warnings. All seven chapters and ten Journey destinations remain intact. See [fresh tests and evidence](../docs/OPENING_POLISH_2026-10-10.md). The current playable PCK requires Godot 4.6.3 Standard; no new self-contained executable is supplied. Earlier package claims below are historical.
+
+---
+
 ## Current opening refresh · 2026-10-05
 
 The existing apartment → umbrella → station → carriage → shore → return opening now has physical story props, durable remembered replies, clear next-step objectives, an actual reversible shore-camera puzzle, readable speaker framing and layered roof/coast scenery. Five original stereo arrangements share a restrained motif with softer ambience. See ../docs/OPENING_REFRESH_2026-10-05.md and BUILD_INFO.json in the archive root for this delivery’s actual verification and limits. Previous milestone reports below describe their historical passes.

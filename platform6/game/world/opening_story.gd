@@ -14,6 +14,9 @@ var previewing := false
 var reduced := false
 var paused := false
 var gesture: Tween
+var gesture_finish: Callable
+var local_camera: Camera3D
+var played_beats: Array = []
 var held: Array = []
 var tool_roll: Node3D
 func group(parent: Node3D, id: String, position_: Vector3 = Vector3.ZERO) -> Node3D:
@@ -26,6 +29,7 @@ func cube(parent: Node3D, id: String, position_: Vector3, size_: Vector3, color_
 	return factory.box(parent, id, position_, size_, color_, false)
 func configure(snapshot: Dictionary, protagonist: Node3D):
 	state = snapshot.duplicate(true)
+	played_beats = state.choice_history.duplicate()
 	player = protagonist
 	world = get_parent()
 	props = group(self, "Props")
@@ -140,11 +144,17 @@ func tools_prop():
 		tool_roll.rotation.z = PI / 2
 	elif is_instance_valid(mira): attach_to_hand(tool_roll, mira, "HandLeft", Vector3(0, -0.16, 0.025))
 func window_props():
-	var latch = group(props, "WindowLatch", Vector3(-3.68, 1.81, 1.0))
+	# The finished carriage sill is at 2.02 m. Keep the handle and paper boat
+	# above its seat back, rather than staging them behind the upholstery.
+	var latch = group(props, "WindowLatch", Vector3(-3.59, 2.43, 1.0))
 	cube(latch, "LiftHandle", Vector3(0, 0.07, 0), Vector3(0.045, 0.19, 0.050), Color("c4a374"))
-	var pane = group(props, "SlidingWindow", Vector3(-3.79, 2.54, 1.0))
+	var pane = group(props, "SlidingWindow", Vector3(-3.67, 2.80, 1.0))
 	for y in [-0.61, 0.61]: cube(pane, "HorizontalRail", Vector3(0, y, 0), Vector3(0.06, 0.055, 1.35), Color("b79968"))
 	for z in [-0.64, 0.64]: cube(pane, "VerticalRail", Vector3(0, 0, z), Vector3(0.06, 1.26, 0.055), Color("b79968"))
+	var boat = world.get_node_or_null("PaperBoat")
+	var sail = world.get_node_or_null("PaperSail")
+	if boat != null: boat.position = Vector3(-3.76,2.125,1.08)
+	if sail != null: sail.position = Vector3(-3.76,2.265,1.08)
 	if "platform_six.dialogue.train_window" in state.choice_history or state.checkpoint_id in ["return_train", "breakfast", "complete"]:
 		open_window()
 func open_window():
@@ -153,6 +163,10 @@ func open_window():
 	if latch != null: latch.rotation.z = -0.85
 	if pane != null: pane.position.z = 0.20
 func breakfast_props():
+	# The two authored cups replace the original prototype's glowing sphere.
+	for child in world.get_children():
+		if child is MeshInstance3D and child.mesh is SphereMesh and child.position.is_equal_approx(Vector3(0.5,0.9,-4)):
+			child.hide()
 	var cups = group(props, "BreakfastCups")
 	for x in [-0.38, 0.42]:
 		factory.rounded(cups, "Saucer", Vector3(x, 0.801, -4.04), 0.175, 0.175, 0.018, Color("dfd4b8"))
@@ -173,17 +187,31 @@ func breakfast_props():
 	factory.rounded(jam, "Lid", Vector3(0, 0.073, 0), 0.102, 0.102, 0.025, Color("c2ad83"))
 	var card = world.get_node_or_null("FairPostcard")
 	if card != null:
-		cube(card, "ReverseArrow", Vector3(0, -0.010, 0), Vector3(0.22, 0.003, 0.01), Color("66837d"))
+		# Keep the card in a clear place setting rather than beneath a saucer.
+		card.position = Vector3(-0.79,0.79,-3.72)
+		cube(card, "ReverseArrow", Vector3(0, -0.010, 0.10), Vector3(0.22, 0.003, 0.01), Color("66837d"))
 		for side in [-1.0, 1.0]:
-			var head = cube(card, "ArrowHead", Vector3(0.08, -0.010, side * 0.03), Vector3(0.09, 0.003, 0.01), Color("66837d"))
+			var head = cube(card, "ArrowHead", Vector3(0.08, -0.010, 0.10 + side * 0.03), Vector3(0.09, 0.003, 0.01), Color("66837d"))
 			head.rotation.y = side * 0.65
+		var opening_hours = Label3D.new()
+		opening_hours.name = "HandwrittenOpeningHours"
+		opening_hours.text = "OPEN WHEN\nTHE KETTLE BOILS"
+		opening_hours.font_size = 32
+		opening_hours.pixel_size = 0.0012
+		opening_hours.modulate = Color("425f66")
+		opening_hours.outline_size = 0
+		opening_hours.position = Vector3(0, -0.013, -0.04)
+		opening_hours.basis = Basis(Vector3.RIGHT, PI / 2) * Basis(Vector3.BACK, PI)
+		card.add_child(opening_hours)
 		if "platform_six.dialogue.breakfast_postcard" in state.choice_history: card.rotation.z = PI
 	if state.checkpoint_id == "complete": ticket_prop().position = Vector3(0.38, 0.80, -3.75)
 func local_beat(id: String):
-	if id == "train_window": open_window()
-	if id == "breakfast_postcard":
-		var card = world.get_node_or_null("FairPostcard")
-		if card != null: card.rotation.z = PI
+	finish_gesture()
+	var remembered = "platform_six.dialogue." + id
+	if remembered not in played_beats:
+		played_beats.append(remembered)
+		if id == "train_window": animate_window()
+		if id == "breakfast_postcard": animate_postcard()
 	if id == "passenger_quiet":
 		var roll = tool_roll
 		var mira = world.get_node_or_null("Mira")
@@ -192,6 +220,64 @@ func local_beat(id: String):
 			if roll.get_meta("on_spare_seat", false):
 				roll.set_meta("on_spare_seat", false)
 				attach_to_hand(roll, mira, "HandLeft", Vector3(0, -0.16, 0.025))
+
+func animate_window():
+	var latch = props.get_node_or_null("WindowLatch")
+	var pane = props.get_node_or_null("SlidingWindow")
+	if latch == null or pane == null: return
+	gesture_finish = open_window
+	if reduced:
+		finish_gesture()
+		return
+	gesture = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	gesture.tween_property(latch, "rotation:z", -0.85, 0.28)
+	gesture.tween_interval(0.08)
+	gesture.tween_property(pane, "position:z", 0.20, 0.62)
+	gesture.tween_callback(finish_gesture)
+
+func animate_postcard():
+	var card = world.get_node_or_null("FairPostcard")
+	if card == null: return
+	var resting_height: float = card.position.y
+	gesture_finish = func():
+		if is_instance_valid(card):
+			card.rotation.z = PI
+			card.position.y = resting_height
+	if reduced:
+		finish_gesture()
+		return
+	# Lift before turning so the original card never passes through the table.
+	gesture = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	gesture.tween_property(card, "position:y", resting_height + 0.29, 0.24)
+	gesture.tween_property(card, "rotation:z", PI, 0.62)
+	gesture.tween_property(card, "position:y", resting_height, 0.25)
+	gesture.tween_callback(finish_gesture)
+
+func finish_gesture():
+	if gesture != null and gesture.is_valid(): gesture.kill()
+	gesture = null
+	if gesture_finish.is_valid(): gesture_finish.call()
+	gesture_finish = Callable()
+
+func begin_local_view(id: String):
+	if id not in ["train_window", "breakfast_postcard"] or reduced: return
+	if local_camera == null:
+		local_camera = Camera3D.new()
+		local_camera.name = "EverydayCamera"
+		add_child(local_camera)
+	# Explicit object interactions use stationary cuts. The player's orbit is
+	# retained, and reduced motion leaves the exploration camera untouched.
+	if id == "train_window":
+		local_camera.position = Vector3(-1.95,3.02,2.2)
+		local_camera.look_at(Vector3(-3.64,2.36,1.0), Vector3.UP)
+		local_camera.fov = 43.0
+		local_camera.h_offset = 0.66
+	else:
+		local_camera.position = Vector3(-0.70,1.78,-2.65)
+		local_camera.look_at(Vector3(-0.74,0.87,-3.82), Vector3.UP)
+		local_camera.fov = 43.0
+		local_camera.h_offset = 0.52
+	local_camera.current = true
 func set_alignment(value: int):
 	if framing_camera == null: return
 	# All viewpoints observe the real, authored landmark geometry. The first
@@ -209,6 +295,8 @@ func begin_preview(value: int):
 	previewing = true
 	framing_camera.current = true
 func end_preview():
+	finish_gesture()
+	if local_camera != null: local_camera.current = false
 	if not previewing: return
 	previewing = false
 	if framing_camera != null: framing_camera.current = false
@@ -217,7 +305,13 @@ func end_preview():
 		if camera != null: camera.current = true
 func apply_preferences(value: bool):
 	reduced = value
-	if reduced and gesture != null and gesture.is_running(): gesture.custom_step(100.0)
+	if reduced:
+		finish_gesture()
+		if local_camera != null and local_camera.current:
+			local_camera.current = false
+			if is_instance_valid(player):
+				player.arm.get_child(0).current = true
+				player.visual.visible = player.dialogue_visual_was_visible
 func set_paused(value: bool):
 	paused = value
 	if gesture != null and gesture.is_valid():

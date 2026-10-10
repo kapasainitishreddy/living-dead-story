@@ -80,6 +80,9 @@ godot --headless --path . --script tests/home_save_failures.gd
 godot --headless --path . --script tests/home_sound.gd
 godot --headless --path . --script tests/full_campaign.gd
 godot --headless --path . --script tests/campaign_save_failures.gd
+godot --headless --path . --script tests/reset_save_warning.gd
+godot --headless --path . --script tests/touch_opening.gd
+godot --headless --path . --script tests/opening_everyday_motion.gd
 
 # Original character geometry and runtime-polish regressions.
 python3 ../tools/test_authored_character_assets.py

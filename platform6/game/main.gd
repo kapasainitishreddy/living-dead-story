@@ -9,6 +9,7 @@ var store = Store.new()
 var world_container: Node3D
 var player: CharacterBody3D
 var hud
+var touch
 var audio
 var busy := false
 var paused := false
@@ -85,6 +86,33 @@ func _ready():
 	hud.settings_changed.connect(change_settings)
 	hud.pause_requested.connect(show_pause)
 	hud.quit_requested.connect(request_quit)
+	touch = load("res://ui/touch_controls.gd").new()
+	add_child(touch)
+	touch.modal_open = func(): return hud.modal_visible()
+	touch.movement_changed.connect(func(value):
+		if is_instance_valid(player): player.touch_move = value
+	)
+	touch.look_dragged.connect(func(value):
+		if is_instance_valid(player): player.look_by(value)
+	)
+	touch.interact_pressed.connect(func():
+		if orchard_viewing and not orchard_observation:
+			var state = model.snapshot()
+			if state.orchard_checkpoint == "rest": dispatch_orchard("orchard_finish" if state.orchard.beat >= 3 else "orchard_advance")
+		elif is_instance_valid(player) and player.enabled and is_instance_valid(player.nearest): on_interact(player.nearest)
+	)
+	touch.pause_pressed.connect(func():
+		if hud.pause_active: hud.resume_pause()
+		else: show_pause()
+	)
+	touch.reset_pressed.connect(func():
+		if is_instance_valid(player): player.reset_view()
+	)
+	touch.mode_changed.connect(func(value):
+		if is_instance_valid(player): player.set_touch_mode(value)
+		hud.set_control_mode(value)
+	)
+	hud.set_control_mode(touch.touch_mode)
 	audio = load("res://audio/audio_director.gd").new()
 	add_child(audio)
 	journey = load("res://core/journey_runtime.gd").new()
@@ -94,6 +122,7 @@ func _ready():
 	if not journey.recovery_notice.is_empty(): hud.show_notice(journey.recovery_notice)
 	if loaded.error not in ["","missing"]: hud.show_notice(loaded.error + ". You can continue; damaged data is retained.")
 func route(preserve_opening_position: bool = true):
+	if touch != null: touch.cancel_input()
 	if journey != null and journey.active:
 		journey.route()
 		return
@@ -156,6 +185,7 @@ func route(preserve_opening_position: bool = true):
 			player.visual.rotation.y = previous_body_yaw
 	player.interact.connect(on_interact)
 	player.set_preferences(model.snapshot().settings)
+	player.set_touch_mode(touch.touch_mode)
 	configure_characters(world,model.snapshot().settings)
 	if snapshot.campaign_chapter == "platform_six":
 		opening_story = load("res://world/opening_story.gd").new()
@@ -163,6 +193,7 @@ func route(preserve_opening_position: bool = true):
 		world.add_child(opening_story)
 		opening_story.configure(snapshot, player)
 	hud.apply_settings(model.snapshot().settings)
+	touch.apply_settings(model.snapshot().settings)
 	hud.set_chapter(model.snapshot())
 	var location: String = "the_small_fair" if paper_courtyard else (snapshot.campaign_chapter if snapshot.campaign_chapter != "platform_six" else snapshot.checkpoint_id)
 	hud.set_subtitle(audio.location_profile(location).subtitle)
@@ -178,6 +209,7 @@ func route(preserve_opening_position: bool = true):
 		show_home_notice("")
 		if snapshot.home_checkpoint == "complete": show_home_state()
 func resume_controls():
+	if touch != null and hud.modal_visible(): touch.cancel_input()
 	if is_instance_valid(opening_story):
 		opening_story.set_paused(hud.pause_active)
 		if not hud.modal_visible(): opening_story.end_preview()
@@ -292,6 +324,7 @@ func dispatch(action: String, value: Variant = null):
 		player.set_controls_enabled(false)
 		player.set_framed_view(true)
 		begin_character_conversation(action,value)
+		if is_instance_valid(opening_story): opening_story.begin_local_view(str(value))
 		hud.show_dialogue(str(value), model.snapshot())
 		return
 	if action == "preview_alignment":
@@ -307,6 +340,15 @@ func dispatch(action: String, value: Variant = null):
 		var reset = store.reset_snapshot(save_path)
 		if reset.ok:
 			model = Model.new()
+			# A reset is a successful replacement of the blocked journey. Clear
+			# warning state from every chapter as well as its visible HUD notice;
+			# otherwise the fresh apartment still claims it cannot be saved.
+			campaign_save_warning = ""
+			kitchen_save_warning = ""
+			orchard_save_warning = ""
+			return_save_warning = ""
+			home_save_warning = ""
+			hud.show_notice("")
 			paper_courtyard = false
 			hud.close_all()
 			route(false)
@@ -372,6 +414,7 @@ func change_settings(settings):
 		configure_characters(world_container.get_child(0),settings)
 		if is_instance_valid(opening_story): opening_story.apply_preferences(bool(settings.reduced_motion))
 		hud.apply_settings(settings)
+		touch.apply_settings(settings)
 		audio.apply_settings(settings)
 		if journey != null and journey.active:
 			journey.audio_profile()
@@ -383,6 +426,7 @@ func change_settings(settings):
 		if race != null and race.has_method("apply_preferences"): race.apply_preferences(settings.reduced_motion)
 func show_pause():
 	if busy and not racing: return
+	if touch != null: touch.cancel_input()
 	if is_instance_valid(opening_story): opening_story.set_paused(true)
 	if model.snapshot().get("campaign_chapter", "") == "still_here":
 		world_container.get_child(0).set_paused(true)
@@ -459,9 +503,12 @@ func _process(delta):
 			camera.look_at(marker.get_meta("look_at"),Vector3.UP)
 	update_kitchen_caption(delta)
 	if is_instance_valid(player):
+		player.set_touch_mode(touch.touch_mode)
+		touch.bottom_inset = maxf(72.0,hud.notice.get_minimum_size().y + 24.0)
+		touch.set_available(player.enabled, (player.enabled and is_instance_valid(player.nearest)) or (orchard_viewing and not orchard_observation), not busy or racing)
 		var hint = ""
 		if is_instance_valid(player.nearest) and player.enabled:
-			hint = ("A" if Input.get_connected_joypads().size() else "E") + " · " + str(player.nearest.get_meta("label"))
+			hint = ("Tap Interact" if touch.touch_mode else ("A" if Input.get_connected_joypads().size() else "E")) + " · " + str(player.nearest.get_meta("label"))
 		hud.set_prompt(hint)
 
 func apply_graphics(settings: Dictionary):
