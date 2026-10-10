@@ -1,4 +1,26 @@
 # Asset manifest
+
+## Whole-game illustrated graphics pass (2026-10-10)
+
+Original Godot presentation in `world/illustrated_world.gd` and
+`art/illustrated/`: selective cool ink, matte cel shading, static paper finish,
+painted blossom masses, potted plants, coastal grass, winter branches, distant
+hills, floorboards, paving, linen folds, shore ribbons and framed destination
+signs. These are original project work provided for commercial use with this
+source. Existing original Blender, SVG, music and ambience assets are retained.
+
+Reviewed references: [Sakura Crossing](https://github.com/Kenton-GMI/sakura-crossing),
+its MIT notice and `src/core/toon.js`, inspected 2026-10-10; stepped lighting,
+cool shadows, pale foliage masses and selective contours informed the visual
+direction. This is an original Godot implementation. No Three.js code, bundled
+art or stock music was copied for this pass. The previously included full MIT
+notice in `SAKURA_CROSSING_LICENSE.txt` remains preserved.
+[Hotpot's resource directory](https://github.com/HotpotDesign/Game-Assets-And-Resources)
+does not grant a blanket asset license. No listed asset was downloaded or used;
+no purchase or third-party generation service was needed.
+
+Earlier milestone entries below describe their own historical asset state.
+
 All assets are original for this slice, authored October 3, 2026. No third-party art/music imports or purchases.
 - Procedural environments, simple humanoids, umbrella, water, train and props: authored by the Platform 6 implementation assistant using Godot primitive meshes/materials; original project work, provided for commercial use with this source; game/world/world_factory.gd and game/player/player.gd
 - Night Train pad/bell music: original additive synthesis, deterministic score; game/assets/original/generate_audio.py; game/assets/original/night_train.wav; generated October 3, 2026; original project work, commercial use permitted; no samples

@@ -512,6 +512,17 @@ func _process(delta):
 		hud.set_prompt(hint)
 
 func apply_graphics(settings: Dictionary):
+	var world = world_container.get_child(0)
+	var illustrated = world.get_node_or_null("IllustratedWorld")
+	if illustrated == null:
+		illustrated = load("res://world/illustrated_world.gd").new()
+		illustrated.name = "IllustratedWorld"
+		world.add_child(illustrated)
+		var profile = str(model.snapshot().campaign_chapter)
+		if profile == "platform_six": profile = str(model.snapshot().checkpoint_id)
+		if world.has_meta("journey_id"): profile = "journey_train" if world.get_meta("scene_kind") == "train" else str(world.get_meta("journey_id"))
+		illustrated.configure(world,profile)
+	illustrated.apply_settings(settings)
 	var viewport = get_viewport()
 	var efficient_medium = settings.graphics == "medium" and world_container.get_child(0).get_meta("efficient_medium_aa",false)
 	viewport.msaa_3d = Viewport.MSAA_DISABLED if settings.graphics == "low" or efficient_medium else Viewport.MSAA_2X

@@ -1,4 +1,20 @@
-## Current opening polish · 2026-10-10
+## Current illustrated graphics · 2026-10-10
+
+All seven campaign chapters and all ten Journey destinations now share matte
+cel shading, selective cool outlines and a restrained static paper finish.
+Location dressing includes original blossom planters, winter branches, coastal
+grass, hills, floorboards, paving, curtains and physical destination signs.
+The existing painted panoramas, original character rigs, story, save format,
+touch controls and reduced-motion options are retained. This is a Sakura
+Crossing-inspired visual milestone, with original Godot art and code; character
+art and destination environments still need final production refinement.
+See [scope, fresh checks and renderer evidence](../docs/ILLUSTRATED_GRAPHICS_2026-10-10.md).
+The playable checkpoint requires Godot 4.6.3 Standard. Earlier package and test
+claims below describe historical milestones.
+
+---
+
+## Opening polish · 2026-10-10
 
 Touch movement, independent camera drag, dialogue selection and prose scrolling now accompany desktop controls. The window latch lifts before sliding; the postcard lifts and turns to reveal its kettle hint. Pause, dismissal, reload and reduced motion preserve settled states. Successful new-journey reset clears stale failed-save warnings. All seven chapters and ten Journey destinations remain intact. See [fresh tests and evidence](../docs/OPENING_POLISH_2026-10-10.md). The current playable PCK requires Godot 4.6.3 Standard; no new self-contained executable is supplied. Earlier package claims below are historical.
 

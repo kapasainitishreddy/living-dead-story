@@ -1,3 +1,18 @@
+# Illustrated graphics cloud checkpoint (2026-10-10)
+
+The current checkpoint covers all seven chapters and ten Journey destinations.
+Run `godot --main-pack STILL-HERE-PLATFORM6.pck` with Godot 4.6.3 Standard,
+or open the editable `platform6/game/project.godot` and press F5.
+The PCK accompanies editable source and renderer evidence in the cloud delivery
+folder. Matching standalone templates remain unavailable (official requests
+returned HTTP 403); no new self-contained executable or mobile export is supplied.
+See [current validation and limits](../docs/ILLUSTRATED_GRAPHICS_2026-10-10.md).
+Local cloud files have not been uploaded to the user's Library: its prepared
+upload connection returned HTTP 403 before any write. No download delivery is
+claimed. Earlier package notes below are historical.
+
+---
+
 # Opening polish cloud checkpoint (2026-10-10)
 
 The current delivery provides `STILL-HERE-PLATFORM6.pck`, `run.sh` and editable source. Install Godot 4.6.3 Standard and run `godot --main-pack STILL-HERE-PLATFORM6.pck`, or open the source project at `platform6/game/project.godot`. The newly exported pack passed 180 headless boot frames and opened on the cloud X11 Compatibility renderer. Matching standalone templates are unavailable; official download requests returned HTTP 403. No new self-contained executable or mobile export is supplied. See [the fresh checkpoint report](../docs/OPENING_POLISH_2026-10-10.md). All earlier delivery notes below are historical.

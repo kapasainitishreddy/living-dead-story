@@ -1,5 +1,18 @@
 # Current cloud checkpoint · 2026-10-10
 
+All seven campaign chapters and all ten Journey destinations now have a Sakura
+Crossing-inspired illustrated graphics pass: matte cel shading, selective cool
+outlines, original foliage and scenic dressing, physical destination signs and
+a restrained static paper finish. Existing story, saves, painted art, animation,
+touch controls and reduced motion are retained. See [the current graphics report](docs/ILLUSTRATED_GRAPHICS_2026-10-10.md)
+for fresh verification and evidence. Run `game/project.godot` in Godot 4.6.3
+Standard, or use the playable PCK with that engine. Earlier checkpoint claims
+below describe historical runs.
+
+---
+
+## Opening polish checkpoint · 2026-10-10
+
 The opening now includes touch exploration and dialogue controls, a staged window latch and postcard turn, readable object framing, and a regression-covered reset-warning fix. All seven campaign chapters and ten Journey destinations are preserved. See [the fresh checkpoint report](docs/OPENING_POLISH_2026-10-10.md) for tests, evidence and limits. Run `game/project.godot` with Godot 4.6.3 Standard; the current delivery supplies a playable PCK requiring that engine, plus editable source. Earlier export and verification reports below are historical.
 
 ---
