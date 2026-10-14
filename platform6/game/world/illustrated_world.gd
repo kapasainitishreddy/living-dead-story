@@ -29,6 +29,7 @@ func configure(world: Node3D, key: String):
 	_ground_accents()
 	_framed_title()
 	_illustrated_sky()
+	preload("res://art/sakura/sakura_style.gd").light_scene(scene)
 	var layer = CanvasLayer.new()
 	layer.name = "PaperFinish"
 	layer.layer = -1 # Grade the 3D picture; HUD and touch controls stay untouched.
@@ -319,18 +320,12 @@ func _flowers(where: Vector3, size_: float):
 	_batch("PaintedFlowerClusters",_bud(),transforms,colours,true)
 
 func _birds(where: Vector3, count: int):
-	# Static perched flock. Reduced motion is unknown at build time, so the
-	# birds never process and never change their node transform.
-	var transforms: Array[Transform3D] = []
-	var colours: Array[Color] = []
-	for i in range(count):
-		var angle = i * 2.39996
-		var spread = 0.30 + 0.13*(i%3)
-		var pos = where + Vector3(sin(angle)*spread,0.09*(i%2),cos(angle)*spread)
-		var basis = Basis(Vector3.UP,angle).scaled(Vector3(0.13,0.11,0.17))
-		transforms.append(Transform3D(basis,pos))
-		colours.append([Color("454052"),Color("575166"),Color("6a6478")][i%3])
-	_batch("PaintedBirdFlock",_bud(),transforms,colours)
+	# Sakura pass: a small animated flock (hop/peck/glance/flutter). It reads
+	# reduced motion at runtime from the protagonist and then holds still.
+	var flock = preload("res://world/sakura_birds.gd").new()
+	flock.position = where
+	detail.add_child(flock)
+	flock.configure(count)
 
 func _grass(where: Vector3, size_: float):
 	var transforms: Array[Transform3D] = []

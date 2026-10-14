@@ -80,8 +80,18 @@ func _physics_process(delta):
 	arm.rotation.x = clamp(arm.rotation.x + Input.get_axis("look_up","look_down") * delta * 1.2 * preferences.sensitivity,-0.65,0.65)
 	var input = (Input.get_vector("move_left","move_right","move_forward","move_back") + touch_move).limit_length()
 	var direction = pivot.global_basis * Vector3(input.x,0,input.y)
-	velocity.x = move_toward(velocity.x,direction.x*4.2,delta*15)
-	velocity.z = move_toward(velocity.z,direction.z*4.2,delta*15)
+	# Critically-damped approach to the wish velocity (Sakura Crossing, MIT):
+	# eases in and out instead of the old linear ramp; stopping is a touch firmer.
+	var wish = direction * 4.2
+	var accel_rate = 9.0 if direction.length() > 0.1 else 12.0
+	var a = 1.0 - exp(-accel_rate * delta)
+	velocity.x = lerpf(velocity.x, wish.x, a)
+	velocity.z = lerpf(velocity.z, wish.z, a)
+	if direction.length() <= 0.1:
+		# Finish the ease-out cleanly: no endless sub-millimetre creep.
+		var flat = Vector2(velocity.x, velocity.z).move_toward(Vector2.ZERO, delta * 2.0)
+		velocity.x = flat.x
+		velocity.z = flat.y
 	if not is_on_floor(): velocity.y -= 18*delta
 	else: velocity.y = 0
 	move_and_slide()
@@ -95,7 +105,7 @@ func _physics_process(delta):
 
 func gait_weight(delta: float) -> float:
 	# Frame-rate independent damping, inspired by Sakura Crossing (MIT).
-	return 1.0-exp(-10.0*delta)
+	return 1.0-exp(-7.5*delta)
 
 var framed := false
 var normal_yaw := 0.0
