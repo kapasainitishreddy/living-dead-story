@@ -10,6 +10,22 @@ const MODELS = {
 	"conductor":"res://assets/characters/conductor/conductor.glb",
 	"jo":"res://assets/characters/jo/jo.glb"
 }
+# Real-model pass: CC0 Kenney Mini Characters stand in for the primitive look.
+# The original rig still loads (sockets, tests, facial contracts) but is hidden.
+const STYLIZED = {
+	"protagonist":"res://assets/third_party/kenney_mini_characters/character-male-a.glb",
+	"mira":"res://assets/third_party/kenney_mini_characters/character-female-b.glb",
+	"ada":"res://assets/third_party/kenney_mini_characters/character-female-c.glb",
+	"noor":"res://assets/third_party/kenney_mini_characters/character-female-a.glb",
+	"rafi":"res://assets/third_party/kenney_mini_characters/character-male-b.glb",
+	"conductor":"res://assets/third_party/kenney_mini_characters/character-male-c.glb",
+	"jo":"res://assets/third_party/kenney_mini_characters/character-male-e.glb"
+}
+const STYLIZED_SCALE := 1.95
+const StylizedRig = preload("res://characters/stylized_rig.gd")
+var stylized: Node3D
+var stylized_hand: BoneAttachment3D
+var was_conversing := false
 const MAX_HEAD_YAW := 0.58
 const MAX_HEAD_PITCH := 0.24
 const MAX_EYE_YAW := 0.18
@@ -97,6 +113,27 @@ func _load_rig():
 	_build_animation_tree()
 	preload("res://art/sakura/sakura_style.gd").stylize_rig(model)
 	if character_id == "mira": _load_camera()
+	if STYLIZED.has(character_id): _load_stylized()
+
+func _load_stylized():
+	stylized = StylizedRig.new().setup(STYLIZED[character_id], STYLIZED_SCALE,
+		{"idle":"idle","walk":"walk","run":"sprint","sit":"sit","gesture":"emote-yes" if character_id == "mira" else "interact-right"}, 1.3, 4.2)
+	add_child(stylized)
+	for g in model.find_children("*","GeometryInstance3D",true,false): g.visible = false
+	if stylized.skeleton:
+		# Props (Mira's camera) follow the real model's hand from now on.
+		stylized_hand = BoneAttachment3D.new()
+		stylized_hand.name = "StylizedRightHandSocket"
+		stylized_hand.use_external_skeleton = true
+		add_child(stylized_hand)
+		stylized_hand.external_skeleton = stylized_hand.get_path_to(stylized.skeleton)
+		stylized_hand.bone_name = "arm-right"
+		prop_socket = stylized_hand
+		var cam = props.get("camera", null)
+		if is_instance_valid(cam):
+			cam.reparent(stylized_hand, false)
+			cam.transform = Transform3D(Basis().scaled(Vector3.ONE * 0.45), Vector3(-0.07, -0.03, 0.085))
+	stylized.set_reduced(reduced_motion)
 
 func _bone_index(bone_name: String) -> int:
 	var index = skeleton.find_bone(bone_name)
@@ -215,6 +252,7 @@ func apply_preferences(reduced: bool):
 		# Preference changes settle a dart immediately, including paused staging.
 		eye_yaw = 0.0
 		eye_pitch = 0.0
+	if stylized: stylized.set_reduced(reduced)
 	if animation_tree:
 		_update_blend_parameters()
 		animation_tree.advance(0.0)
@@ -253,6 +291,14 @@ func advance_performance(delta: float):
 	animation_tree.advance(delta)
 	_apply_gaze_and_face()
 	_apply_body_layer(delta)
+	if stylized:
+		if conversing and not was_conversing: stylized.gesture()
+		was_conversing = conversing
+		stylized.set_speed(0.0 if conversing else speed)
+		stylized.set_sitting(float(get("seated_offset") if get("seated_offset") != null else 0.0) < -0.05)
+		stylized.advance(delta)
+		stylized.position = Vector3(0, maxf(model.position.y, 0.0), 0)
+		stylized.rotation = Vector3(model.rotation.x * 0.5, 0.0, model.rotation.z * 0.5)
 
 func _apply_body_layer(delta: float):
 	# Soft procedural layer on top of the authored clips: footfall bounce with a

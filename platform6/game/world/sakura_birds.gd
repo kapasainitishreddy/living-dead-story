@@ -4,6 +4,7 @@ extends Node3D
 # Reduced motion (read from the protagonist performer) holds a still perch.
 const Style = preload("res://art/sakura/sakura_style.gd")
 var birds: Array = []
+const BIRD_MODELS = ["res://assets/third_party/kenney_cube_pets/animal-chick.glb", "res://assets/third_party/kenney_cube_pets/animal-parrot.glb"]
 var time := 0.0
 var _shared_sphere: SphereMesh
 func configure(count: int):
@@ -31,7 +32,18 @@ func configure(count: int):
 			_blob(pivot, Vector3(side * 0.03, 0, 0.02), Vector3(0.035, 0.012, 0.075), tone.darkened(0.15))
 			wings.append(pivot)
 		var tail = body # tail flick is carried by the body tip (triangle budget)
-		birds.append({"root": root, "head": head, "wings": wings, "tail": tail, "home": root.position, "yaw": angle, "seed": i * 1.731, "hop": 0.0})
+		# Real CC0 Kenney Cube Pets bird with its own idle/walk/eat clips.
+		var real = (load(BIRD_MODELS[i % 2]) as PackedScene).instantiate()
+		real.scale = Vector3.ONE * 0.11
+		real.rotation.y = PI
+		root.add_child(real)
+		var ap: AnimationPlayer = real.find_children("*", "AnimationPlayer", true, false)[0]
+		for clip in ["idle", "eat", "walk", "dance"]: ap.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
+		ap.play("idle")
+		ap.seek(fposmod(i * 0.37, 1.0), true)
+		for m in [body, head, tail] + wings:
+			for g in ([m] if m is GeometryInstance3D else m.find_children("*", "GeometryInstance3D", true, false)): g.visible = false
+		birds.append({"anim": ap, "clip": "idle", "root": root, "head": head, "wings": wings, "tail": tail, "home": root.position, "yaw": angle, "seed": i * 1.731, "hop": 0.0})
 	for g in find_children("*", "GeometryInstance3D", true, false):
 		g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
@@ -61,6 +73,7 @@ func _process(delta: float):
 			b.root.rotation = Vector3(0, b.yaw, 0)
 			b.head.rotation = Vector3.ZERO
 			for w in b.wings: w.rotation = Vector3.ZERO
+			if b.anim.is_playing(): b.anim.pause()
 		return
 	time += delta
 	for b in birds:
@@ -82,6 +95,10 @@ func _process(delta: float):
 			var f = fposmod(t + b.seed, 21.0) / 1.6
 			lift = sin(f * PI) * 0.55
 			flap = sin(t * 38.0)
+		var want = "eat" if peck > 0.0 else ("dance" if flap != 0.0 else ("walk" if lift > 0.0 else "idle"))
+		if want != b.clip or not b.anim.is_playing():
+			b.clip = want
+			b.anim.play(want, 0.2)
 		var k = 1.0 - exp(-12.0 * delta)
 		var target = b.home + Vector3(0, lift, 0)
 		b.root.position = b.root.position.lerp(target, k)

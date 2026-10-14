@@ -30,6 +30,7 @@ func configure(world: Node3D, key: String):
 	_framed_title()
 	_illustrated_sky()
 	preload("res://art/sakura/sakura_style.gd").light_scene(scene)
+	if profile in SPRING_DAY: _spring_day()
 	var layer = CanvasLayer.new()
 	layer.name = "PaperFinish"
 	layer.layer = -1 # Grade the 3D picture; HUD and touch controls stay untouched.
@@ -42,6 +43,7 @@ func configure(world: Node3D, key: String):
 	paper.material = finish
 	layer.add_child(paper)
 	set_meta("added_triangles",_detail_triangles())
+	set_meta("spring_day", profile in SPRING_DAY)
 
 func apply_settings(settings: Dictionary):
 	outlined_surfaces = 0
@@ -100,7 +102,110 @@ func _select_ink(item: MeshInstance3D) -> bool:
 		if word in path: return true
 	return false
 
+const SPRING_DAY = ["roof", "platform", "conductor", "overlook", "camera_choice", "optional_action"]
+const NATURE = "res://assets/third_party/kenney_nature_kit/%s.glb"
+
+func _prop(id: String, where: Vector3, size_: float, yaw := 0.0):
+	# CC0 Kenney Nature Kit prop: static, collision-free, shadows only on trees.
+	var node = (load(NATURE % id) as PackedScene).instantiate()
+	node.name = "Kenney_" + id
+	node.position = where
+	node.scale = Vector3.ONE * size_
+	node.rotation.y = yaw
+	detail.add_child(node)
+	if not id.begins_with("tree"): _no_shadows(node)
+	_spring_tint(node, id)
+	return node
+
+func _spring_tint(node: Node, id: String):
+	# Kit greens read teal under the warm grade; push foliage to spring tones:
+	# blossom-pink tree canopies, fresh green bushes and grass.
+	var leaf = Color("f3b9cb") if id.begins_with("tree") else Color("93c46f")
+	for m in node.find_children("*", "MeshInstance3D", true, false):
+		for i in m.mesh.get_surface_count():
+			var mat = m.mesh.surface_get_material(i)
+			if not mat is StandardMaterial3D: continue
+			var c: Color = mat.albedo_color
+			if c.g > c.r and c.g >= c.b * 0.9:
+				var key = "tint:" + str(mat.get_instance_id()) + id.substr(0, 4)
+				if not materials.has(key):
+					var copy: StandardMaterial3D = mat.duplicate()
+					copy.albedo_color = leaf
+					copy.set_meta("illustrated_owned", true)
+					materials[key] = copy
+				m.set_surface_override_material(i, materials[key])
+
+func _nature_ring(origin: Vector3, side: float):
+	_prop("tree_oak", origin, 3.2, 0.4)
+	_prop("plant_bushLarge", origin + Vector3(side * -1.2, 0, 1.3), 3.0)
+	_prop("flower_redA", origin + Vector3(side * -1.7, 0, 0.2), 2.4)
+	_prop("flower_yellowA", origin + Vector3(side * -1.9, 0, 0.8), 2.4, 1.0)
+
+func _platform_garden():
+	# Planted strip along the station wall: bushes and spring flowers (CC0 Kenney).
+	for z in [-6.0, 0.5, 6.5]:
+		_prop("plant_bushLarge", Vector3(-7.0, 0, z), 2.0, z)
+		_prop("flower_redA", Vector3(-6.7, 0, z + 0.9), 2.2, z)
+		_prop("flower_yellowA", Vector3(-6.9, 0, z + 1.5), 2.2, z * 0.5)
+	_prop("tree_default", Vector3(-6.6, 0, -11.0), 2.4, 0.6)
+
+func _spring_day():
+	# Bright, warm spring daytime (Sakura Crossing mood): pastel sky, low warm
+	# sun with soft shadows, light ambient. One shadowed light keeps it mobile-cheap.
+	scene.set_meta("time_state", "day")
+	for node in scene.find_children("*", "WorldEnvironment", true, false):
+		var env: Environment = node.environment
+		if env == null: continue
+		var sky = ProceduralSkyMaterial.new()
+		sky.sky_top_color = Color("8ec5ec")
+		sky.sky_horizon_color = Color("fde6dc")
+		sky.ground_horizon_color = Color("f6dccd")
+		sky.ground_bottom_color = Color("c9d8b4")
+		sky.sun_angle_max = 8.0
+		sky.sky_curve = 0.12
+		var res = Sky.new()
+		res.radiance_size = Sky.RADIANCE_SIZE_32
+		res.process_mode = Sky.PROCESS_MODE_QUALITY
+		res.sky_material = sky
+		env.sky = res
+		if not sky_environments.has(env): sky_environments.append(env)
+		env.background_mode = Environment.BG_SKY
+		env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+		env.ambient_light_color = Color("fff1e6")
+		env.ambient_light_energy = 0.42
+		env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+		env.tonemap_exposure = 0.92
+		env.tonemap_white = 1.6
+		env.fog_enabled = true
+		env.fog_mode = Environment.FOG_MODE_DEPTH
+		env.fog_light_color = Color("fbe3df")
+		env.fog_light_energy = 1.0
+		env.fog_density = 0.35
+		env.fog_depth_begin = 28.0
+		env.fog_depth_end = 110.0
+	var key: DirectionalLight3D = null
+	for light in scene.find_children("*", "DirectionalLight3D", true, false):
+		if key == null and light.shadow_enabled: key = light
+		else: light.light_energy = minf(light.light_energy, 0.25)
+	if key == null:
+		key = DirectionalLight3D.new()
+		scene.add_child(key)
+	key.name = "SpringSun"
+	key.rotation_degrees = Vector3(-42, -35, 0)
+	key.light_color = Color("fff0d6")
+	key.light_energy = 1.05
+	key.shadow_enabled = true
+	key.shadow_blur = 2.2
+	key.shadow_opacity = 0.55
+	key.directional_shadow_max_distance = 30.0
+	key.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+	# Night-only weather and lamp glow make no sense at noon.
+	for n in scene.find_children("Rain*", "", true, false): if n is Node3D: n.visible = false
+	for l in scene.find_children("*", "OmniLight3D", true, false): l.light_energy *= 0.35
+	for l in scene.find_children("*", "SpotLight3D", true, false): l.light_energy *= 0.35
+
 func _night() -> bool:
+	if profile in SPRING_DAY: return false
 	if scene.has_meta("time_state"): return scene.get_meta("time_state") in ["night","dusk"]
 	return profile not in ["quiet_orchard"]
 
@@ -142,26 +247,27 @@ func _build_details():
 	match profile:
 		"apartment", "still_here": _plant(Vector3(4.87,1.42,-3.1),0.38,Color("9daa88"))
 		"roof":
-			_tree(Vector3(-7.8,0,-5.5),0.85); _tree(Vector3(8.2,0,-7.8),0.78)
+			_tree(Vector3(-7.8,0,-5.5),0.85)
 			_sapling(Vector3(-8.4,0,3.6),0.9); _sapling(Vector3(8.3,0,3.4),0.88)
 			_potted(Vector3(-6.4,0,2.5),0.9,Color("8ea389"))
 			_flowers(Vector3(-5.7,0,4.3),0.9)
-			_birds(Vector3(6.6,3.0,3.0),4)
+			_birds(Vector3(6.6,3.0,3.0),3)
+			_nature_ring(Vector3(-9.6,0,-1.5),-1.0); _nature_ring(Vector3(9.8,0,-3.0),1.0)
 		"platform", "conductor", "return_platform":
 			_plant(Vector3(-7.45,0,-6.2),1.15,Color("839d88")); _plant(Vector3(-7.4,0,5.0),0.9,Color("93a18a"))
-			_tree(Vector3(-8.4,0,-10.6),0.7)
 			_sapling(Vector3(-6.1,0,9.4),0.8)
 			_potted(Vector3(-5.7,0,8.2),0.82,Color("8ea389"))
 			_flowers(Vector3(-8.4,0,10.2),0.85)
-			_birds(Vector3(6.9,3.95,2.2),4)
+			_birds(Vector3(6.9,3.95,2.2),3)
+			_platform_garden()
 		"passenger", "shoreline", "return_train", "breakfast", "complete", "journey_train": _plant(Vector3(-2.7,0,-8.6),0.72,Color("879e8a"))
 		"overlook", "camera_choice", "optional_action":
 			_grass(Vector3(-8,0,-6),1.4); _grass(Vector3(7.8,0,-3),1.3)
-			_tree(Vector3(-8.5,0,-8.6),0.75)
 			_sapling(Vector3(8.4,0,-6.4),0.8)
 			_potted(Vector3(6.9,0,-5.2),0.82,Color("8ea389"))
 			_flowers(Vector3(8.6,0,-3.4),0.85)
-			_birds(Vector3(7.0,2.6,-4.4),4)
+			_birds(Vector3(7.0,2.6,-4.4),3)
+			_nature_ring(Vector3(-10.0,0,-4.0),-1.0); _nature_ring(Vector3(10.0,0,-6.0),1.0)
 		"the_small_fair": _tree(Vector3(-8.5,0,-7.5),0.98); _tree(Vector3(8.8,0,-8.8),0.9)
 		"paper_sky": _plant(Vector3(-6.9,0,-5.4),0.95,Color("8d9b7d")); _plant(Vector3(6.6,0,2.7),0.8,Color("819680"))
 		"night_kitchen": _plant(Vector3(-6.5,0,-5.7),0.9,Color("95a47e")); _plant(Vector3(6.4,0,4.8),0.8,Color("8a9b7f"))
@@ -399,11 +505,19 @@ func _framed_title():
 	title.position = center + Vector3(0,0.14,0.085)
 	note.position = center + Vector3(0,-0.16,0.085)
 
+func _shown(item: Node) -> bool:
+	# Hidden legacy primitives (replaced by real models) are never drawn.
+	var n = item
+	while n != null and n != detail:
+		if n is Node3D and not n.visible: return false
+		n = n.get_parent()
+	return true
+
 func _detail_triangles() -> int:
 	var count := 0
 	for item in detail.find_children("*","GeometryInstance3D",true,false):
 		var shape: Mesh = item.mesh if item is MeshInstance3D else (item.multimesh.mesh if item is MultiMeshInstance3D else null)
-		if shape == null: continue
+		if shape == null or not _shown(item): continue
 		var instances: int = item.multimesh.instance_count if item is MultiMeshInstance3D else 1
 		for index in shape.get_surface_count():
 			var arrays = shape.surface_get_arrays(index)

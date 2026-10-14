@@ -30,6 +30,8 @@ var speed := 0.0
 var stride := 0.0
 var pose_target := {}
 var pose_now := {}
+const StylizedRig = preload("res://characters/stylized_rig.gd")
+var real: Node3D  # CC0 Kenney Cube Pets cat (rigged, animated)
 
 func configure(factory, protagonist: Node3D, reduced_motion: bool):
 	player = protagonist
@@ -88,6 +90,12 @@ func configure(factory, protagonist: Node3D, reduced_motion: bool):
 		parent = seg
 	for g in visual.find_children("*", "GeometryInstance3D", true, false):
 		g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	real = StylizedRig.new().setup("res://assets/third_party/kenney_cube_pets/animal-cat.glb", 0.24,
+		{"idle":"idle","walk":"walk","run":"run","sit":"static","gesture":"gesture-positive"}, 1.0, 4.0)
+	real.name = "RealCat"
+	real.rotation.y = PI
+	add_child(real)
+	for g in visual.find_children("*", "GeometryInstance3D", true, false): g.visible = false
 	apply_preferences(reduced_motion)
 
 func _blob(parent: Node3D, n: String, pos: Vector3, size_: Vector3, colour: Color, rim := 0.18) -> MeshInstance3D:
@@ -109,11 +117,13 @@ func pet() -> bool:
 	if paused or not nearby(): return false
 	petted = true
 	idle_state = "react"
+	if real: real.gesture()
 	pose()
 	return true
 
 func apply_preferences(value: bool):
 	reduced = value
+	if real: real.set_reduced(value)
 	pose()
 	if reduced: _settle()
 
@@ -198,7 +208,21 @@ func _face(direction: Vector3, delta: float, rate: float):
 	if direction.length() < 0.05: return
 	rotation.y = lerp_angle(rotation.y, atan2(-direction.x, -direction.z), 1.0 - exp(-rate * delta))
 
+func _drive_real(delta: float):
+	if real == null: return
+	real.set_speed(speed)
+	var hold = idle_state in ["sleep", "groom"] and speed < 0.3
+	real.set_sitting(hold)
+	if idle_state == "groom": real.set_hold_clip("eat")
+	elif idle_state == "sleep": real.set_hold_clip("static")
+	# Sleeping loaf: settle low and slow the breath instead of a T-pose snap.
+	var crouch = pose_now.get("crouch", 0.0) if not pose_now.is_empty() else 0.0
+	real.position.y = -crouch * 0.05
+	real.scale = Vector3(0.24, 0.24 * (1.0 - crouch * 0.18), 0.24)
+	real.advance(delta)
+
 func _animate(delta: float):
+	_drive_real(delta)
 	if reduced or visual == null: return
 	anim_time += delta
 	var k = 1.0 - exp(-5.0 * delta)
