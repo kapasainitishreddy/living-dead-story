@@ -10,6 +10,8 @@ static var _cel_cache := {}
 static var _ink_cache := {}
 
 static func cel(color_: Color, rim := 0.18) -> ShaderMaterial:
+	# Now the ported Sakura Crossing toon + hull (see sakura_look.gd).
+	return preload("res://art/sakura/sakura_look.gd").toon(color_, {"flat": false, "outline": rim > 0.0})
 	var key = str(color_) + ":" + str(rim)
 	if _cel_cache.has(key): return _cel_cache[key]
 	var m = ShaderMaterial.new()
@@ -32,6 +34,10 @@ static func ink(thickness: float) -> ShaderMaterial:
 static func stylize_rig(rig: Node):
 	# Toon diffuse + an ink hull on imported character materials. Materials are
 	# duplicated so the shared imported resources stay untouched.
+	if true:
+		# Sakura look: textured toon ramp + clip-space ink hull on every rig.
+		preload("res://art/sakura/sakura_look.gd").restyle(rig, false, [], false)
+		return
 	for mesh in rig.find_children("*", "MeshInstance3D", true, false):
 		if mesh.mesh == null: continue
 		for i in mesh.mesh.get_surface_count():

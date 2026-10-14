@@ -127,3 +127,14 @@ All files below live in `assets/third_party/` and are **CC0 1.0 (public domain)*
 | `kenney_nature_kit/` | Nature Kit — https://kenney.nl/assets/nature-kit | CC0 1.0 | `tree_oak`, `tree_default`, `tree_fat`, `tree_detailed`, `plant_bush*`, `flower_*`, `grass*` | Roof / platform / overlook trees, bushes, flowers (foliage recoloured in code to spring tones) |
 
 Licence verification: each downloaded zip's `License.txt` reads "License: (Creative Commons Zero, CC0) http://creativecommons.org/publicdomain/zero/1.0/", and each asset page states CC0. The original project rigs remain in the repository and still load (for sockets and the existing contracts) but are hidden in favour of these models. `characters/stylized_rig.gd` (AnimationTree blending), the spring-day lighting in `world/illustrated_world.gd` and the capture script `tests/real_capture.gd` are original project code.
+
+## Sakura Crossing look port (agent/sakura-look)
+Source: Sakura Crossing by Kenton Wang, https://github.com/Kenton-GMI/sakura-crossing at de01898e89c7f6ab3fad93fa802f0f5ac66fbd81, MIT licence (full notice in `SAKURA_CROSSING_LICENSE.txt`). Unlike the earlier passes, this one **translates Sakura Crossing code** (three.js/GLSL to GDScript/gdshader), as the MIT licence permits with the notice kept:
+- `art/sakura/sakura_toon.gdshader` ← `src/core/toon.js` (3-band gradient ramp [92,178,255], soft ramp [180,255], violet shadow-tint patch, flat shading).
+- `art/sakura/sakura_hull.gdshader` ← `src/core/outline.js` (clip-space inverted hull ink line, thicker here).
+- `art/sakura/sakura_post.gdshader` ← `src/core/post.js` (depth second-difference ink + split-tone grade).
+- `art/sakura/sakura_sky.gdshader` ← `src/core/sky.js` and `cloudTex` in `src/core/textures.js` (gradient dome, flat cel clouds).
+- `art/sakura/sakura_petal.gdshader`, `art/sakura/sakura_petals.gd` ← `petalTex` and `src/world/petals.js`.
+- `art/sakura/sakura_look.gd` ← `src/core/palette.js` (palette hex values), `src/main.js` (light rig, fog colour, NoToneMapping), `src/world/trees.js` `buildSakura` (cherry tree construction).
+- `world/cat_companion.gd` cat colours/proportions ← `makeCat` in `src/world/props.js` (procedural cat replaces the Kenney cube cat).
+No Sakura Crossing binary assets, audio or textures are copied; everything is generated procedurally at runtime. Kenney CC0 character models remain (restyled), Kenney nature trees are replaced at runtime in spring scenes.

@@ -30,7 +30,7 @@ func configure(world: Node3D, key: String):
 	_framed_title()
 	_illustrated_sky()
 	preload("res://art/sakura/sakura_style.gd").light_scene(scene)
-	if profile in SPRING_DAY: _spring_day()
+	if profile in SPRING_DAY: _sakura_day()
 	var layer = CanvasLayer.new()
 	layer.name = "PaperFinish"
 	layer.layer = -1 # Grade the 3D picture; HUD and touch controls stay untouched.
@@ -70,8 +70,16 @@ func apply_settings(settings: Dictionary):
 	finish.set_shader_parameter("warmth",0.06 if _night() else 0.16)
 	set_meta("styled_surfaces",styled_surfaces)
 	set_meta("outlined_surfaces",outlined_surfaces)
+	if profile in SPRING_DAY:
+		# Sakura Crossing look: palette-mapped toon + ink hull over everything.
+		SakuraLook.restyle(scene, low)
+		finish.set_shader_parameter("paper_strength",0.0)
+		finish.set_shader_parameter("warmth",0.0)
 
 func _material(source: Material, selected: bool) -> Material:
+	if source.has_meta("sakura_from"):
+		_material(source.get_meta("sakura_from"),selected) # keep the surface counts
+		return source
 	if not source is StandardMaterial3D: return source
 	if source.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED or source.albedo_color.a < 0.99: return source
 	styled_surfaces += 1
@@ -102,6 +110,7 @@ func _select_ink(item: MeshInstance3D) -> bool:
 		if word in path: return true
 	return false
 
+const SakuraLook = preload("res://art/sakura/sakura_look.gd")
 const SPRING_DAY = ["roof", "platform", "conductor", "overlook", "camera_choice", "optional_action"]
 const NATURE = "res://assets/third_party/kenney_nature_kit/%s.glb"
 
@@ -134,6 +143,27 @@ func _spring_tint(node: Node, id: String):
 					copy.set_meta("illustrated_owned", true)
 					materials[key] = copy
 				m.set_surface_override_material(i, materials[key])
+
+func _sakura_day():
+	SakuraLook.apply_day(scene, self)
+	# Kenney trees and the old potted blossom give way to ported Sakura Crossing
+	# cherries (trees.js buildSakura), at full blob count. They are added in
+	# priority order only while the scene stays inside the mobile triangle
+	# budget that tests/illustrated_graphics.gd enforces (< 11000 added).
+	var spots: Array[Vector3] = []
+	for n in detail.get_children():
+		if "/tree_" in n.scene_file_path or n.name == "BlossomPlanter" or n.name == "PaintedBlossomMasses":
+			if n.name != "PaintedBlossomMasses": spots.append(Vector3(n.position.x, 0, n.position.z))
+			detail.remove_child(n)
+			n.free()
+	match profile:
+		"platform", "conductor": spots.append(Vector3(9.8,0,-9.0))
+		_: spots.append(Vector3(9.4,0,-8.0))
+	var seed_ := 11
+	for at in spots:
+		if _detail_triangles() + 3000 > 10900: break
+		SakuraLook.blossom_tree(detail, at, 1.05, seed_)
+		seed_ += 7
 
 func _nature_ring(origin: Vector3, side: float):
 	_prop("tree_oak", origin, 3.2, 0.4)
