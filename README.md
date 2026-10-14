@@ -1,65 +1,43 @@
-# STILL HERE — A Living Dead Story
+# STILL HERE: PLATFORM 6
 
-> **A city has forgotten why it wants tomorrow. Find out why.**
+A warm, offline Godot game about a quiet night journey: an apartment at 3:17,
+a yellow-umbrella stranger, Platform 6, a passenger with an unopened camera, a
+moonlit overlook and breakfast on a night train. The tone is wholesome magical
+realism. There are no streaks, scores against the player, absence penalties or
+guilt mechanics.
 
-**STILL HERE** is a cinematic mystery game concept in which everyone in a city remains physically alive but slowly loses the ability to want anything. The phenomenon is known as **The Living Dead**. The player investigates disappearing places, reconstructs human stories, restores mysterious **Threads**, and gradually changes the world through choices, puzzles, exploration, and optional tiny real-world actions.
+## What's in this repository
 
-The goal is to build a genuinely compelling game first. Wellbeing-oriented mechanics sit beneath the story and must never become guilt, surveillance, fake therapy, or unsupported clinical claims.
+- `platform6/game/` is the current Godot 4.6.3 project (Chapters One–Seven plus Journey Mode V1).
+- `platform6/docs/` holds milestone, QA and art notes for the current game.
+- `platform6/tools/` holds asset and regression helper scripts.
+- `prototype/` is the original browser prototype, kept for history.
+- `docs/archive/` holds the earlier "Living Dead" mystery concept documents
+  (game design, research notes, roadmap and agent build prompts). They describe
+  an older direction and **do not** describe the current game.
 
-## Current status
+## Run
 
-This repository currently contains:
+1. Install Godot 4.6.3 Standard from https://godotengine.org/download/
+2. Import `platform6/game/project.godot` in the Project Manager and press F5,
+   or run `godot --path platform6/game` from a terminal.
 
-- a self-contained playable browser vertical slice
-- the core narrative/game-design bible
-- research-to-design notes
-- an implementation roadmap
-- a master Godot build prompt for continuing the production game
+Controls, saves and chapter notes are in [`platform6/game/README.md`](platform6/game/README.md).
 
-The browser prototype is **not** the final game architecture. The production direction is Godot 4, Android first, followed by iOS/desktop as appropriate.
+## Test
 
-## Play the current prototype
+```sh
+cd platform6/game && ./run_tests.sh
+```
 
-Open:
+## Assets and privacy
 
-`prototype/index.html`
+Original Godot/Blender/SVG geometry and synthesized audio; see
+`platform6/game/ASSET_LICENSES.md`. The game makes no network requests and uses
+no accounts, analytics, camera, microphone or runtime AI.
 
-It has no external runtime dependencies. It currently demonstrates:
+## Not a health product
 
-- Quiet City atmosphere
-- the 3:17 / Platform 6 mystery
-- adaptive tiny/small/full session choices
-- optional real-world micro-actions
-- a large in-game consequence for a tiny action
-- local persistent Threads
-- Sanctuary
-- zero streak punishment
-- a non-gamified help-now flow
-
-## Read before building
-
-1. [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md)
-2. [`docs/RESEARCH_NOTES.md`](docs/RESEARCH_NOTES.md)
-3. [`docs/ROADMAP.md`](docs/ROADMAP.md)
-4. [`AGENT_BUILD_PROMPT.md`](AGENT_BUILD_PROMPT.md)
-
-## Production direction
-
-- **Engine:** Godot 4
-- **Language:** GDScript by default
-- **Primary target:** Android
-- **Architecture:** offline-first, local saves, authored narrative data separated from systems
-- **Visual target:** cinematic rain/fog/wet roads, reactive world restoration, strong environment storytelling
-- **Safety target:** no streaks, no guilt mechanics, no crisis gamification, no unsupported therapeutic claims
-
-## First real milestone
-
-Build one exceptional 20–30 minute Chapter 1:
-
-Apartment → glowing window → rainy city → Central Station → Platform 6 → Elias/conductor → puzzle → optional real-world action → train awakens → first Thread → Archivist clue → cliffhanger.
-
-Do not build the infinite system before this chapter is genuinely fun and playtested.
-
-## Important
-
-This project explores wellbeing-oriented game design. It is **not** a clinically validated treatment and should not be marketed as one without appropriate research, safety review, and clinical evaluation.
+STILL HERE is a game. It is not therapy, treatment or a clinical tool and makes
+no claims about mental-health outcomes. If you are struggling, please reach out
+to someone you trust or a local support service.
