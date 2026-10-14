@@ -138,3 +138,23 @@ Source: Sakura Crossing by Kenton Wang, https://github.com/Kenton-GMI/sakura-cro
 - `art/sakura/sakura_look.gd` ← `src/core/palette.js` (palette hex values), `src/main.js` (light rig, fog colour, NoToneMapping), `src/world/trees.js` `buildSakura` (cherry tree construction).
 - `world/cat_companion.gd` cat colours/proportions ← `makeCat` in `src/world/props.js` (procedural cat replaces the Kenney cube cat).
 No Sakura Crossing binary assets, audio or textures are copied; everything is generated procedurally at runtime. Kenney CC0 character models remain (restyled), Kenney nature trees are replaced at runtime in spring scenes.
+
+## Asset library (agent/asset-library), downloaded 2026-10-14
+These are library packs for upcoming passes. **None are wired into gameplay yet.** Each folder keeps its pack's original licence file (or, where the Drive/poly.pizza download carried none, a `License.txt` recording the source page's CC0 statement). There was no account, payment or paid tier. Full research notes are in `docs/ASSET_CATALOG.md`.
+
+| Folder | Source | Licence |
+|---|---|---|
+| `quaternius_modular_women/` (7 chars) | https://quaternius.com/packs/ultimatemodularwomen.html | CC0 1.0 |
+| `quaternius_modular_men/` (7 chars) | https://quaternius.com/packs/ultimatemodularcharacters.html | CC0 1.0 |
+| `quaternius_animated_animals/` (12 animals) | https://quaternius.com/packs/ultimateanimatedanimals.html | CC0 1.0 |
+| `quaternius_cute_fish/` (7 fish, FBX) | https://quaternius.com/packs/cutefish.html | CC0 1.0 |
+| `quaternius_single_animals/` (Cat, Cat_Blob, Pigeon, Bunny) | https://poly.pizza/m/qKICY6xla2 , /m/2f54vbV0In , /m/9NGlBTpDEr , /m/irZjWFARyl (Quaternius) | CC0 1.0 |
+| `quaternius_stylized_nature/` (63 FBX + 512px textures) | https://quaternius.com/packs/ultimatestylizednature.html via https://github.com/walterpalladino/godot-quaternius-ultimate-stylized-nature | CC0 1.0 models. The wrapper repo is MIT (`LICENSE_godot_wrapper_MIT.txt`) |
+| `kaykit_adventurers/` | https://github.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0 (Kay Lousberg) | CC0 1.0 |
+| `kenney_train_kit/` | https://kenney.nl/assets/train-kit | CC0 1.0 |
+| `kenney_city_kit_suburban/` | https://kenney.nl/assets/city-kit-suburban | CC0 1.0 |
+| `kenney_furniture_kit/` | https://kenney.nl/assets/furniture-kit | CC0 1.0 |
+| `kenney_particle_pack/` | https://kenney.nl/assets/particle-pack | CC0 1.0 |
+| `kenney_ui_pack/` | https://kenney.nl/assets/ui-pack | CC0 1.0 |
+| `kenney_fonts/` | https://kenney.nl/assets/kenney-fonts | CC0 1.0 |
+Credit (voluntary): Quaternius, Kay Lousberg (KayKit), Kenney. `tests/asset_contact_sheet.gd` is original project code.
