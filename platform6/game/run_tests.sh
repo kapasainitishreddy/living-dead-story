@@ -131,6 +131,7 @@ godot --headless --path . --script tests/opening_depth_mesh.gd
 
 # Physical authored opening, remembered replies and native-input contracts.
 godot --headless --path . --script tests/opening_story_flow.gd
+godot --headless --path . --script tests/cat_companion.gd
 godot --headless --path . --script tests/opening_dialogue_controls.gd
 godot --headless --path . --script tests/opening_story_regressions.gd
 godot --headless --path . --script tests/opening_tool_attachment.gd

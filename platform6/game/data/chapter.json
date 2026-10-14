@@ -12,7 +12,7 @@
     },
     "meet_stranger": {
       "title": "The stranger with the yellow umbrella",
-      "text": "“You couldn’t sleep either?”\nThe stranger shifts a yellow umbrella to make room. A crooked paper star hangs from its handle.\n“I’m taking this to someone who insists every umbrella needs a night sky. Platform 6, if you fancy a walk.”",
+      "text": "“You couldn’t sleep either?”\nThe stranger shifts a yellow umbrella to make room. A crooked paper star hangs from its handle.\n“I’m taking this to someone who insists every umbrella needs a night sky. Platform 6, if you fancy a walk.”\nThe stranger nods to the cat. “Our smallest neighbour. Somehow always has the best seat.”",
       "choices": [
         {
           "label": "“Does the train go somewhere particular?”",
@@ -32,7 +32,7 @@
     },
     "read_board": {
       "title": "WHERE DO YOU WANT TO GO",
-      "text": "The letters glow like a question someone has been saving for you.\nA blank ticket waits on the bench. There is room for an answer later.",
+      "text": "The letters glow like a question someone has been saving for you.\nA blank ticket waits on the bench. There is room for an answer later.\nA neighbour steps around the cat. “Sorry, chief. Didn’t realise this was your platform.”",
       "choices": [
         {
           "label": "Take the blank ticket",
@@ -159,6 +159,16 @@
           "label": "Not tonight",
           "action": "resolve_action",
           "value": "skipped"
+        }
+      ]
+    },
+    "pet_cat": {
+      "title": "A small purr",
+      "text": "The cat leans into your hand. Apparently, you have passed the sniff inspection.",
+      "choices": [
+        {
+          "label": "Keep wandering",
+          "action": "dismiss"
         }
       ]
     }

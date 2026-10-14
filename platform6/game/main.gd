@@ -240,6 +240,11 @@ func on_interact(target):
 	if busy or hud.modal_visible() or not is_instance_valid(target): return
 	var action: String = target.get_meta("action_id","")
 	var target_value: Variant = target.get_meta("value") if target.has_meta("value") else null
+	if action == "pet_cat":
+		if is_instance_valid(opening_story) and target == opening_story.cat and target.pet():
+			player.set_controls_enabled(false)
+			hud.show_dialogue("pet_cat")
+		return
 	if action.begins_with("home_"):
 		dispatch_home(action, target_value)
 		return
