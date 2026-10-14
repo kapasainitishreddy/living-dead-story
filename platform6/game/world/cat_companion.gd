@@ -5,6 +5,7 @@ extends Node3D
 # trot bob and leg swing, breathing, blinking, a head that looks at you, ear
 # flicks and a multi-segment tail sway. Pose changes blend instead of snapping.
 const Style = preload("res://art/sakura/sakura_style.gd")
+const Look = preload("res://art/sakura/sakura_look.gd")
 const IDLES = ["sleep", "stretch", "groom"]
 const FOLLOW_DISTANCE := 2.0
 const PET_DISTANCE := 1.4
@@ -31,7 +32,8 @@ var stride := 0.0
 var pose_target := {}
 var pose_now := {}
 const StylizedRig = preload("res://characters/stylized_rig.gd")
-var real: Node3D  # CC0 Kenney Cube Pets cat (rigged, animated)
+var real: Node3D  # unused since the Sakura look pass (procedural cat is shown)
+const CAT_SCALE := 1.75
 
 func configure(factory, protagonist: Node3D, reduced_motion: bool):
 	player = protagonist
@@ -41,8 +43,8 @@ func configure(factory, protagonist: Node3D, reduced_motion: bool):
 	visual = Node3D.new()
 	visual.name = "CatVisual"
 	add_child(visual)
-	var fur = Color("f0e6da")
-	var saddle = Color("8a7d80")
+	var fur = Color("f0e6da")   # PAL.cat
+	var saddle = Color("6a5f63") # PAL.catDark
 	var dark = Color("39324f")
 	body = _blob(visual, "Body", Vector3(0, 0.27, 0.02), Vector3(0.21, 0.19, 0.33), fur)
 	_blob(body, "Saddle", Vector3(0, 0.38, 0.05), Vector3(0.9, 0.62, 0.85), saddle)
@@ -64,7 +66,7 @@ func configure(factory, protagonist: Node3D, reduced_motion: bool):
 		c.top_radius = 0.0; c.bottom_radius = 0.055; c.height = 0.11; c.radial_segments = 4
 		cone.mesh = c
 		cone.position.y = 0.045
-		cone.material_override = Style.cel(saddle)
+		cone.material_override = Look.toon(saddle, {"tint": Color("6a5f86"), "thickness": 0.0056})
 		ear.add_child(cone)
 		ears.append(ear)
 		eyes.append(_blob(head, "Eye", Vector3(side * 0.06, 0.02, -0.115), Vector3(0.022, 0.026, 0.012), dark, 0.0))
@@ -90,12 +92,9 @@ func configure(factory, protagonist: Node3D, reduced_motion: bool):
 		parent = seg
 	for g in visual.find_children("*", "GeometryInstance3D", true, false):
 		g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	real = StylizedRig.new().setup("res://assets/third_party/kenney_cube_pets/animal-cat.glb", 0.24,
-		{"idle":"idle","walk":"walk","run":"run","sit":"static","gesture":"gesture-positive"}, 1.0, 4.0)
-	real.name = "RealCat"
-	real.rotation.y = PI
-	add_child(real)
-	for g in visual.find_children("*", "GeometryInstance3D", true, false): g.visible = false
+	# Sakura look: the procedural cat is the cat again (the Kenney cube cat read
+	# as tiny and blocky). Bigger, round, cream with a dark saddle like makeCat.
+	visual.scale = Vector3.ONE * CAT_SCALE
 	apply_preferences(reduced_motion)
 
 func _blob(parent: Node3D, n: String, pos: Vector3, size_: Vector3, colour: Color, rim := 0.18) -> MeshInstance3D:
@@ -106,7 +105,7 @@ func _blob(parent: Node3D, n: String, pos: Vector3, size_: Vector3, colour: Colo
 	m.mesh = s
 	m.position = pos
 	m.scale = size_
-	m.material_override = Style.cel(colour, rim)
+	m.material_override = Look.toon(colour, {"flat": false, "tint": Color("7a6f96"), "thickness": 0.0 if rim == 0.0 else 0.0056, "outline": rim != 0.0})
 	parent.add_child(m)
 	return m
 
@@ -238,7 +237,7 @@ func _apply_pose(t: float, move: float, _k: float):
 	# Soft body: footfall bounce, squash on contact, breathing in the chest.
 	var bounce = absf(sin(gait)) * 0.035 * move
 	var squash = (0.5 - absf(sin(gait))) * 0.06 * move
-	visual.position = Vector3(0, bounce - p.crouch * 0.11, 0)
+	visual.position = Vector3(0, bounce - p.crouch * 0.11 * CAT_SCALE, 0)
 	visual.rotation = Vector3(sin(gait * 2.0) * 0.03 * move, 0, p.lean + sin(gait) * 0.03 * move)
 	body.scale = Vector3(0.21 * (1.0 + breath * 0.025 - squash * 0.5), 0.19 * (1.0 + breath * 0.04 + squash - p.crouch * 0.25), 0.33 * (1.0 + p.stretch * 0.35))
 	chest.position = Vector3(0, 0.30 - p.stretch * 0.08, -0.20 - p.stretch * 0.08)
