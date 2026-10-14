@@ -19,6 +19,7 @@ var local_camera: Camera3D
 var played_beats: Array = []
 var held: Array = []
 var tool_roll: Node3D
+var cat: Node3D
 func group(parent: Node3D, id: String, position_: Vector3 = Vector3.ZERO) -> Node3D:
 	var node = Node3D.new()
 	node.name = id
@@ -35,6 +36,11 @@ func configure(snapshot: Dictionary, protagonist: Node3D):
 	props = group(self, "Props")
 	reduced = bool(state.settings.reduced_motion)
 	var checkpoint: String = state.checkpoint_id
+	if checkpoint in ["roof", "platform"]:
+		cat = load("res://world/cat_companion.gd").new()
+		add_child(cat)
+		cat.position = Vector3(2, 0, 2)
+		cat.configure(factory, player, reduced)
 	if checkpoint == "roof":
 		var star = group(props, "UmbrellaPaperStar", Vector3(0.14, 1.66, -4))
 		for i in range(5):
@@ -305,6 +311,7 @@ func end_preview():
 		if camera != null: camera.current = true
 func apply_preferences(value: bool):
 	reduced = value
+	if is_instance_valid(cat): cat.apply_preferences(value)
 	if reduced:
 		finish_gesture()
 		if local_camera != null and local_camera.current:
@@ -314,6 +321,7 @@ func apply_preferences(value: bool):
 				player.visual.visible = player.dialogue_visual_was_visible
 func set_paused(value: bool):
 	paused = value
+	if is_instance_valid(cat): cat.set_paused(value)
 	if gesture != null and gesture.is_valid():
 		if paused: gesture.pause()
 		else: gesture.play()
