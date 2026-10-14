@@ -29,6 +29,7 @@ func configure(world: Node3D, key: String):
 	_ground_accents()
 	_framed_title()
 	_illustrated_sky()
+	preload("res://art/sakura/sakura_style.gd").light_scene(scene)
 	var layer = CanvasLayer.new()
 	layer.name = "PaperFinish"
 	layer.layer = -1 # Grade the 3D picture; HUD and touch controls stay untouched.
@@ -140,10 +141,27 @@ func _exit_tree():
 func _build_details():
 	match profile:
 		"apartment", "still_here": _plant(Vector3(4.87,1.42,-3.1),0.38,Color("9daa88"))
-		"roof": _tree(Vector3(-7.8,0,-5.5),0.85); _tree(Vector3(8.2,0,-7.8),0.78)
-		"platform", "conductor", "return_platform": _plant(Vector3(-7.45,0,-6.2),1.15,Color("839d88")); _plant(Vector3(-7.4,0,5.0),0.9,Color("93a18a"))
+		"roof":
+			_tree(Vector3(-7.8,0,-5.5),0.85); _tree(Vector3(8.2,0,-7.8),0.78)
+			_sapling(Vector3(-8.4,0,3.6),0.9); _sapling(Vector3(8.3,0,3.4),0.88)
+			_potted(Vector3(-6.4,0,2.5),0.9,Color("8ea389"))
+			_flowers(Vector3(-5.7,0,4.3),0.9)
+			_birds(Vector3(6.6,3.0,3.0),4)
+		"platform", "conductor", "return_platform":
+			_plant(Vector3(-7.45,0,-6.2),1.15,Color("839d88")); _plant(Vector3(-7.4,0,5.0),0.9,Color("93a18a"))
+			_tree(Vector3(-8.4,0,-10.6),0.7)
+			_sapling(Vector3(-6.1,0,9.4),0.8)
+			_potted(Vector3(-5.7,0,8.2),0.82,Color("8ea389"))
+			_flowers(Vector3(-8.4,0,10.2),0.85)
+			_birds(Vector3(6.9,3.95,2.2),4)
 		"passenger", "shoreline", "return_train", "breakfast", "complete", "journey_train": _plant(Vector3(-2.7,0,-8.6),0.72,Color("879e8a"))
-		"overlook", "camera_choice", "optional_action": _grass(Vector3(-8,0,-6),1.4); _grass(Vector3(7.8,0,-3),1.3)
+		"overlook", "camera_choice", "optional_action":
+			_grass(Vector3(-8,0,-6),1.4); _grass(Vector3(7.8,0,-3),1.3)
+			_tree(Vector3(-8.5,0,-8.6),0.75)
+			_sapling(Vector3(8.4,0,-6.4),0.8)
+			_potted(Vector3(6.9,0,-5.2),0.82,Color("8ea389"))
+			_flowers(Vector3(8.6,0,-3.4),0.85)
+			_birds(Vector3(7.0,2.6,-4.4),4)
 		"the_small_fair": _tree(Vector3(-8.5,0,-7.5),0.98); _tree(Vector3(8.8,0,-8.8),0.9)
 		"paper_sky": _plant(Vector3(-6.9,0,-5.4),0.95,Color("8d9b7d")); _plant(Vector3(6.6,0,2.7),0.8,Color("819680"))
 		"night_kitchen": _plant(Vector3(-6.5,0,-5.7),0.9,Color("95a47e")); _plant(Vector3(6.4,0,4.8),0.8,Color("8a9b7f"))
@@ -181,6 +199,20 @@ func _batch(id: String, shape: Mesh, transforms: Array[Transform3D], colours: Ar
 	detail.add_child(batch)
 	return batch
 
+func _no_shadows(node: Node3D):
+	# Mobile dressing never adds a shadow pass.
+	for item in node.find_children("*","GeometryInstance3D",true,false):
+		item.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+func _bud() -> SphereMesh:
+	# Cheap painted blob shared by flowers, leaves, saplings and birds.
+	var shape = SphereMesh.new()
+	shape.radius = 1.0
+	shape.height = 2.0
+	shape.radial_segments = 6
+	shape.rings = 3
+	return shape
+
 func _sphere() -> SphereMesh:
 	var shape = SphereMesh.new()
 	shape.radius = 1.0
@@ -216,6 +248,23 @@ func _tree(where: Vector3, size_: float, blossom := true):
 		colours.append(Color("d7e0dd"))
 		_batch("SnowAtRoots",_sphere(),transforms,colours)
 
+func _sapling(where: Vector3, size_: float):
+	# Low-poly roadside tree: one trunk plus a single batched painted canopy.
+	var tree = Node3D.new()
+	tree.name = "RoadsideSapling"
+	tree.position = where
+	tree.scale = Vector3.ONE * size_
+	detail.add_child(tree)
+	_no_shadows(factory.rounded(tree,"SaplingTrunk",Vector3(0,0.62,0),0.05,0.085,1.24,Color("6f5b52")))
+	var transforms: Array[Transform3D] = []
+	var colours: Array[Color] = []
+	for i in range(4):
+		var angle = i * 2.39996
+		var pos = where + Vector3(sin(angle)*0.22,1.32+(i%2)*0.22,cos(angle)*0.22)*size_
+		transforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3(0.36,0.30,0.36)*size_),pos))
+		colours.append([Color("ddb7c7"),Color("f2d1d2"),Color("c98fae"),Color("e9c9cf")][i%4])
+	_batch("PaintedSaplingCanopy",_bud(),transforms,colours,true)
+
 func _plant(where: Vector3, size_: float, colour: Color):
 	var plant = Node3D.new()
 	plant.name = "EverydayPot"
@@ -234,6 +283,49 @@ func _plant(where: Vector3, size_: float, colour: Color):
 		transforms.append(Transform3D(basis,where+Vector3(sin(angle)*0.19,0.72+(i%3)*0.11,cos(angle)*0.19)*size_))
 		colours.append(colour.lightened(0.035*(i%3)))
 	_batch("PaintedLeaves",_sphere(),transforms,colours)
+
+func _potted(where: Vector3, size_: float, colour: Color):
+	# Small village pot: three pot rings and one batched leaf clump.
+	var pot = Node3D.new()
+	pot.name = "VillagePot"
+	pot.position = where
+	pot.scale = Vector3.ONE * size_
+	detail.add_child(pot)
+	for part in [factory.rounded(pot,"Pot",Vector3(0,0.22,0),0.24,0.17,0.44,Color("bd8e7a")),factory.rounded(pot,"PotRim",Vector3(0,0.42,0),0.27,0.27,0.06,Color("cba38b")),factory.rounded(pot,"Soil",Vector3(0,0.462,0),0.23,0.23,0.02,Color("5e5552"))]:
+		_no_shadows(part)
+	var transforms: Array[Transform3D] = []
+	var colours: Array[Color] = []
+	for i in range(8):
+		var angle = i * 2.39996
+		var basis = Basis(Vector3.UP,angle) * Basis(Vector3.FORWARD,0.55)
+		basis = basis.scaled(Vector3(0.11,0.32,0.19)*size_)
+		transforms.append(Transform3D(basis,where+Vector3(sin(angle)*0.18,0.68+(i%3)*0.10,cos(angle)*0.18)*size_))
+		colours.append(colour.lightened(0.04*(i%3)))
+	_batch("PaintedPotLeaves",_bud(),transforms,colours)
+
+func _flowers(where: Vector3, size_: float):
+	# One collision-free draw call per cluster: petals and a few leaves.
+	var transforms: Array[Transform3D] = []
+	var colours: Array[Color] = []
+	for i in range(9):
+		var angle = i * 2.39996
+		var pos = where + Vector3(sin(angle)*0.44,0.15+(i%3)*0.10,cos(angle)*0.44)*size_
+		transforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3(0.17,0.13,0.17)*size_),pos))
+		colours.append([Color("d99ab4"),Color("f0d98c"),Color("f3efe0"),Color("c98fae")][i%4])
+	for i in range(3):
+		var angle = i * 2.39996 + 0.7
+		var pos = where + Vector3(sin(angle)*0.52,0.08,cos(angle)*0.52)*size_
+		transforms.append(Transform3D(Basis.IDENTITY.scaled(Vector3(0.15,0.11,0.15)*size_),pos))
+		colours.append(Color("7c9a74").lightened(0.05*i))
+	_batch("PaintedFlowerClusters",_bud(),transforms,colours,true)
+
+func _birds(where: Vector3, count: int):
+	# Sakura pass: a small animated flock (hop/peck/glance/flutter). It reads
+	# reduced motion at runtime from the protagonist and then holds still.
+	var flock = preload("res://world/sakura_birds.gd").new()
+	flock.position = where
+	detail.add_child(flock)
+	flock.configure(count)
 
 func _grass(where: Vector3, size_: float):
 	var transforms: Array[Transform3D] = []
