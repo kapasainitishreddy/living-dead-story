@@ -28,7 +28,8 @@ func verify(id: String):
 	check(art.find_children("*","Marker3D",true,false).is_empty(),id+" decorative art cannot invent actions")
 	check(art.get_meta("styled_surfaces")>0,id+" cel shading covers original opaque art")
 	check(art.get_node("PaperFinish").layer < game.hud.layer,id+" grading excludes HUD")
-	if art.original_environment.get("sky") != null:
+	# Spring-day profiles intentionally replace the night painted sky with a daytime one.
+	if art.original_environment.get("sky") != null and not art.get_meta("spring_day", false):
 		for node in world.find_children("*","WorldEnvironment",true,false):
 			check(node.environment.sky==art.original_environment.sky,id+" authored painted sky retained")
 	for env in art.sky_environments:

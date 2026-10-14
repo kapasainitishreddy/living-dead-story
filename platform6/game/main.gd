@@ -240,6 +240,11 @@ func on_interact(target):
 	if busy or hud.modal_visible() or not is_instance_valid(target): return
 	var action: String = target.get_meta("action_id","")
 	var target_value: Variant = target.get_meta("value") if target.has_meta("value") else null
+	if action == "pet_cat":
+		if is_instance_valid(opening_story) and target == opening_story.cat and target.pet():
+			player.set_controls_enabled(false)
+			hud.show_dialogue("pet_cat")
+		return
 	if action.begins_with("home_"):
 		dispatch_home(action, target_value)
 		return
@@ -528,7 +533,7 @@ func apply_graphics(settings: Dictionary):
 	viewport.msaa_3d = Viewport.MSAA_DISABLED if settings.graphics == "low" or efficient_medium else Viewport.MSAA_2X
 	viewport.scaling_3d_scale = 0.8 if settings.graphics == "low" else 1.0
 	for light in world_container.find_children("*","Light3D",true,false):
-		light.shadow_enabled = settings.graphics == "high" and not light.get_meta("scenic_fill",false)
+		light.shadow_enabled = (settings.graphics == "high" or (settings.graphics == "medium" and str(light.name) == "SpringSun")) and not light.get_meta("scenic_fill",false)
 
 func capture_frame():
 	if DisplayServer.get_name() == "headless": return

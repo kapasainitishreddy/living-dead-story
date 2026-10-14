@@ -10,6 +10,22 @@ const MODELS = {
 	"conductor":"res://assets/characters/conductor/conductor.glb",
 	"jo":"res://assets/characters/jo/jo.glb"
 }
+# Real-model pass: CC0 Kenney Mini Characters stand in for the primitive look.
+# The original rig still loads (sockets, tests, facial contracts) but is hidden.
+const STYLIZED = {
+	"protagonist":"res://assets/third_party/kenney_mini_characters/character-male-a.glb",
+	"mira":"res://assets/third_party/kenney_mini_characters/character-female-b.glb",
+	"ada":"res://assets/third_party/kenney_mini_characters/character-female-c.glb",
+	"noor":"res://assets/third_party/kenney_mini_characters/character-female-a.glb",
+	"rafi":"res://assets/third_party/kenney_mini_characters/character-male-b.glb",
+	"conductor":"res://assets/third_party/kenney_mini_characters/character-male-c.glb",
+	"jo":"res://assets/third_party/kenney_mini_characters/character-male-e.glb"
+}
+const STYLIZED_SCALE := 1.95
+const StylizedRig = preload("res://characters/stylized_rig.gd")
+var stylized: Node3D
+var stylized_hand: BoneAttachment3D
+var was_conversing := false
 const MAX_HEAD_YAW := 0.58
 const MAX_HEAD_PITCH := 0.24
 const MAX_EYE_YAW := 0.18
@@ -52,6 +68,15 @@ var bones: Dictionary = {}
 var props: Dictionary = {}
 var rig_root: Node
 var rig_path: NodePath
+# Sakura-pass body layer (technique adapted from Sakura Crossing, MIT, Kenton Wang):
+# every channel is a critically-damped approach (1 - exp(-k*dt)), never a raw snap.
+var gait_phase := 0.0
+var body_lean := 0.0
+var body_roll := 0.0
+var body_bob := 0.0
+var body_squash := 0.0
+var previous_speed := 0.0
+var accel_smoothed := 0.0
 
 func configure(id: String):
 	assert(MODELS.has(id),"Unknown production character: " + id)
@@ -86,7 +111,29 @@ func _load_rig():
 	prop_socket = _make_socket("RightHandSocket","HandRight")
 	head_socket = _make_socket("HeadSocket","Head")
 	_build_animation_tree()
+	preload("res://art/sakura/sakura_style.gd").stylize_rig(model)
 	if character_id == "mira": _load_camera()
+	if STYLIZED.has(character_id): _load_stylized()
+
+func _load_stylized():
+	stylized = StylizedRig.new().setup(STYLIZED[character_id], STYLIZED_SCALE,
+		{"idle":"idle","walk":"walk","run":"sprint","sit":"sit","gesture":"emote-yes" if character_id == "mira" else "interact-right"}, 1.3, 4.2)
+	add_child(stylized)
+	for g in model.find_children("*","GeometryInstance3D",true,false): g.visible = false
+	if stylized.skeleton:
+		# Props (Mira's camera) follow the real model's hand from now on.
+		stylized_hand = BoneAttachment3D.new()
+		stylized_hand.name = "StylizedRightHandSocket"
+		stylized_hand.use_external_skeleton = true
+		add_child(stylized_hand)
+		stylized_hand.external_skeleton = stylized_hand.get_path_to(stylized.skeleton)
+		stylized_hand.bone_name = "arm-right"
+		prop_socket = stylized_hand
+		var cam = props.get("camera", null)
+		if is_instance_valid(cam):
+			cam.reparent(stylized_hand, false)
+			cam.transform = Transform3D(Basis().scaled(Vector3.ONE * 0.45), Vector3(-0.07, -0.03, 0.085))
+	stylized.set_reduced(reduced_motion)
 
 func _bone_index(bone_name: String) -> int:
 	var index = skeleton.find_bone(bone_name)
@@ -205,6 +252,7 @@ func apply_preferences(reduced: bool):
 		# Preference changes settle a dart immediately, including paused staging.
 		eye_yaw = 0.0
 		eye_pitch = 0.0
+	if stylized: stylized.set_reduced(reduced)
 	if animation_tree:
 		_update_blend_parameters()
 		animation_tree.advance(0.0)
@@ -242,6 +290,48 @@ func advance_performance(delta: float):
 	_update_blend_parameters()
 	animation_tree.advance(delta)
 	_apply_gaze_and_face()
+	_apply_body_layer(delta)
+	if stylized:
+		if conversing and not was_conversing: stylized.gesture()
+		was_conversing = conversing
+		stylized.set_speed(0.0 if conversing else speed)
+		stylized.set_sitting(float(get("seated_offset") if get("seated_offset") != null else 0.0) < -0.05)
+		stylized.advance(delta)
+		stylized.position = Vector3(0, maxf(model.position.y, 0.0), 0)
+		stylized.rotation = Vector3(model.rotation.x * 0.5, 0.0, model.rotation.z * 0.5)
+
+func _apply_body_layer(delta: float):
+	# Soft procedural layer on top of the authored clips: footfall bounce with a
+	# tiny squash, forward lean into acceleration, a bank into turns and a slow
+	# idle sway. Reduced motion zeroes it and returns the rig to rest at once.
+	if model == null: return
+	if reduced_motion or delta <= 0.0:
+		gait_phase = 0.0; body_lean = 0.0; body_roll = 0.0; body_bob = 0.0; body_squash = 0.0
+		model.position = Vector3.ZERO
+		model.rotation = Vector3.ZERO
+		model.scale = Vector3.ONE
+		return
+	var moving = locomotion_blend
+	gait_phase += delta * TAU * 0.92 * walk_time_scale * moving
+	var raw_accel = (speed - previous_speed) / delta
+	previous_speed = speed
+	accel_smoothed = lerpf(accel_smoothed, clampf(raw_accel, -8.0, 8.0), 1.0 - exp(-6.0 * delta))
+	var step = absf(sin(gait_phase))
+	var target_bob = (step * 0.035 - 0.012) * moving
+	var target_squash = (0.5 - step) * 0.035 * moving
+	var idle_sway = sin(elapsed * 0.9 + (1.3 if character_id == "mira" else 0.0)) * 0.012 * (1.0 - moving)
+	var target_lean = clampf(accel_smoothed * 0.018, -0.07, 0.10) + 0.05 * moving
+	var target_roll = -turn_amount * 0.10 * moving + idle_sway
+	var k = 1.0 - exp(-14.0 * delta)
+	body_bob = lerpf(body_bob, target_bob, k)
+	body_squash = lerpf(body_squash, target_squash, k)
+	body_lean = lerpf(body_lean, target_lean, 1.0 - exp(-7.0 * delta))
+	body_roll = lerpf(body_roll, target_roll, 1.0 - exp(-7.0 * delta))
+	var w = secondary_motion_weight
+	model.position = Vector3(0.0, body_bob * w, 0.0)
+	model.rotation = Vector3(body_lean * w, sin(gait_phase) * 0.035 * moving * w, body_roll * w)
+	var sq = body_squash * w
+	model.scale = Vector3(1.0 - sq * 0.5, 1.0 + sq, 1.0 - sq * 0.5)
 
 func _update_blend_parameters():
 	animation_tree.set("parameters/IdleMotion/blend_amount",secondary_motion_weight)
@@ -318,7 +408,7 @@ func _apply_gaze_and_face():
 	# Add only upper-body acting: the authored stance, seated staging, hands and
 	# sockets stay under their existing animation/chapter owners.
 	var quiet_weight = secondary_motion_weight * (1.0 - locomotion_blend)
-	var breath = sin(elapsed * 1.43 + (0.7 if character_id == "mira" else 0.0)) * 0.008
+	var breath = sin(elapsed * 1.43 + (0.7 if character_id == "mira" else 0.0)) * 0.022
 	_offset_bone("Chest",0.0,breath * quiet_weight)
 	var listening_weight = conversation_blend * quiet_weight
 	var tilt = sin(elapsed * 0.57) * 0.032 + sin(elapsed * 1.11 + 0.5) * 0.012
