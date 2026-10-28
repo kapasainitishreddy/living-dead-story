@@ -141,3 +141,4 @@ godot --headless --path . --script tests/opening_soundtrack.gd
 godot --headless --path . --script tests/opening_camera_readability.gd
 godot --headless --path . --script tests/opening_readability.gd
 python3 ../tools/test_opening_depth_art.py
+godot --headless --path . --script tests/puzzle_hints.gd

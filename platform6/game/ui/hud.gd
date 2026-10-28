@@ -29,6 +29,9 @@ var layout_mode := "center"
 var touch_choices: Dictionary = {}
 var touch_read_finger := -1
 var touch_mouse_guard := 0
+var puzzle_hint_level := 0
+var puzzle_hint_label: Label
+var puzzle_hint_button: Button
 func _ready():
 	authored = JSON.parse_string(FileAccess.get_file_as_string("res://data/chapter.json"))
 	if FileAccess.file_exists("res://data/fair.json"):
@@ -243,7 +246,13 @@ func apply_settings(value: Dictionary):
 	prompt.add_theme_font_size_override("font_size",int(23*settings.text_scale))
 	notice.add_theme_font_size_override("font_size",int(17*settings.text_scale))
 func show_puzzle(data: Dictionary):
+	# A framing choice rebuilds this panel. Keep any hint already requested while
+	# the same puzzle remains open, but begin fresh on a later puzzle visit.
+	var retained_hint_level = puzzle_hint_level if layout_mode == "shore" and modal.visible else 0
 	clear()
+	puzzle_hint_level = retained_hint_level
+	puzzle_hint_label = null
+	puzzle_hint_button = null
 	modal.show()
 	layout_mode = "shore"
 	# Leave the actual shore visible to the left of the choice panel.
@@ -254,6 +263,15 @@ func show_puzzle(data: Dictionary):
 	text("Frame the shore", 26)
 	text("Keep the lighthouse, arch and stars in one picture. Change the view and look at what fits.", 20)
 	text("Noticed %d / 3" % data.inspected_landmark_ids.size(), 17)
+	puzzle_hint_label = Label.new()
+	puzzle_hint_label.name = "PuzzleHint"
+	puzzle_hint_label.text = ""
+	puzzle_hint_label.custom_minimum_size.x = 650
+	puzzle_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	puzzle_hint_label.set_meta("base_font_size", 18)
+	puzzle_hint_label.add_theme_font_size_override("font_size", int(18 * settings.get("text_scale", 1.0)))
+	puzzle_hint_label.visible = false
+	content.add_child(puzzle_hint_label)
 	for child in content.get_children(): child.custom_minimum_size.x = 330
 	var first
 	var labels = ["Closer to the lighthouse", "Closer to the arch", "Step back"]
@@ -261,9 +279,26 @@ func show_puzzle(data: Dictionary):
 		var b = button(("• " if i == int(data.overlook_alignment) else "") + labels[i],func(): choice.emit("preview_alignment",i))
 		if i == int(data.overlook_alignment): first = b
 	button("Keep this framing", func(): choice.emit("align", int(data.overlook_alignment)))
+	puzzle_hint_button = button("Show a hint", func(): advance_puzzle_hint())
 	button("Assist · frame for me",func(): choice.emit("assist",null))
 	button("Back · Esc / B",func(): close_modal(); dismissed.emit())
+	if puzzle_hint_level > 0: render_puzzle_hint()
 	first.grab_focus()
+func advance_puzzle_hint():
+	if not is_instance_valid(puzzle_hint_label) or not is_instance_valid(puzzle_hint_button): return
+	puzzle_hint_level = mini(2, puzzle_hint_level + 1)
+	render_puzzle_hint()
+func render_puzzle_hint():
+	if not is_instance_valid(puzzle_hint_label) or not is_instance_valid(puzzle_hint_button): return
+	if puzzle_hint_level == 1:
+		puzzle_hint_label.text = "Each discovery gives a place from the viewing marker: lighthouse left, arch middle, stars right."
+		puzzle_hint_button.text = "Show the next hint"
+		puzzle_hint_label.visible = true
+	elif puzzle_hint_level >= 2:
+		puzzle_hint_label.text = "Each discovery gives a place from the viewing marker: lighthouse left, arch middle, stars right.\n\nChoose Step back for the wide view, then keep it when all three shapes fit."
+		puzzle_hint_button.text = "Hint shown"
+		puzzle_hint_button.disabled = true
+	puzzle_hint_label.visible = true
 func show_pause(value: Dictionary):
 	if not pause_active:
 		if modal.visible:
