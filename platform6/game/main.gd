@@ -1,11 +1,16 @@
 extends Node
 const Model = preload("res://core/chapter_model.gd")
 const Store = preload("res://core/save_store.gd")
+const PortableStore = preload("res://core/portable_save_store.gd")
 const Factory = preload("res://world/world_factory.gd")
 const Player = preload("res://player/player.gd")
 var journey
 var model = Model.new()
 var store = Store.new()
+var portable_store = PortableStore.new()
+var portable_dialog: FileDialog
+var portable_dialog_export := false
+var pending_portable_archive: Dictionary = {}
 var world_container: Node3D
 var player: CharacterBody3D
 var hud
@@ -86,6 +91,13 @@ func _ready():
 	hud.settings_changed.connect(change_settings)
 	hud.pause_requested.connect(show_pause)
 	hud.quit_requested.connect(request_quit)
+	hud.portable_requested.connect(handle_portable_request)
+	portable_dialog = FileDialog.new()
+	portable_dialog.name = "LocalSaveArchivePicker"
+	portable_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	portable_dialog.use_native_dialog = false
+	portable_dialog.file_selected.connect(handle_portable_file_selected)
+	add_child(portable_dialog)
 	touch = load("res://ui/touch_controls.gd").new()
 	add_child(touch)
 	touch.modal_open = func(): return hud.modal_visible()
@@ -424,6 +436,84 @@ func change_settings(settings):
 		if world_container.get_child(0).has_method("apply_preferences"): world_container.get_child(0).apply_preferences(settings.reduced_motion)
 		var race = world_container.get_child(0).get_node_or_null("FairRace")
 		if race != null and race.has_method("apply_preferences"): race.apply_preferences(settings.reduced_motion)
+
+func handle_portable_request(action: String):
+	if action == "reset_prompt":
+		hud.show_reset_confirm()
+		return
+	if action == "reset_confirm":
+		dispatch("reset")
+		return
+	if action == "reset_cancel":
+		hud.show_pause(model.snapshot().settings)
+		return
+	if action == "open":
+		pending_portable_archive.clear()
+		hud.show_portable_menu()
+		return
+	if action == "export":
+		portable_dialog_export = true
+		var transfer_directory = ProjectSettings.globalize_path("user://still_here")
+		DirAccess.make_dir_recursive_absolute(transfer_directory)
+		portable_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+		portable_dialog.title = "Export a Platform 6 save archive"
+		portable_dialog.clear_filters()
+		portable_dialog.add_filter("*.syrava ; Platform 6 save archive")
+		portable_dialog.current_file = "still-here-save.syrava"
+		portable_dialog.current_dir = transfer_directory
+		portable_dialog.popup_centered_ratio(0.75)
+		return
+	if action == "import":
+		portable_dialog_export = false
+		var transfer_directory = ProjectSettings.globalize_path("user://still_here")
+		DirAccess.make_dir_recursive_absolute(transfer_directory)
+		portable_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+		portable_dialog.title = "Choose a Platform 6 save archive"
+		portable_dialog.clear_filters()
+		portable_dialog.add_filter("*.syrava,*.json ; Platform 6 save archive")
+		portable_dialog.current_file = ""
+		portable_dialog.current_dir = transfer_directory
+		portable_dialog.popup_centered_ratio(0.75)
+		return
+	if action == "confirm":
+		if pending_portable_archive.is_empty():
+			hud.show_portable_menu("No validated archive is waiting to be restored. Choose a file again.")
+			return
+		var restored = portable_store.restore_validated(pending_portable_archive, store, journey.store, save_path, journey.path, true)
+		pending_portable_archive.clear()
+		if not restored.ok:
+			hud.show_portable_menu(str(restored.error))
+			return
+		model.restore(restored.data.campaign)
+		journey.model.restore(restored.data.journey)
+		journey.active = model.snapshot().campaign_complete and journey.model.snapshot().mode != "home"
+		journey.warning = ""
+		journey.recovery_notice = ""
+		hud.close_all()
+		route(false)
+		hud.show_notice("Local saves restored. You are back at the saved story checkpoint.")
+		return
+	if action == "cancel":
+		pending_portable_archive.clear()
+		hud.show_portable_menu("Restore cancelled. Your current local saves were kept.")
+
+func handle_portable_file_selected(path: String):
+	if portable_dialog_export:
+		var exported = portable_store.export_archive(path, model.snapshot(), journey.model.snapshot())
+		hud.show_portable_menu("Save archive exported." if exported.ok else str(exported.error))
+		return
+	var loaded = portable_store.read_archive(path)
+	if not loaded.ok:
+		pending_portable_archive.clear()
+		hud.show_portable_menu(str(loaded.error) + ". Your current local saves were not changed.")
+		return
+	pending_portable_archive = loaded.data
+	var campaign: Dictionary = loaded.data.campaign
+	var journey_data: Dictionary = loaded.data.journey
+	var journey_label = "train" if journey_data.mode == "train" else ("home" if journey_data.mode == "home" else "Journey: " + str(journey_data.journey_id))
+	var summary = "Campaign: %s · checkpoint %s · %d recorded choices.\nJourney: %s · %d private note(s).\nSettings are included." % [str(campaign.campaign_chapter).replace("_", " "), str(campaign.checkpoint_id), campaign.choice_history.size(), journey_label, journey_data.tiny_tomorrows.size() + journey_data.future_echoes.size()]
+	hud.show_portable_confirm(summary)
+
 func show_pause():
 	if busy and not racing: return
 	if touch != null: touch.cancel_input()

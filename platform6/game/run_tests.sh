@@ -142,3 +142,6 @@ godot --headless --path . --script tests/opening_camera_readability.gd
 godot --headless --path . --script tests/opening_readability.gd
 python3 ../tools/test_opening_depth_art.py
 godot --headless --path . --script tests/puzzle_hints.gd
+
+# Explicit local export and validated, transactional restore across both stores.
+godot --headless --path . --script tests/portable_save_transfer.gd

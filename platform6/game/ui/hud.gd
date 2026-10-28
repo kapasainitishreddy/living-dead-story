@@ -4,6 +4,7 @@ signal dismissed
 signal settings_changed(settings)
 signal pause_requested
 signal quit_requested
+signal portable_requested(action)
 var root: Control
 var modal: PanelContainer
 var content: VBoxContainer
@@ -151,6 +152,11 @@ func button(label: String, callback: Callable):
 	b.pressed.connect(callback)
 	footer.add_child(b)
 	return b
+func focus_first_button():
+	for child in content.get_children():
+		if child is Button: child.grab_focus(); return
+	for child in footer.get_children():
+		if child is Button: child.grab_focus(); return
 func opening_prose(id: String, snapshot: Dictionary) -> String:
 	var entry = authored.dialogues.get(id, authored.get("local_dialogues", {}).get(id, {}))
 	var prose: String = entry.get("text", "")
@@ -319,7 +325,8 @@ func show_pause(value: Dictionary):
 	var first = button("Resume · Esc / B",func(): resume_pause())
 	button("Controls · keyboard and controller",show_controls)
 	button("Settings",func(): show_settings(value))
-	button("Start a new journey · keeps a backup",func(): choice.emit("reset",null))
+	button("Export or restore local saves",func(): portable_requested.emit("open"))
+	button("Start a new journey · keeps a backup",func(): portable_requested.emit("reset_prompt"))
 	button("Quit to desktop",func(): quit_requested.emit())
 	first.grab_focus()
 func show_settings(value: Dictionary):
@@ -362,6 +369,44 @@ func show_settings(value: Dictionary):
 	content.add_child(graphics)
 	var back = button("Back",func(): show_pause(edited))
 	back.grab_focus()
+
+func show_portable_menu(status: String = ""):
+	clear()
+	modal.show()
+	text("Local save transfer",26)
+	text("Export or restore your campaign checkpoint, choices, puzzle state, settings and private Journey writing. Restore replaces both local save files after validation; it does not merge them. Nothing is uploaded.",20)
+	if not status.is_empty():
+		var state = Label.new()
+		state.name = "PortableSaveStatus"
+		state.text = status
+		state.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		state.custom_minimum_size.x = 650
+		state.set_meta("base_font_size",19)
+		state.add_theme_font_size_override("font_size",int(19*settings.get("text_scale",1.0)))
+		content.add_child(state)
+	button("Export current local saves",func(): portable_requested.emit("export"))
+	button("Restore from a save archive",func(): portable_requested.emit("import"))
+	button("Back to pause · Esc / B",func(): show_pause(settings))
+	focus_first_button()
+
+func show_portable_confirm(summary: String):
+	clear()
+	modal.show()
+	text("Restore this local save?",26)
+	text(summary,19)
+	text("Your current campaign and Journey files will be retained as store backups. If either write fails, the game attempts to restore both original files. No save is changed until you choose Restore.",18)
+	button("Restore both local saves",func(): portable_requested.emit("confirm"))
+	button("Cancel · keep current saves",func(): portable_requested.emit("cancel"))
+	focus_first_button()
+
+func show_reset_confirm():
+	clear()
+	modal.show()
+	text("Start a new journey?",26)
+	text("This replaces the current campaign with a new apartment checkpoint. Your current save is retained as a local backup. Existing export archives are not removed.",20)
+	button("Start a new journey · keep backup",func(): portable_requested.emit("reset_confirm"))
+	button("Cancel · keep playing",func(): portable_requested.emit("reset_cancel"))
+	focus_first_button()
 
 func show_arrival(checkpoint: String):
 	clear()
