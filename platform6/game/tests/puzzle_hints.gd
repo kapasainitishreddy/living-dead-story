@@ -43,6 +43,8 @@ func run():
 	game.show_pause()
 	game.hud.resume_pause()
 	check(game.hud.content.find_child("PuzzleHint", true, false) == hint and hint.visible, "pause and resume preserve the chosen hint and puzzle context")
+	game.hud.close_all()
+	game.resume_controls()
 	var prefs = game.model.snapshot().settings
 	prefs.text_scale = 2.0
 	game.change_settings(prefs)
@@ -51,9 +53,11 @@ func run():
 	button = null
 	for candidate in game.hud.footer.get_children():
 		if candidate is Button and candidate.text == "Show a hint": button = candidate
+	check(button != null, "fresh 2x puzzle visit resets to an optional hint control")
 	if button != null: button.pressed.emit(); button.pressed.emit()
 	hint = game.hud.content.find_child("PuzzleHint", true, false)
 	check(hint != null and hint.visible and hint.get_theme_font_size("font_size") == 36, "revealed text uses the selected 2x size")
+	check(hint != null and hint.get_global_rect().size.x <= 330.0 and hint.text.contains("Step back"), "2x progressive hint wraps within the content column")
 	var viewport = Rect2(Vector2.ZERO, Vector2(1280, 720))
 	for control in game.hud.footer.get_children():
 		check(viewport.encloses(control.get_global_rect()), "hint-enabled 2x choice remains inside viewport: " + control.text)
