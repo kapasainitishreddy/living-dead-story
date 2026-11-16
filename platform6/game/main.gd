@@ -286,8 +286,12 @@ func on_interact(target):
 		return
 	if action not in ["puzzle","camera","optional"] and not hud.authored.dialogues.has(action): return
 	player.set_controls_enabled(false)
-	player.set_framed_view(true)
-	begin_character_conversation(action,target_value,target)
+	# The first door is a navigation choice, not a speaking character.
+	# Hold the room and player in view while the prompt is open instead of
+	# hiding the player and pointing a portrait camera into the door.
+	if action != "leave_apartment":
+		player.set_framed_view(true)
+		begin_character_conversation(action,target_value,target)
 	if action == "puzzle":
 		if is_instance_valid(opening_story): opening_story.begin_preview(int(model.snapshot().overlook_alignment))
 		hud.show_puzzle(model.snapshot())
