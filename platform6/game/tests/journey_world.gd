@@ -180,14 +180,19 @@ func run():
 	check(cart.position.distance_to(starting_cart)>0.02,"imaginary paper cart moves through actual 3D scene")
 	# The optional route markers must physically change the paper cart's
 	# route, rather than only illuminating cardboard scenery.
+	var lane_checkpoints = [0.18,0.50,0.83]
 	for lane in range(3):
-		var lane_progress = float(market.MARKET_MARKER_PROGRESS[lane])
+		var lane_progress = float(lane_checkpoints[lane])
 		check(market._market_lane_offset(lane_progress,1<<lane)<-0.25,"marked aisle changes real paper-cart z route "+str(lane))
 		check(is_zero_approx(market._market_lane_offset(lane_progress,0)),"unmarked aisle preserves central paper road "+str(lane))
 	market.update_activity({"step":0,"selection":3,"progress":2,"done":false})
 	var before_last_marker = cart.position
 	market.update_activity({"step":2,"selection":7,"progress":3,"done":true})
 	check(cart.position.distance_to(before_last_marker)<0.012,"last grocery route marker starts animation without teleporting cart")
+	market.update_activity({"step":0,"selection":1,"progress":1,"done":false})
+	var before_watch = cart.position
+	market.update_activity({"step":1,"selection":1,"progress":3,"done":true})
+	check(cart.position.distance_to(before_watch)<0.012,"Jo's demonstration starts from the current partial paper route without a jump")
 	market.motion_elapsed = 4.599
 	market._update_market_rescue_pose()
 	var before_loop = cart.position
