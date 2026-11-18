@@ -507,14 +507,14 @@ func begin_gesture(action: String, completion: Callable = Callable()):
 	else:
 		_stage_gesture(0.0)
 
+func stir_input_window_open() -> bool:
+	# Common eligibility contract for keyboard, physical controller and touch HUD.
+	return gesture_active and gesture_action == "join_help" and not paused and not reduced and stir_input_count < STIR_INPUT_LIMIT and gesture_elapsed >= 0.18 and gesture_elapsed < gesture_duration * 0.48
+
 func offer_stir_input() -> bool:
 	# E/A/touch can add up to three small, heard ladle turns to the same supper.
 	# The room stirs naturally without input; no timed challenge, rating or save.
-	if not gesture_active or gesture_action != "join_help" or paused or reduced:
-		return false
-	if gesture_elapsed < 0.18 or gesture_elapsed >= gesture_duration * 0.48:
-		return false
-	if stir_input_count >= STIR_INPUT_LIMIT or gesture_elapsed - stir_last_elapsed < STIR_INPUT_COOLDOWN:
+	if not stir_input_window_open() or gesture_elapsed - stir_last_elapsed < STIR_INPUT_COOLDOWN:
 		return false
 	stir_input_count += 1
 	stir_last_elapsed = gesture_elapsed

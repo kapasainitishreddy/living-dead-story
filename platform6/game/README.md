@@ -1,5 +1,8 @@
 ## November 18, 2026 · optional hands-on soup stirring (source integrated)
 
+**Touch follow-through:** The game's real on-screen Interact button is now visible and wired only during the optional Help stirring window; walk/look controls remain locked to the dinner close-up. The same gate owns E, controller A and touch. Added native finger-press/release assertions plus paused control availability. Source and timing checks passed; actual Godot execution is still unrun.
+
+
 **Vision:** STILL HERE: PLATFORM 6 finds happiness in small things: gently helping Noor stir a pot should feel responsive and warm, not like a scored cooking challenge. The 3:17 journey, Mira's plans and all sit/watch choices stay intact.
 
 **Implemented:** During the existing 4.5-second Night Kitchen **Help** gesture, up to three optional E/A/touch presses add distinct, short physical ladle circles, soup-surface turns and local soft stir sounds. A brief cooldown prevents holding the button from spamming. Automatic preparation continues with zero presses; soup is served identically, with no new save fields or rewards. Sit/watch do not ask for input. Pausing, skipping, finishing, and reduced motion settle safely. New actual-scene test `tests/kitchen_stir_input.gd` covers interaction, spoon/soup response, sounds, limits, pause and reduced motion.
