@@ -1,3 +1,9 @@
+## Night development checkpoint · November 17, 2026
+
+The post-ending optional animal-shelter stop now includes animated *cardboard* cat figures with reversible gates, a separate Jo demonstration and a stationary reduced-motion version. The genuine animals remain resting. Source and regression changes are on the existing private Godot branch; this addition still needs a real Godot import, gameplay and pause/resume capture. The seven-chapter story and earlier ten Journey stops remain intact. See [game status and test plan](game/README.md). No public release.
+
+---
+ 
 # Current cloud checkpoint · 2026-10-10
 
 All seven campaign chapters and all ten Journey destinations now have a Sakura

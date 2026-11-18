@@ -595,7 +595,10 @@ func _build_observation():
 
 func update_activity(value: Dictionary):
 	if not is_instance_valid(activity): return
+	var prior_done = bool(_activity_state.get("done",false))
 	_activity_state = value.duplicate(true)
+	if activity_type == "shelter_parade" and not prior_done and bool(_activity_state.get("done",false)):
+		motion_elapsed = 0.0
 	var step = maxi(0,int(value.get("step",0)))
 	var selection = maxi(0,int(value.get("selection",0)))
 	var progress = maxi(0,int(value.get("progress",0)))
@@ -647,6 +650,28 @@ func update_activity(value: Dictionary):
 		_:
 			for i in range(3): activity.get_node("ObservationObjects/NoticedObject%d" % i).rotation.y = step*0.15+i*0.22
 			activity.get_node("ObservationObjects/RestingCard").rotation.y = 0.12 if done else 0
+	if activity_type == "shelter_parade": _update_shelter_parade_pose()
+
+func _update_shelter_parade_pose():
+	if activity_type != "shelter_parade" or not is_instance_valid(activity): return
+	var completed = bool(_activity_state.get("done",false))
+	var watching = int(_activity_state.get("step",0)) == 1
+	var note = activity.get_node("ParadeNote")
+	note.text = ("JO LETS THE PAPER CATS LEAD" if watching else "THE PAPER CATS CHOOSE THE WAY") if completed else "THE CATS CHOOSE THE WAY"
+	# The tiny cardboard figures move; the actual resting shelter cats are free
+	# to sleep. The animation is visual only and never changes a local save.
+	for i in range(3):
+		var paper = activity.get_node("PaperParade/PaperCats/PaperCat%d" % i)
+		if not completed:
+			paper.position = Vector3(-0.76+i*0.76,0.04,0.26)
+			paper.rotation.y = 0.0
+		elif reduced_motion:
+			paper.position = Vector3(-0.68+i*0.68,0.04,0.14+i*0.12)
+			paper.rotation.y = 0.0
+		else:
+			var phase = fposmod(motion_elapsed*0.24+float(i)*0.27,1.0)
+			paper.position = Vector3(-0.82+phase*1.64,0.04+absf(sin(motion_elapsed*5.0+i))*0.025,0.14+i*0.12)
+			paper.rotation.y = sin(motion_elapsed*2.8+i)*0.11
 
 func apply_preferences(value: bool):
 	reduced_motion = value
@@ -659,6 +684,7 @@ func apply_preferences(value: bool):
 		activity.get_node("TeaTray/Steam").visible = not value and (bool(_activity_state.get("done",false)) or int(_activity_state.get("progress",0)) > 0)
 	for person in scenery.find_children("*","Node3D",true,false):
 		if person.has_method("apply_preferences"): person.apply_preferences(value)
+	if activity_type == "shelter_parade": _update_shelter_parade_pose()
 
 func set_paused(value: bool):
 	paused = value
@@ -672,6 +698,7 @@ func _process(delta: float):
 	motion_elapsed += delta
 	for item in _decorative:
 		if is_instance_valid(item.node): item.node.position = item.rest + Vector3(sin(motion_elapsed*0.37+item.phase)*0.035,sin(motion_elapsed*0.49+item.phase)*0.04,0)
+	if activity_type == "shelter_parade": _update_shelter_parade_pose()
 
 func _apply_local_state():
 	var states = snapshot.get("location_states",{})

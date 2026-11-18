@@ -1,3 +1,9 @@
+## Godot active development · 17 November 2026 (shelter interaction follow-through)
+
+**Shelter Lantern Parade** now distinguishes your arranged paper route from watching Jo demonstrate. The small tabletop paper cats actually travel along the three lanes after either action, while real shelter cats stay resting; moving a gate resets the parade and lets you start again. Pausing freezes the figures, and reduced-motion mode shows a completed still tableau instead. The original 3:17 campaign, ten earlier Journey stops and separate offline saves remain unchanged. Godot execution of this increment is **not yet verified** in the current environment. See [the native README](platform6/game/README.md) for exact regression coverage and next live check.
+
+**Vision:** a warm, single-player magical-realism journey where movement, animated everyday details, shared cooking and optional imaginary adventures lead to small acts of care, never a chore counter. Supermarket, college and detailed cooking adventures are not yet implemented.
+
 ## Godot active development · 17 November 2026
 
 The optional **Shelter Lantern Parade** stop now joins the native Journey on the existing private Godot working branch. After either authored ending, walk into Jo's softly lit animal shelter, turn three reversible cardboard gates for an imaginary cat-freedom parade or watch Jo demonstrate, then leave fresh water, fold a resting towel, or leave the room as it was. Each response is welcome; real cats keep their freedom to choose. The original ten Journey places, seven-chapter 3:17 story and offline save format are preserved. This is source integration with static checks, **not a native Godot gameplay sign-off**; see [production README](platform6/game/README.md).

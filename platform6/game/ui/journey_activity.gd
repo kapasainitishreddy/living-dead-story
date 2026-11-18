@@ -50,9 +50,13 @@ func act(command:String):
   'shelter_parade':
    if command in ['0','1','2']:
     state.selection = int(state.selection) ^ (1 << int(command))
+    state.step = 0
     state.done = false
     state.progress = 0
    if command in ['parade','watch']:
+    # Persist whether Jo demonstrated or the player arranged the paper gates.
+    # Both paths are valid; neither obligates the real shelter cats to move.
+    state.step = 1 if command == 'watch' else 2
     state.done = true
     state.progress = 1
   'arcade_paddle':
@@ -137,7 +141,9 @@ func _draw():
     draw_rect(Rect2(x-28,75,56,70),Color('172a3c') if (int(state.selection)&(1<<i))!=0 else Color('d6c49f'))
     draw_string(ThemeDB.fallback_font,Vector2(x-50,43),['BRIDGE','RAMP','DOOR'][i],HORIZONTAL_ALIGNMENT_LEFT,-1,18,cream)
     draw_circle(Vector2(x,175),13,amber if state.done else cream)
-   if state.done: draw_line(Vector2(88,198),Vector2(width-95,198),amber,5)
+   if state.done:
+    draw_line(Vector2(88,198),Vector2(width-95,198),amber,5)
+    draw_string(ThemeDB.fallback_font,Vector2(106,215),'JO SHOWS THE WAY' if int(state.step)==1 else 'YOUR PAPER PARADE',HORIZONTAL_ALIGNMENT_LEFT,-1,15,cream)
   'arcade_paddle':
    draw_rect(Rect2(40,25,width-80,18),Color('789f8c'))
    draw_rect(Rect2(40+float(state.selection)/10*(width-150),185,70,10),amber)

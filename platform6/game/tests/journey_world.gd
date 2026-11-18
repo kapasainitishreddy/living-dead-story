@@ -117,6 +117,35 @@ func run():
 			check(base != consequence,"choice has a physical local consequence " + id+"/"+local_state)
 			changed.free()
 			await physics_frame
+	# The new paper parade must be a genuine physical animation, pause/reduced-
+	# motion safe, and must not require any actual shelter cat to participate.
+	var shelter_data = pack.destinations[pack.destinations.size()-1]
+	check(shelter_data.journey_id == "shelter_parade","shelter is the final optional authored stop")
+	var shelter = script.new().build({"mode":"destination","journey_id":"shelter_parade","activity":{}},{},shelter_data)
+	root.add_child(shelter)
+	await physics_frame
+	var paper = shelter.get_node("Activity/PaperParade/PaperCats/PaperCat0")
+	var resting = shelter.get_node("Scenery/CatCorner0/RestingCat")
+	shelter.update_activity({"step":2,"selection":5,"progress":1,"done":true})
+	var first_position = paper.position
+	shelter._process(0.65)
+	check(paper.position.distance_to(first_position)>0.02,"completed paper cats visibly march in the actual scene")
+	check(resting.position==Vector3(0,0.35,0),"physical shelter cat is never made to parade")
+	shelter.set_paused(true)
+	var frozen_position = paper.position
+	shelter._process(1.2)
+	check(paper.position==frozen_position,"pausing freezes paper parade motion")
+	shelter.set_paused(false)
+	shelter.apply_preferences(true)
+	var quiet_position = paper.position
+	shelter._process(2.0)
+	check(paper.position==quiet_position,"reduced motion holds an equivalent completed still arrangement")
+	shelter.update_activity({"step":1,"selection":5,"progress":1,"done":true})
+	check(shelter.get_node("Activity/ParadeNote").text.contains("JO LETS"),"spectator route visibly acknowledges Jo")
+	shelter.update_activity({"step":0,"selection":4,"progress":0,"done":false})
+	check(paper.position==Vector3(-0.76,0.04,0.26) and not shelter.get_node("Activity/PaperParade/ParadeRibbon").visible,"reversing a gate resets the paper parade without penalty")
+	shelter.free()
+	await physics_frame
 	var mode_train = script.new().build({"mode":"train","board_history":["rain_town"],"visits":{}},{})
 	check(mode_train.get_node("Scenery/DestinationBoard").get_meta("history") == ["rain_town"],"actual model board_history reaches the physical board")
 	mode_train.free()
