@@ -1,3 +1,11 @@
+## November 17, 2026 · optional Shelter Lantern Parade (active Godot branch)
+
+After either completed Chapter Seven ending, Journey offers an eleventh destination. The player can wander through Jo's fictional cat shelter, adjust three paper-cardboard parade gates (all reversible) or watch Jo lead a demonstration, and then leave fresh water, fold a soft resting nook or leave the shelter unchanged. Physical generated cat beds, an awning, signs, a tabletop paper procession, gently moving resting cats and persistent return props make this a bounded scene rather than text-only content. Real cats are never forced to participate, and no real-life animal rescue task is assigned. Previous ten authored destinations, original story, saves and old browser prototype are preserved.
+
+**Creative target:** find happiness in ordinary moments and connections through expressive walking and environmental animation, detailed shared cooking and imaginative—but always gentle—optional adventures. The supermarket, college and cooking additions have **not** been built here.
+
+**Verification for this integration:** Compared the original ten authored destinations byte-equivalent after JSON parsing; eleventh catalog entry has Jo metadata, three valid state choices and an authored activity and physical scene. Repaired the Journey's synthetic-NPC test count for the added fixture and the runtime test's ten-button assumption; added a real-world-scene revisit assertion for the saved water-bowl choice. Existing `run_tests.sh` includes all affected Journey model/world/activity/runtime suites. **Not verified:** Godot 4.6.3 import, runtime suite, real controller, 1x visual/audio capture or human playtesting—Godot and the complete checkout aren't available here. Next run `cd platform6/game && ./run_tests.sh` with Godot 4.6.3 and inspect the quest through both endings, spectator route, three choices and a fresh-process reopen. This is not a release.
+
 ## Current illustrated graphics · 2026-10-10
 
 All seven campaign chapters and all ten Journey destinations now share matte

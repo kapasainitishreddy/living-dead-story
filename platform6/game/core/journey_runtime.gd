@@ -124,7 +124,7 @@ func focus_first():
   if child is Button: child.grab_focus(); return
  if game.hud.footer.get_child_count()>0: game.hud.footer.get_child(0).grab_focus()
 func show_board():
- page('Where next?','Ten authored destinations, with changed returns and remembered details. No daily reward, deadline or required visit. The apartment is always available.')
+ page('Where next?',str(model.destinations().size())+' authored destinations, with changed returns and remembered details. No daily reward, deadline or required visit. The apartment is always available.')
  for destination in model.destinations():
   var id=str(destination.journey_id)
   var count=int(model.snapshot().visits.get(id,0))
@@ -194,6 +194,7 @@ func show_activity():
   'constellation_tracing': actions=[['Trace point 1','0'],['Trace point 2','1'],['Trace point 3','2'],['Undo last connection','undo']]
   'tea_mixing': actions=[['Add / remove amber leaf','0'],['Add / remove mint','1'],['Add / remove hibiscus','2'],['Pour this blend','pour']]
   'arcade_paddle': actions=[['Paddle left','left'],['Paddle right','right'],['Launch the ball','launch'],['Watch the cabinet demonstrate','observe']]
+  'shelter_parade': actions=[['Turn paper bridge','0'],['Turn soft ramp','1'],['Turn quiet door','2'],['Let paper cats parade','parade'],['Watch Jo demonstrate','watch']]
   _: actions=[['Notice the next small detail','next']]
  for item in actions:
   var b=Button.new()

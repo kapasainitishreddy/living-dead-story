@@ -47,6 +47,14 @@ func act(command:String):
   'tea_mixing':
    if command in ['0','1','2']: state.selection = int(state.selection) ^ (1<<int(command))
    if command == 'pour': state.done = true; state.progress = 1
+  'shelter_parade':
+   if command in ['0','1','2']:
+    state.selection = int(state.selection) ^ (1 << int(command))
+    state.done = false
+    state.progress = 0
+   if command in ['parade','watch']:
+    state.done = true
+    state.progress = 1
   'arcade_paddle':
    if command == 'left': state.selection = maxi(0,int(state.selection)-1)
    if command == 'right': state.selection = mini(10,int(state.selection)+1)
@@ -122,6 +130,14 @@ func _draw():
     draw_circle(Vector2(120+i*180,65),30,colors[i])
     if (int(state.selection)&(1<<i))!=0: mix=mix.lerp(colors[i],0.4); draw_line(Vector2(120+i*180,105),Vector2(310,165),colors[i],4)
    draw_rect(Rect2(240,145,140,55),mix)
+  'shelter_parade':
+   for i in 3:
+    var x=120+i*180
+    draw_rect(Rect2(x-38,60,76,95),Color('9c8768'))
+    draw_rect(Rect2(x-28,75,56,70),Color('172a3c') if (int(state.selection)&(1<<i))!=0 else Color('d6c49f'))
+    draw_string(ThemeDB.fallback_font,Vector2(x-50,43),['BRIDGE','RAMP','DOOR'][i],HORIZONTAL_ALIGNMENT_LEFT,-1,18,cream)
+    draw_circle(Vector2(x,175),13,amber if state.done else cream)
+   if state.done: draw_line(Vector2(88,198),Vector2(width-95,198),amber,5)
   'arcade_paddle':
    draw_rect(Rect2(40,25,width-80,18),Color('789f8c'))
    draw_rect(Rect2(40+float(state.selection)/10*(width-150),185,70,10),amber)

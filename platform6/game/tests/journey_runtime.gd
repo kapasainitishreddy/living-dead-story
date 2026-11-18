@@ -24,8 +24,8 @@ func run():
  check(not game.journey.eligible(),'campaign cannot be skipped to Journey')
  game.dispatch('journey_enter')
  check(not game.journey.active,'early Journey entry rejected')
- if game.journey.model.destinations().size()!=10:
-  check(false,'real authored ten destination pack present')
+ if game.journey.model.destinations().size()!=11:
+  check(false,'real authored eleven destination pack present')
   await shutdown(game); return
  for ending in ['train','sleep']:
   var campaign=completed_campaign(ending)
@@ -36,11 +36,11 @@ func run():
   check(game.hud.footer.get_children().any(func(b): return b.text.contains('Journey Mode') and not b.disabled),'real entry available '+ending)
   game.dispatch('journey_enter')
   check(game.journey.active and game.journey.model.snapshot().mode=='train','entered carriage '+ending)
-  check(game.hud.content.get_children().filter(func(b): return b is Button).size()==10,'board has ten actual controls '+ending)
+  check(game.hud.content.get_children().filter(func(b): return b is Button).size()==11,'board has eleven actual controls '+ending)
   game.hud.close_all();game.resume_controls()
   var physical_board=game.world_container.get_child(0).find_child('journey_board',true,false)
   game.on_interact(physical_board)
-  check(game.hud.modal_visible() and game.hud.content.get_children().filter(func(b): return b is Button).size()==10,'physical train board target opens ten destinations '+ending)
+  check(game.hud.modal_visible() and game.hud.content.get_children().filter(func(b): return b is Button).size()==11,'physical train board target opens eleven destinations '+ending)
 
   for d in game.journey.model.destinations():
    game.dispatch('journey_board',d.journey_id)
@@ -78,6 +78,13 @@ func run():
    else: game.dispatch('journey_finish')
    check(game.journey.model.snapshot().mode=='train','authored scene returns train '+d.journey_id)
    check(game.journey.model.snapshot().visits.get(d.journey_id,0)==1,'completed visit remembered '+d.journey_id)
+   if d.journey_id=='shelter_parade':
+    check(game.journey.model.snapshot().location_states.get('shelter_parade')=='water_bowl','shelter care choice saved')
+    game.dispatch('journey_board','shelter_parade')
+    await process_frame
+    var shelter_world=game.world_container.get_child(0)
+    check(shelter_world.has_node('Scenery/ShelterPorch') and shelter_world.has_node('Scenery/LocalConsequences/FreshWaterBowl'),'revisited shelter has real fresh-water prop')
+    game.dispatch('journey_return_train')
    check(game.model.snapshot()==campaign,'campaign unchanged throughout '+d.journey_id)
    check(game.store.load_snapshot(game.save_path).data==campaign,'campaign file separate '+d.journey_id)
    check(game.journey.store.load_snapshot(game.journey.path).data==game.journey.model.snapshot(),'Journey reload exact '+d.journey_id)

@@ -1,3 +1,9 @@
+## Godot active development · 17 November 2026
+
+The optional **Shelter Lantern Parade** stop now joins the native Journey on the existing private Godot working branch. After either authored ending, walk into Jo's softly lit animal shelter, turn three reversible cardboard gates for an imaginary cat-freedom parade or watch Jo demonstrate, then leave fresh water, fold a resting towel, or leave the room as it was. Each response is welcome; real cats keep their freedom to choose. The original ten Journey places, seven-chapter 3:17 story and offline save format are preserved. This is source integration with static checks, **not a native Godot gameplay sign-off**; see [production README](platform6/game/README.md).
+
+**Vision:** warm magical realism where small joys, walking and characterful animations, cooking together, friendship and gentle imaginary rescue adventures lead back to an ordinary helpful gesture, never a score or compulsory wellbeing chore. Cooking, college and supermarket quests are still future work.
+
 # STILL HERE — A Living Dead Story
 
 > **A city has forgotten why it wants tomorrow. Find out why.**
