@@ -1,3 +1,9 @@
+## November 17 · Shelter Lantern Parade (candidate)
+
+An optional eleventh Journey stop is added after either campaign ending: a cat shelter, Jo's imagined paper-cat freedom parade, a three-gate reversible tabletop activity or an equally valid demonstration, and three local, durable outcomes (fresh water, soft nook or leave as found). Original 3:17 seven-chapter campaign, ten previous Journey destinations, local saves and browser prototype are preserved. Original lightweight meshes and gentle head motion respect reduced-motion mode; no animal harm, timers, grades or obligation. This is part of the warm single-player magical-realism vision: small shared moments can matter without becoming quotas. Other imagination adventures and detailed cooking are still future scope.
+
+**Checked this increment:** Catalog parses as 11 entries; all new choice IDs map to real local states, original Jo NPC and soundtrack remain valid, source test roster now covers model, scene, activity and revisit consequences. **Not checked:** Godot engine import/native tests or physical play, because the engine and complete private checkout are unavailable in this worker. Run `./run_tests.sh` inside `platform6/game` with Godot 4.6.3, then walk, use the tabletop, choose each outcome, exit/re-enter, test reduced-motion/controller and inspect actual visuals/sound. Not a release sign-off.
+
 ## Current opening refresh · 2026-10-05
 
 The existing apartment → umbrella → station → carriage → shore → return opening now has physical story props, durable remembered replies, clear next-step objectives, an actual reversible shore-camera puzzle, readable speaker framing and layered roof/coast scenery. Five original stereo arrangements share a restrained motif with softer ambience. See ../docs/OPENING_REFRESH_2026-10-05.md and BUILD_INFO.json in the archive root for this delivery’s actual verification and limits. Previous milestone reports below describe their historical passes.

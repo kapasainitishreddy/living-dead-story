@@ -2,9 +2,9 @@ extends SceneTree
 # Real geometry and physics contract for bounded authored Journey scenes.
 var checks := 0
 var failures := 0
-const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies"]
-const TYPES = ["rain_routing","letter_arrangement","arcade_paddle","constellation_tracing","observation","tea_mixing","letter_arrangement","tea_mixing","observation","constellation_tracing"]
-const FEATURES = ["RainShop","LibraryShelves","ArcadeCabinets","Lighthouse","BareOrchard","RestCushions","RejectedObjectPlinths","DawnAwning","RoadLamps","NightBridge"]
+const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade"]
+const TYPES = ["rain_routing","letter_arrangement","arcade_paddle","constellation_tracing","observation","tea_mixing","letter_arrangement","tea_mixing","observation","constellation_tracing","shelter_parade"]
+const FEATURES = ["RainShop","LibraryShelves","ArcadeCabinets","Lighthouse","BareOrchard","RestCushions","RejectedObjectPlinths","DawnAwning","RoadLamps","NightBridge","ShelterPorch"]
 func check(value: bool, message: String):
 	checks += 1
 	if not value:
@@ -81,7 +81,7 @@ func run():
 			signatures[IDS[i]] = physical_signature(world.get_node("Scenery"))
 		world.free()
 		await physics_frame
-	check(signatures.values().size() == IDS.size(),"ten authored destination geometries")
+	check(signatures.values().size() == IDS.size(),"eleven authored destination geometries")
 	var unique: Dictionary = {}
 	for signature in signatures.values(): unique[signature] = true
 	check(unique.size() == IDS.size(),"every destination has a distinct physical silhouette")

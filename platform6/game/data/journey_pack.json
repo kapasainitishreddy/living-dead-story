@@ -73,7 +73,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/rain_roof.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "roof drops and a small waterwheel"
       },
       "required_flags": [
@@ -213,7 +213,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/rain_window.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "page edges and rain on high windows"
       },
       "required_flags": [
@@ -353,7 +353,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/fair_clockwork.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "soft cabinet clicks and a muted bell"
       },
       "required_flags": [
@@ -493,7 +493,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/surf.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "small waves and distant bread trays"
       },
       "required_flags": [
@@ -634,7 +634,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/orchard_hush.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "snow-softened rails and a packing shed"
       },
       "required_flags": [
@@ -776,7 +776,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/rain_window.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "quiet kettle and rain beyond the station wall"
       },
       "required_flags": [
@@ -916,7 +916,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/fair_clockwork.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "cloth bunting and small clockwork clicks"
       },
       "required_flags": [
@@ -1056,7 +1056,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/kitchen_simmer.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "quiet cups, toast rack and distant tram"
       },
       "required_flags": [
@@ -1197,7 +1197,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/rails.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "distant wheels and roadside grass"
       },
       "required_flags": [
@@ -1337,7 +1337,7 @@
       },
       "music_profile": {
         "track": "res://assets/original/orchard_hush.wav",
-        "gain_db": -17.0,
+        "gain_db": -17,
         "ambience": "soft reeds and distant evening train"
       },
       "required_flags": [
@@ -1449,6 +1449,147 @@
         "Label activity controls in text; palette color is never the sole instruction.",
         "Keep reduced-motion presentation available; ambience is supplementary to readable text.",
         "Use fixed numbered points with explicit undo; moving lights are never interaction targets."
+      ],
+      "performance_tier": "low"
+    },
+    {
+      "journey_id": "shelter_parade",
+      "title": "Shelter Lantern Parade",
+      "location_scene": "shelter_parade",
+      "scene_kind": "paper_shelter",
+      "available_time_states": [
+        "dusk",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "clear",
+          "mist"
+        ],
+        "intensity": 0.08,
+        "wet_surfaces": false,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "dusk",
+        "warmth": 0.8,
+        "fog": 0
+      },
+      "music_profile": {
+        "track": "res://assets/original/orchard_hush.wav",
+        "gain_db": -19,
+        "ambience": "quiet paws, cardboard rustling and a water bowl settling"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "jo"
+      ],
+      "npc": "jo",
+      "story_theme_tags": [
+        "cat_shelter",
+        "imagination_parade",
+        "gentle_agency"
+      ],
+      "emotional_texture_tags": [
+        "tender",
+        "playful",
+        "ordinary"
+      ],
+      "activity_tags": [
+        "shelter_parade",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "shelter_parade",
+      "activity_prompt": "Turn three small cardboard gates, then let the imaginary paper cats parade. Or watch Jo demonstrate. The real cats choose where to rest; no route is wrong.",
+      "palette": [
+        "#314653",
+        "#AA987B",
+        "#F0C98A"
+      ],
+      "entry_variants": {
+        "first": "The shelter by the station has its evening lamp on. Jo has brought spare cardboard. A curious cat is considering the window beside its soft bed.",
+        "return": "The shelter lamp is still warm. Jo has another box delivery; a different cat has claimed the same window, without consulting anybody."
+      },
+      "story_nodes": [
+        "Jo folds the cardboard beside a row of water bowls. A volunteer quietly checks that cats can move between their beds and the window. Jo says, “Someone has a very definite opinion about doors.” The cats decide whether to come closer.",
+        "On the worktable, three paper cats imagine a lantern march for their freedom. Their tiny banners read EVERY CAT CHOOSES ITS OWN WINDOW! Turn the bridge, ramp and soft door in any order or watch Jo demonstrate. Nobody is chased, threatened or trapped; the real cats continue resting.",
+        "The parade folds away. The volunteer puts a fresh bowl by a clean towel. A cat drinks; another ignores the bed and chooses the window. Jo collects the spare cardboard for her next stop. The good part was never making either cat obey."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.shelter_parade.water_bowl",
+          "label": "Leave fresh water ready",
+          "response": "You put a clean bowl on the low shelf. The volunteer dries the floor. The cats may drink whenever they like.",
+          "state_id": "water_bowl"
+        },
+        {
+          "choice_id": "journey.shelter_parade.soft_nook",
+          "label": "Fold a soft corner",
+          "response": "You fold a towel beside the window. The doorway stays clear; a cat ignores the towel, then comes back on its own.",
+          "state_id": "soft_nook"
+        },
+        {
+          "choice_id": "journey.shelter_parade.as_found",
+          "label": "Leave the shelter as it is",
+          "response": "The cats have water and comfortable places already. Jo lets the curious one pass and takes the cardboard for recycling.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.shelter_parade.water_bowl",
+          "scope": "destination",
+          "set_state": "water_bowl",
+          "callback": "A fresh bowl waits on the shelf. Nobody has to drink from it."
+        },
+        {
+          "choice_id": "journey.shelter_parade.soft_nook",
+          "scope": "destination",
+          "set_state": "soft_nook",
+          "callback": "A folded towel rests beside the window; the doorway remains open."
+        },
+        {
+          "choice_id": "journey.shelter_parade.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The beds and bowls remain as they were. The cats can choose."
+        }
+      ],
+      "returning_location_states": [
+        "The beds and bowls remain as they were. The cats can choose.",
+        "A fresh bowl waits on the shelf. Nobody has to drink from it.",
+        "A folded towel rests beside the window; the doorway remains open."
+      ],
+      "local_scene_states": {
+        "as_found": "The beds and bowls remain as they were. The cats can choose.",
+        "water_bowl": "A fresh bowl waits on the shelf. Nobody has to drink from it.",
+        "soft_nook": "A folded towel rests beside the window; the doorway remains open."
+      },
+      "callback_pool": {
+        "camera": "The shore camera kept a moment; it could not tell anyone where to stand. The shelter window feels much the same.",
+        "fair": "Ada's little boats would have joined this cardboard parade, though they would insist on sailing.",
+        "sign": "Noor's paper stars still fit over a shelter table, even when the sign is somewhere else.",
+        "mira": "Mira repaired a toy cat at Lower Mill. It still refuses to roll in a straight line."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.shelter_parade.optional_invitation",
+          "text": "If you happen to notice an animal choosing somewhere to rest, you can simply enjoy noticing. No proof, promise or report.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 5,
+      "accessibility_notes": [
+        "Three large labelled cardboard-gate controls; no tiny 3D click targets.",
+        "Jo's demonstration is equally valid and unscored.",
+        "Reduced-motion mode freezes decorative cat movement without hiding choices.",
+        "Leaving without the activity or without a room change carries no penalty.",
+        "No dangerous animal rescue or real-world task is required."
       ],
       "performance_tier": "low"
     }

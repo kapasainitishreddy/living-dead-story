@@ -3,7 +3,7 @@ var checks := 0
 var failures := 0
 var Model: Script
 var Store: Script
-const IDS = ["rain_town", "unsent_letters_library", "arcade", "beach_before_sunrise", "winter_orchard", "rest_room", "failed_things_festival", "sunrise_cafe", "no_destination_road", "fireflies"]
+const IDS = ["rain_town", "unsent_letters_library", "arcade", "beach_before_sunrise", "winter_orchard", "rest_room", "failed_things_festival", "sunrise_cafe", "no_destination_road", "fireflies", "shelter_parade"]
 func check(ok: bool, label: String):
 	checks += 1
 	if not ok:
@@ -38,7 +38,7 @@ func _initialize():
 	check(initial.get("schema_version") == 1 and initial.get("mode") == "train", "neutral standalone train schema1")
 	check(not initial.has("settings") and not initial.has("dimensions") and not initial.has("npc_state"), "campaign preferences and fictional weights stay separate")
 	check(m.valid(initial) and m.restore(JSON.parse_string(JSON.stringify(initial))), "default exact JSON roundtrip")
-	check(m.destinations().size() == 10 and m.current_destination().is_empty(), "ten authored destinations with no active arrival")
+	check(m.destinations().size() == 11 and m.current_destination().is_empty(), "eleven authored destinations with no active arrival")
 	var leaked = m.destinations()
 	leaked[0].journey_id = "changed"
 	check(m.destinations()[0].journey_id == "rain_town", "authored catalog defensive copy")
@@ -62,7 +62,7 @@ func _initialize():
 		check(m.apply("board", id) and m.snapshot().stage == 0, "revisit begins new story " + id)
 		check(m.apply("finish") and m.snapshot().visits[id] == 2, "leaving early is equal completed visit " + id)
 	check(m.snapshot().npc_visits.get("Mira") == 2 and m.snapshot().npc_visits.get("Ada") == 18, "recurring fictional cast visit counts")
-	check(m.snapshot().train_details.size() == 10, "train holds bounded unique place details")
+	check(m.snapshot().train_details.size() == 11, "train holds bounded unique place details")
 	check(m.apply("board", "rain_town") and m.apply("advance") and m.apply("activity", {"selection":5}), "pause first destination")
 	check(m.apply("return_train") and m.apply("board", "arcade") and m.apply("advance"), "switch destination without losing first")
 	check(m.apply("home") and m.snapshot().mode == "home" and m.apply("return_train"), "home is reachable without campaign mutation")
@@ -121,7 +121,7 @@ func _initialize():
 	check(campaign == campaign_before and m.snapshot() == journey_before, "callbacks never mutate either save")
 	check(m.callback({}).is_empty() and m.callback(null).is_empty(), "hostile or absent campaign callback stays neutral")
 	var authored = Model.new()
-	check(authored.destinations().size() == 10,"actual authored pack loads into standalone model")
+	check(authored.destinations().size() == 11,"actual authored pack loads into standalone model")
 	for destination in authored.destinations():
 		check(authored.apply("board",destination.journey_id),"actual pack boards " + destination.journey_id)
 		for choice in destination.choice_nodes:

@@ -1,11 +1,11 @@
 extends Node3D
-# Ten intentionally small authored stops. The model owns memory and choices;
+# Eleven intentionally small authored stops. The model owns memory and choices;
 # this world only presents their physical consequences, with no score or clock.
 const CREAM = Color("f1e5cc")
 const WOOD = Color("8f6b53")
 const INK = Color("29384b")
 const WARM = Color("eebf79")
-const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies"]
+const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade"]
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var campaign: Dictionary = {}
@@ -205,7 +205,7 @@ func _build_train():
 	_label(board,"BoardTitle","THE NEXT SMALL JOURNEY",Vector3(0,0.52,0.13),29,0.006)
 	var history = snapshot.get("board_history",snapshot.get("history",snapshot.get("recent_destinations",[])))
 	board.set_meta("history",history.duplicate(true) if history is Array else [])
-	var board_text = "RAIN / LETTERS / ARCADE / DAWN\nORCHARD / REST / FESTIVAL / CAFE\nNO DESTINATION / FIREFLIES"
+	var board_text = "RAIN / LETTERS / ARCADE / DAWN\nORCHARD / REST / FESTIVAL / CAFE\nROAD / FIREFLIES / SHELTER"
 	if history is Array and not history.is_empty(): board_text = "LAST STOP: " + str(history[-1]).replace("_"," ").to_upper() + "\nTHERE IS STILL NO HURRY"
 	_label(board,"BoardChoices",board_text,Vector3(0,-0.12,0.14),19,0.005)
 	_target("journey_board",Vector3(0,0,-4.6),"Choose a destination")
@@ -260,6 +260,7 @@ func _build_destination():
 		"sunrise_cafe": _cafe()
 		"no_destination_road": _road()
 		"fireflies": _fireflies()
+		"shelter_parade": _shelter_parade()
 		_: _rest_room()
 	var memory = _node(scenery,"RevisitMemory",Vector3(-5.5,0,-0.7))
 	memory.set_meta("visits",visit_count)
@@ -412,6 +413,35 @@ func _road():
 	_label(road,"RoadSign","NO DESTINATION REQUIRED",Vector3(-4.6,2.16,-4.7),20,0.0045)
 	_box(road,"SignPost",Vector3(-4.6,1,-4.7),Vector3(0.08,2,0.08),WOOD)
 
+func _shelter_parade():
+	# Real comfort is separate from the entirely imaginary cardboard march.
+	var shelter = _node(scenery,"ShelterPorch",Vector3(0,0,-5.55))
+	_box(shelter,"ShelterBack",Vector3(0,1.7,-0.62),Vector3(11.9,3.4,0.24),palette[0],true)
+	_box(shelter,"WarmAwning",Vector3(0,3.24,0.35),Vector3(12,0.15,1.65),palette[2])
+	for x in [-5.5,5.5]:
+		_box(shelter,"PorchPost",Vector3(x,1.58,0.62),Vector3(0.13,3.16,0.13),WOOD)
+		_orb(shelter,"SoftLantern",Vector3(x,2.85,0.5),0.18,Color("ffdcaa"))
+	_label(shelter,"ShelterSign","THE OPEN DOOR CAT SHELTER",Vector3(0,2.62,-0.38),24,0.005)
+	for i in range(2):
+		var x = -4.7 if i == 0 else 4.7
+		var corner = _node(scenery,"CatCorner%d" % i,Vector3(x,0,-3.95))
+		_box(corner,"Bed",Vector3(0,0.13,0),Vector3(1.4,0.25,0.95),WOOD)
+		_box(corner,"Blanket",Vector3(0,0.28,0),Vector3(1.22,0.08,0.77),palette[1])
+		var cat = _node(corner,"RestingCat",Vector3(0,0.35,0))
+		var fur = Color("b8a18a") if i == 0 else Color("77838b")
+		_orb(cat,"Body",Vector3(0,0.17,0.12),0.34,fur).scale = Vector3(1.2,0.72,0.85)
+		var head = _node(cat,"Head",Vector3(-0.12,0.35,-0.15))
+		_orb(head,"Face",Vector3.ZERO,0.19,fur)
+		for xx in [-0.12,0.12]: _orb(head,"Ear",Vector3(xx,0.19,-0.025),0.085,fur.lightened(0.2)).scale = Vector3(0.56,1.4,0.45)
+		for xx in [-0.072,0.072]: _orb(head,"Eye",Vector3(xx,0.025,-0.173),0.018,INK)
+		_box(cat,"QuietTail",Vector3(0.33,0.25,0.3),Vector3(0.065,0.45,0.065),palette[0]).rotation.z = 0.5
+		_decorative.append({"node":head,"rest":head.position,"phase":float(i)*PI})
+	var shelf = _node(scenery,"ShelterSupplies",Vector3(-5.15,0,-5.1))
+	_box(shelf,"Shelf",Vector3(0,0.8,0),Vector3(1.25,0.12,0.52),WOOD)
+	factory.rounded(shelf,"WaterBowl",Vector3(0,0.94,0),0.24,0.24,0.08,CREAM)
+	_box(scenery,"RecyclingCart",Vector3(4.8,0.55,-5.0),Vector3(1.3,1.1,0.7),palette[1])
+	_label(scenery,"ShelterNote","SMALL DOORS. MANY CHOICES.",Vector3(0,3.75,-6.28),20,0.004)
+
 func _fireflies():
 	var clearing = load("res://world/firefly_clearing.gd").new()
 	clearing.name = "PaintedClearing"
@@ -463,6 +493,7 @@ func _build_activity():
 		"arcade_paddle": _build_paddle()
 		"constellation_tracing": _build_constellation()
 		"tea_mixing": _build_tea()
+		"shelter_parade": _build_shelter_parade()
 		_: _build_observation()
 	var saved = snapshot.get("activities",snapshot.get("activity_states",{}))
 	var current = saved.get(journey_id,{}) if saved is Dictionary else {}
@@ -538,6 +569,22 @@ func _build_tea():
 	var steam = _node(tray,"Steam",Vector3(0,0.31,0.23))
 	for i in range(4): _orb(steam,"TeaPuff",Vector3(sin(i)*0.045,i*0.07,0),0.022,Color("cbd4cb"))
 
+func _build_shelter_parade():
+	var town = _node(activity,"PaperParade",Vector3(0,1.06,0))
+	_box(town,"PaperTown",Vector3(0,0,-0.05),Vector3(2.3,0.025,0.94),Color("d5c39e"))
+	for i in range(3):
+		var gate = _node(town,"Gate%d" % i,Vector3(-0.75+i*0.75,0.025,-0.13))
+		_box(gate,"CardboardArch",Vector3(0,0.17,0),Vector3(0.07,0.3,0.62),palette[0])
+		_box(gate,"Flag",Vector3(0,0.38,-0.1),Vector3(0.28,0.16,0.025),[palette[2],palette[1],CREAM][i])
+	var cats = _node(town,"PaperCats")
+	for i in range(3):
+		var paper = _node(cats,"PaperCat%d" % i,Vector3(-0.76+i*0.76,0.04,0.26))
+		_orb(paper,"Body",Vector3.ZERO,0.14,[Color("b99b79"),Color("7f8e9a"),CREAM][i]).scale = Vector3(1,0.48,0.7)
+		_orb(paper,"Head",Vector3(0.12,0.06,-0.06),0.07,palette[0])
+	var ribbon = _box(town,"ParadeRibbon",Vector3(0,0.045,0.31),Vector3(2.15,0.013,0.06),palette[2])
+	ribbon.visible = false
+	_label(activity,"ParadeNote","THE CATS CHOOSE THE WAY",Vector3(0,1.66,-0.46),17,0.0035)
+
 func _build_observation():
 	var objects = _node(activity,"ObservationObjects",Vector3(0,1.035,0))
 	for i in range(3):
@@ -581,6 +628,10 @@ func update_activity(value: Dictionary):
 		"constellation_tracing":
 			for i in range(2): activity.get_node("Constellation/Connection%d" % i).visible = done or i < progress
 			for i in range(3): activity.get_node("Constellation/Point%d" % i).scale = Vector3.ONE*(1.35 if i == (step%3) else 1.0)
+		"shelter_parade":
+			for i in range(3):
+				activity.get_node("PaperParade/Gate%d" % i).rotation.y = PI/2 if (selection & (1 << i)) != 0 else 0.0
+			activity.get_node("PaperParade/ParadeRibbon").visible = done
 		"tea_mixing":
 			var tray = activity.get_node("TeaTray")
 			var tints = [Color("8d6942"),Color("7c9162"),Color("af7a80")]
@@ -629,6 +680,12 @@ func _apply_local_state():
 	changed.set_meta("state_id",state)
 	set_meta("location_state",state)
 	match state:
+		"water_bowl":
+			factory.rounded(changed,"FreshWaterBowl",Vector3(-5.1,0.17,-3.15),0.28,0.28,0.12,CREAM)
+			factory.rounded(changed,"FreshWaterSurface",Vector3(-5.1,0.24,-3.15),0.235,0.235,0.012,Color("9cc3ce"))
+		"soft_nook":
+			_box(changed,"NewFoldedTowel",Vector3(4.8,0.31,-3.16),Vector3(1.2,0.12,0.72),CREAM)
+			_box(changed,"ClearDoorMat",Vector3(3.55,0.035,-4.55),Vector3(0.78,0.045,0.55),palette[1])
 		"pot_route":
 			factory.rounded(changed,"PotSaucer",Vector3(-4.5,0.07,-2.7),0.4,0.36,0.06,CREAM)
 			factory.rounded(changed,"RainPot",Vector3(-4.5,0.33,-2.7),0.28,0.22,0.5,palette[1])

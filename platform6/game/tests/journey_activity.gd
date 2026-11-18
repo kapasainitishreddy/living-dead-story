@@ -7,7 +7,7 @@ func check(ok,label):
 func _initialize(): call_deferred('run')
 func run():
  var A=load('res://ui/journey_activity.gd')
- for kind in ['rain_routing','letter_arrangement','constellation_tracing','tea_mixing','arcade_paddle','observation']:
+ for kind in ['rain_routing','letter_arrangement','constellation_tracing','tea_mixing','arcade_paddle','observation','shelter_parade']:
   var a=A.new().configure(kind,{},true)
   match kind:
    'rain_routing': a.act('0'); a.act('2')
@@ -15,6 +15,7 @@ func run():
    'constellation_tracing': a.act('2'); check(a.state.step==0,'trace respects actual path'); a.act('0'); a.act('1'); a.act('2')
    'tea_mixing': a.act('1'); a.act('pour')
    'arcade_paddle': a.act('right'); a.act('launch')
+   'shelter_parade': a.act('0'); a.act('2'); a.act('parade')
    _: a.act('next'); a.act('next'); a.act('next')
   check(a.state.done,'distinct activity completes '+kind)
   var b=A.new().configure(kind,a.state,true)
@@ -25,7 +26,12 @@ func run():
    'letter_arrangement': a.act('swap_left'); check(not a.state.done,'letter swaps remain reversible')
    'constellation_tracing': a.act('undo'); check(not a.state.done and a.state.step==2,'trace undo survives completion')
    'tea_mixing': a.act('2'); check(a.state.selection!=before.selection,'tea blend remains editable')
+   'shelter_parade': a.act('1'); check(not a.state.done and a.state.selection!=before.selection,'paper gates stay reversible')
   b.free(); a.free()
+ var observed=A.new().configure('shelter_parade',{},true)
+ observed.act('watch')
+ check(observed.state.done and observed.state.selection==0,'watching parade remains complete without arranging gates')
+ observed.free()
  var arcade=A.new().configure('arcade_paddle',{'selection':8},false)
  root.add_child(arcade)
  await process_frame

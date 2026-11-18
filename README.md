@@ -1,5 +1,11 @@
 # STILL HERE — A Living Dead Story
 
+## Godot working branch · November 17, 2026
+
+A source-integrated **Shelter Lantern Parade** Journey destination follows either Chapter Seven ending. Visit a quiet cat shelter, arrange three reversible cardboard gates for an imaginary freedom march (or watch Jo demonstrate), then leave a fresh bowl, fold a towel, or leave the room unchanged. No battle, deadlines, scores or real-world obligations; cats retain agency. This is **not yet native Godot-tested** here. See [game README](platform6/game/README.md) for exact test scope. The old browser prototype and main are unchanged.
+
+**Vision:** At 3:17 the train carries a small, warm story about tiny pleasures, meaningful human/animal connections, gentle walks and optional imagination. Cooking, college and supermarket adventures remain future work, not shipped features.
+
 > **A city has forgotten why it wants tomorrow. Find out why.**
 
 **STILL HERE** is a cinematic mystery game concept in which everyone in a city remains physically alive but slowly loses the ability to want anything. The phenomenon is known as **The Living Dead**. The player investigates disappearing places, reconstructs human stories, restores mysterious **Threads**, and gradually changes the world through choices, puzzles, exploration, and optional tiny real-world actions.
