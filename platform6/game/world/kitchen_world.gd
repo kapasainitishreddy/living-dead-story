@@ -274,6 +274,13 @@ func _build_working_kitchen():
 	var pot = _node(self,"SoupPot",Vector3(-3.42,1.69,-5.94))
 	factory.rounded(pot,"EnamelPot",Vector3.ZERO,0.35,0.29,0.3,Color("a86548"))
 	factory.rounded(pot,"SoupSurface",Vector3(0,0.154,0),0.321,0.321,0.008,Color("d49657"))
+	# Small visible ingredients for the optional hands-on help route; no new
+	# recipe score, save keys, or obligation to cook before joining the table.
+	var herbs = _node(self,"HerbSprinkle",Vector3(-3.42,2.08,-5.94))
+	for i in range(7):
+		var flake = factory.box(herbs,"Leaf%d" % i,Vector3(sin(float(i)*2.1)*0.13,0.17+float(i%3)*0.06,cos(float(i)*2.1)*0.13),Vector3(0.038,0.006,0.019),Color("688057"),false)
+		flake.rotation.y = float(i)*0.7
+	herbs.visible = false
 	for x in [-0.4,0.4]: factory.box(pot,"PotHandle",Vector3(x,0.065,0),Vector3(0.17,0.075,0.13),Color("5d5744"),false)
 	var steam = _node(self,"Steam",Vector3(-3.42,1.93,-5.94))
 	for i in range(10):
@@ -378,7 +385,7 @@ func _set_camera_callback(choice: String):
 		_label(callback,"CallbackNote","YOUR SHORE FRAME" if choice == "take" else "MIRA'S SHORE FRAME",Vector3(0,0.36,0.13),13,0.0027)
 
 func _capture_rest():
-	_motion_ids = ["Ladle","BreadBoard/TornHalf","PepperShaker","PassingBread","PlayerChair","PlayerPlace/Cup","PlayerPlace/Bowl","Noor/ArmRight","Noor/ArmLeft","Ada/ArmLeft","Ada/ArmRight","Mira"]
+	_motion_ids = ["Ladle","BreadBoard/TornHalf","PepperShaker","PassingBread","PlayerChair","PlayerPlace/Cup","PlayerPlace/Bowl","SoupPot/SoupSurface","HerbSprinkle","Noor/ArmRight","Noor/ArmLeft","Ada/ArmLeft","Ada/ArmRight","Mira"]
 	for i in range(10): _motion_ids.append("Steam/Puff%d" % i)
 	for i in range(14): _motion_ids.append("Condensation/Drop%d" % i)
 	for id in _motion_ids: _rest[id] = get_node(id).transform
@@ -389,6 +396,7 @@ func _reset_pose():
 	get_node("PepperGrains").visible = false
 	get_node("Ladle/PourStream").visible = false
 	get_node("BreadBoard/TearingHands").visible = false
+	get_node("HerbSprinkle").visible = false
 
 func _target(where: Vector3, label_: String, id: String):
 	var marker = Marker3D.new()
@@ -492,7 +500,7 @@ func begin_gesture(action: String, completion: Callable = Callable()):
 func _caption_for(action: String, progress: float) -> String:
 	match action:
 		"join_sit": return "Ada slides the chair out." if progress < 0.5 else "Noor fills the bowl beside your spoon."
-		"join_help": return "Noor holds the pot steady." if progress < 0.5 else "The ladle empties into your bowl."
+		"join_help": return "You stir while Noor steadies the pot." if progress < 0.42 else ("A pinch of herbs falls into the steam." if progress < 0.62 else "You carry the ladle to the waiting bowl.")
 		"join_watch": return "Steam uncurls above the pot." if progress < 0.5 else "Soup reaches the bowl beside your spoon."
 		"bread": return "The crust cracks under two hands." if progress < 0.5 else "Ada catches the piece on a plate."
 		"cup": return "You nudge the cup within reach." if progress < 0.5 else "Mira moves the tea, still talking."
@@ -511,10 +519,29 @@ func _stage_gesture(progress: float):
 			get_node("PlayerChair").position.z = 1.45+curve*0.31-eased*0.2 if gesture_action == "join_sit" else 1.45
 			var pot_position = Vector3(-3.42,2.08,-5.94)
 			var bowl_position = Vector3(-0.44,TABLE_TOP+0.38,0.24)
-			get_node("Ladle").position = pot_position.lerp(bowl_position,eased)+Vector3(0,curve*0.24,0)
-			get_node("Ladle").rotation.z = -maxf(0.0,p-0.64)*1.2
-			get_node("Ladle/PourStream").visible = p > 0.64 and p < 0.94
-			get_node("PlayerPlace/Bowl/Soup").visible = p > 0.75
+			if gesture_action == "join_help":
+				# A different playable, short cooking sequence: circle the pot,
+				# sprinkle herbs, lift the ladle, then fill the waiting place.
+				if p < 0.48:
+					var stir = p / 0.48
+					var circles = stir * TAU * 1.8
+					get_node("Ladle").position = pot_position + Vector3(sin(circles)*0.13,-0.06+sin(stir*PI)*0.035,cos(circles)*0.13)
+					get_node("Ladle").rotation.z = -0.18+sin(circles)*0.12
+					get_node("SoupPot/SoupSurface").rotation.y = stir*PI*1.2
+					get_node("HerbSprinkle").visible = p > 0.28
+					get_node("HerbSprinkle").position.y = 2.08-maxf(0.0,(p-0.28)/0.20)*0.12
+				else:
+					var serving = smoothstep(0.48,1.0,p)
+					get_node("Ladle").position = pot_position.lerp(bowl_position,serving)+Vector3(0,sin(serving*PI)*0.24,0)
+					get_node("Ladle").rotation.z = -maxf(0.0,serving-0.65)*1.2
+					get_node("HerbSprinkle").visible = false
+				get_node("Ladle/PourStream").visible = p > 0.79 and p < 0.94
+				get_node("PlayerPlace/Bowl/Soup").visible = p > 0.83
+			else:
+				get_node("Ladle").position = pot_position.lerp(bowl_position,eased)+Vector3(0,curve*0.24,0)
+				get_node("Ladle").rotation.z = -maxf(0.0,p-0.64)*1.2
+				get_node("Ladle/PourStream").visible = p > 0.64 and p < 0.94
+				get_node("PlayerPlace/Bowl/Soup").visible = p > 0.75
 			get_node("PlayerPlace/Bowl").position = Vector3(curve*0.025,curve*0.028,0)
 			get_node("Noor/ArmRight").rotation.x = -0.6*curve
 			get_node("Noor/ArmRight").rotation.z = 0.13+curve*0.33

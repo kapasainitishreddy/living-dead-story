@@ -63,6 +63,24 @@ func run():
 	world._process(2.0)
 	check(world.decorative_elapsed == paused_time and world.get_node("Ladle").transform.is_equal_approx(paused_pose),"pause freezes kitchen presentation and time")
 	world.set_paused(false)
+	# Optional help now has a genuinely different short cooking choreography,
+	# rather than reusing the sit/watch ladle move. It still settles to saved dinner.
+	world.begin_gesture("join_help",Callable())
+	var stir_start = world.get_node("Ladle").position
+	world._process(1.5)
+	check(world.get_node("Ladle").position.distance_to(stir_start)>0.07,"help visibly stirs the pot before serving")
+	check(world.get_node("SoupPot/SoupSurface").rotation.y>0.25,"help moves the real soup surface while stirring")
+	check(world.get_node("HerbSprinkle").visible,"help shows the visible herb sprinkle mid-preparation")
+	check(world.gesture_subtitle().contains("stir"),"help has preparation-specific subtitle")
+	world._process(1.5)
+	check(not world.get_node("HerbSprinkle").visible,"herb sprinkle clears before ladle crosses table")
+	check(world.get_node("Ladle").position.distance_to(stir_start)>0.5,"help advances from pot toward player's bowl")
+	world._process(0.8)
+	check(world.get_node("PlayerPlace/Bowl/Soup").visible,"help ends by filling the actual waiting bowl")
+	world.finish_gesture()
+	check(not world.gesture_active and not world.get_node("HerbSprinkle").visible,"help finishes cleanly without transient ingredients")
+	check(world.get_node("SoupPot/SoupSurface").rotation.y==0.0,"help restores soup-pot pose after completion")
+	check(world.get_node("PlayerPlace/Bowl/Soup").visible,"help uses the original durable served state")
 	var completions: Array[String] = []
 	world.gesture_finished.connect(func(id): completions.append(id))
 	for id in ["join_sit","join_help","join_watch","bread","cup","pepper","watch"]:

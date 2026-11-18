@@ -1,3 +1,7 @@
+## November 17, 2026 · shared soup preparation (source integration, Godot runtime pending)
+
+**New playable choreography in the existing Night Kitchen:** Choosing to help rather than sit or watch now stirs the physical soup surface, brings a visible pinch of herbs down through the steam, and then carries the ladle to the player's waiting bowl. The three options remain equally valid, and helping does not create a score, new save field or a compulsory task. Added native scene assertions for stirring, ingredient visibility, serving and settled/reopened state. **Verification this run:** script anchor and math/path consistency checks, plus GitHub remote file and head readback; the actual Godot 4.6.3 suite, footage, controller and human review were **not run** because a native project checkout/engine is unavailable. Next: `cd platform6/game && ./run_tests.sh`, then watch all three dinner modes at 1x and verify pause/reopen. The 3:17 story, seven chapters and shelter quest remain intact. This is not a release.
+
 ## November 17, 2026 · tactile paper routes (source candidate)
 
 **Changed:** Shelter Lantern Parade's three paper figures trace separate smooth forward-and-back loops through their individual turnable gates. A gate changes its figure's visible course, Jo demonstrates at a gentler tempo and the motion closes without the prior teleport at the edge. Reduced-motion holds an equivalent mid-route pose for each gate state. This is visual tabletop storytelling; live cats are not moved and progress is not scored.
