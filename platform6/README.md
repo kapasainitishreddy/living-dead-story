@@ -1,3 +1,11 @@
+## November 18, 2026 · tactile supermarket marker glides (source-integrated, native verification pending)
+
+**Vision:** STILL HERE: PLATFORM 6 makes the ordinary rewarding to touch. The whimsical paper grocery cart should respond to each reversible marker like a physical toy rather than teleporting. Real shoppers are safe and retain their own agency; there are no real-world rescue tactics, time limits or compulsory tasks.
+
+**Playable increment:** Turning a marker eases the physical cardboard cart from its actual currently shown position to the selected aisle over 0.42 seconds, even if a prior glide is interrupted. Lanterns react immediately. Pause freezes a half-completed movement; reduced-motion mode presents the settled still route and never replays a stale glide when switched back. Completion and Jo's slower demonstration still follow their original paths. All seven chapters, both endings, twelve Journey stops, saves and the old browser prototype remain unchanged.
+
+**Exact verification:** Checked source anchors and the active branch baseline; independent deterministic motion calculations confirm no start jump, half-time smooth displacement, and exact endpoint settlement. Added native journey-world regression checks for successive markers, pause and reduced-motion toggles. **Godot import, native suite, 1× audiovisual footage, controller/Windows, and human playtesting remain unverified** because the engine and complete private checkout are unavailable here. Next: run the existing test runner in platform6/game, then watch rapid route reversals and Jo's demonstration at normal speed, including pause, reduced motion and revisit. Not a release sign-off.
+
 ## November 18, 2026 · supermarket paper-cart contact and route fidelity (source candidate)
 
 **Vision:** The Supermarket of Small Heroes is playful make-believe that ends in ordinary care. Every paper sign should change where the little cart actually travels; finishing the arrangement should never jerk it across the table. Nothing asks players to perform a real rescue or rush.

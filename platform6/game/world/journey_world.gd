@@ -7,6 +7,7 @@ const INK = Color("29384b")
 const WARM = Color("eebf79")
 const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade","market_rescue"]
 const MARKET_MARKER_PROGRESS = [0.18,0.50,0.83]
+const MARKET_ROUTE_GLIDE_SECONDS := 0.42
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var campaign: Dictionary = {}
@@ -26,6 +27,10 @@ var weather_state := "clear"
 var motion_elapsed := 0.0
 var _decorative: Array[Dictionary] = []
 var _activity_state: Dictionary = {}
+# Presentation-only cart interpolation; no save or progress changes.
+var _market_pose_ready := false
+var _market_glide_elapsed := -1.0
+var _market_glide_origin := Vector3.ZERO
 
 func build(journey_snapshot: Dictionary, campaign_snapshot: Dictionary, destination_dictionary: Dictionary = {}) -> Node3D:
 	factory = load("res://world/world_factory.gd").new()
@@ -640,6 +645,8 @@ func update_activity(value: Dictionary):
 	if not is_instance_valid(activity): return
 	var prior_done = bool(_activity_state.get("done",false))
 	var prior_progress = clampf(float(_activity_state.get("progress",0))/3.0,0.0,1.0)
+	var market_had_pose = activity_type == "market_rescue" and _market_pose_ready
+	var market_previous = activity.get_node("MarketRoutes/PaperCart").position if market_had_pose else Vector3.ZERO
 	_activity_state = value.duplicate(true)
 	if not prior_done and bool(_activity_state.get("done",false)):
 		if activity_type == "shelter_parade":
@@ -704,7 +711,17 @@ func update_activity(value: Dictionary):
 			for i in range(3): activity.get_node("ObservationObjects/NoticedObject%d" % i).rotation.y = step*0.15+i*0.22
 			activity.get_node("ObservationObjects/RestingCard").rotation.y = 0.12 if done else 0
 	if activity_type == "shelter_parade": _update_shelter_parade_pose()
-	if activity_type == "market_rescue": _update_market_rescue_pose()
+	if activity_type == "market_rescue":
+		# Lanterns reflect the new choice now; the cart retains its displayed
+		# position before easing to the updated route, even mid-animation.
+		_market_glide_elapsed = -1.0
+		_update_market_rescue_pose()
+		var market_cart = activity.get_node("MarketRoutes/PaperCart")
+		if market_had_pose and not reduced_motion and market_cart.position.distance_to(market_previous) > 0.012:
+			_market_glide_origin = market_previous
+			_market_glide_elapsed = 0.0
+			_update_market_rescue_pose()
+		_market_pose_ready = true
 
 func _update_market_rescue_pose():
 	if activity_type != "market_rescue" or not is_instance_valid(activity): return
@@ -726,7 +743,13 @@ func _update_market_rescue_pose():
 		# retain the entire chosen arrangement. No motion is needed to compare.
 		progress = 0.5
 	var route_mask = 7 if done and watching else selection
-	cart.position = Vector3(-0.83+1.66*progress,0.095+0.025*sin(PI*progress),0.16+_market_lane_offset(progress,route_mask))
+	var target_position = Vector3(-0.83+1.66*progress,0.095+0.025*sin(PI*progress),0.16+_market_lane_offset(progress,route_mask))
+	if _market_glide_elapsed >= 0.0 and not reduced_motion:
+		var t = clampf(_market_glide_elapsed / MARKET_ROUTE_GLIDE_SECONDS,0.0,1.0)
+		var gentle_t = t*t*(3.0-2.0*t)
+		cart.position = _market_glide_origin.lerp(target_position,gentle_t)
+	else:
+		cart.position = target_position
 	cart.rotation.y = (0.09 if watching else -0.09)*sin(PI*progress) if done and not reduced_motion else 0.0
 	activity.get_node("PaperMarketNote").text = ("JO SHOWS A GENTLE WAY" if watching else "THE PAPER CART FINDS HOME") if done else "SMALL HELP, NO CLOCK"
 
@@ -775,6 +798,8 @@ func _update_shelter_parade_pose():
 
 func apply_preferences(value: bool):
 	reduced_motion = value
+	# Never restart a half-finished glide after displaying the still pose.
+	if value: _market_glide_elapsed = -1.0
 	if has_node("AmbientMotion"): get_node("AmbientMotion").apply_preferences(value)
 	for item in _decorative:
 		if is_instance_valid(item.node): item.node.position = item.rest
@@ -797,6 +822,9 @@ func set_paused(value: bool):
 func _process(delta: float):
 	if paused or reduced_motion: return
 	motion_elapsed += delta
+	if activity_type == "market_rescue" and _market_glide_elapsed >= 0.0:
+		_market_glide_elapsed += delta
+		if _market_glide_elapsed >= MARKET_ROUTE_GLIDE_SECONDS: _market_glide_elapsed = -1.0
 	for item in _decorative:
 		if is_instance_valid(item.node): item.node.position = item.rest + Vector3(sin(motion_elapsed*0.37+item.phase)*0.035,sin(motion_elapsed*0.49+item.phase)*0.04,0)
 	if activity_type == "shelter_parade": _update_shelter_parade_pose()
