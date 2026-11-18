@@ -1,3 +1,9 @@
+## November 17, 2026 · tactile paper routes (source candidate)
+
+**Changed:** Shelter Lantern Parade's three paper figures trace separate smooth forward-and-back loops through their individual turnable gates. A gate changes its figure's visible course, Jo demonstrates at a gentler tempo and the motion closes without the prior teleport at the edge. Reduced-motion holds an equivalent mid-route pose for each gate state. This is visual tabletop storytelling; live cats are not moved and progress is not scored.
+
+**Checks:** offline numeric simulation of exact movement expressions passed 5/5 (movement, choice-specific route, wrap continuity, Jo tempo and still-route difference). Expanded `tests/journey_world.gd` with assertions for different gate tracks at the same instant, smooth loop wrap, a slower spectator cadence and retained reduced-motion gate information. Actual Godot 4.6.3 native tests, visual 1x capture, controller and independent human review were **not run here** (engine and checkout unavailable). Next: `./run_tests.sh`, fresh-process re-entry and visual/audio review. No changes to the seven-chapter campaign, existing ten Journey places, save schema or account/network behavior.
+
 ## November 17, 2026 · Shelter Lantern Parade: tabletop motion follow-through
 
 **Changed now:** The optional post-ending shelter scene no longer merely flips the cardboard gates and displays a ribbon. Its three original paper-cat figures now visibly move through a tiny tabletop parade when you choose **Let paper cats parade** or **Watch Jo demonstrate**, with a distinct persisted scene response for Jo's version. Reversing a gate resets the arrangement so it can be replayed without a score or penalty. The living cats remain asleep and are never directed to march. Pause freezes the figures; reduced-motion mode uses the finished still arrangement. No old Journey state keys, campaign saves, provider resources or network calls changed.

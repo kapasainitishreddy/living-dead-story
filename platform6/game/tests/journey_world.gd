@@ -130,6 +130,25 @@ func run():
 	var first_position = paper.position
 	shelter._process(0.65)
 	check(paper.position.distance_to(first_position)>0.02,"completed paper cats visibly march in the actual scene")
+	# Two gate configurations must produce different physical courses at the
+	# same playback instant; the controls are not merely decorative toggles.
+	var open_course_x = paper.position.x
+	shelter.update_activity({"step":2,"selection":4,"progress":1,"done":true})
+	check(open_course_x-paper.position.x>0.05,"turning the first cardboard gate changes its paper cat path")
+	shelter.update_activity({"step":2,"selection":5,"progress":1,"done":true})
+	# The miniature journey is continuous at its loop boundary, not a
+	# teleporting cat that jumps between opposite ends of the shelf.
+	shelter.motion_elapsed = 5.399
+	shelter._update_shelter_parade_pose()
+	var before_wrap = paper.position
+	shelter._process(0.002)
+	check(paper.position.distance_to(before_wrap)<0.01,"paper figures complete a continuous easing loop")
+	shelter.motion_elapsed = 1.35
+	shelter._update_shelter_parade_pose()
+	var player_route = paper.position
+	shelter.update_activity({"step":1,"selection":5,"progress":1,"done":true})
+	check(paper.position.distance_to(player_route)>0.02,"Jo's demonstration has its own measured paper-cat pace")
+	shelter.update_activity({"step":2,"selection":5,"progress":1,"done":true})
 	check(resting.position==Vector3(0,0.35,0),"physical shelter cat is never made to parade")
 	shelter.set_paused(true)
 	var frozen_position = paper.position
@@ -140,6 +159,9 @@ func run():
 	var quiet_position = paper.position
 	shelter._process(2.0)
 	check(paper.position==quiet_position,"reduced motion holds an equivalent completed still arrangement")
+	shelter.update_activity({"step":2,"selection":4,"progress":1,"done":true})
+	check(paper.position.x<quiet_position.x-0.19,"stationary reduced-motion preview still shows selected gate route")
+	shelter.update_activity({"step":2,"selection":5,"progress":1,"done":true})
 	shelter.update_activity({"step":1,"selection":5,"progress":1,"done":true})
 	check(shelter.get_node("Activity/ParadeNote").text.contains("JO LETS"),"spectator route visibly acknowledges Jo")
 	shelter.update_activity({"step":0,"selection":4,"progress":0,"done":false})

@@ -662,16 +662,25 @@ func _update_shelter_parade_pose():
 	# to sleep. The animation is visual only and never changes a local save.
 	for i in range(3):
 		var paper = activity.get_node("PaperParade/PaperCats/PaperCat%d" % i)
+		var gate_open = (int(_activity_state.get("selection",0)) & (1 << i)) != 0
+		var lane_x = -0.76 + float(i)*0.76
 		if not completed:
-			paper.position = Vector3(-0.76+i*0.76,0.04,0.26)
+			paper.position = Vector3(lane_x,0.04,0.26)
 			paper.rotation.y = 0.0
 		elif reduced_motion:
-			paper.position = Vector3(-0.68+i*0.68,0.04,0.14+i*0.12)
+			# A stationary mid-route preview still reflects each cardboard gate.
+			paper.position = Vector3(lane_x + (0.11 if gate_open else -0.11),0.04,-0.12)
 			paper.rotation.y = 0.0
 		else:
-			var phase = fposmod(motion_elapsed*0.24+float(i)*0.27,1.0)
-			paper.position = Vector3(-0.82+phase*1.64,0.04+absf(sin(motion_elapsed*5.0+i))*0.025,0.14+i*0.12)
-			paper.rotation.y = sin(motion_elapsed*2.8+i)*0.11
+			# A closed, eased walk through that figure's own gate: no end-of-track
+			# teleport, and turning the gate genuinely changes its paper path.
+			# Jo's gentler demonstration has a different, unhurried rhythm.
+			var pace = 0.72 if watching else 1.0
+			var phase = fposmod(motion_elapsed*pace/5.4+float(i)*0.07,1.0)
+			var glide = 0.5-0.5*cos(TAU*phase)
+			var bend = (0.11 if gate_open else -0.11)*sin(PI*glide)
+			paper.position = Vector3(lane_x+bend,0.04+0.018*absf(sin(TAU*phase)),0.26-0.5*glide)
+			paper.rotation.y = (0.16 if gate_open else -0.16)*sin(TAU*phase)
 
 func apply_preferences(value: bool):
 	reduced_motion = value

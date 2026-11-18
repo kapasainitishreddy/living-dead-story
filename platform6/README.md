@@ -1,3 +1,7 @@
+## Overnight source integration · November 17, 2026
+
+The optional shelter paper parade now guides each figure along a continuous route through its corresponding cardboard gate. Gate position affects its actual path; Jo demonstrates more slowly, and reduced-motion keeps an understandable still version. Static movement-math checks passed 5/5. Godot gameplay tests, video capture, Windows and physical controller tests are **not yet verified**. Original 3:17 story, prior ten Journey stops and local saves are unchanged. See [exact verification plan](game/README.md).
+
 ## Night development checkpoint · November 17, 2026
 
 The post-ending optional animal-shelter stop now includes animated *cardboard* cat figures with reversible gates, a separate Jo demonstration and a stationary reduced-motion version. The genuine animals remain resting. Source and regression changes are on the existing private Godot branch; this addition still needs a real Godot import, gameplay and pause/resume capture. The seven-chapter story and earlier ten Journey stops remain intact. See [game status and test plan](game/README.md). No public release.
