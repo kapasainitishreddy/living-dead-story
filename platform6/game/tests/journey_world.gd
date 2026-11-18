@@ -120,7 +120,7 @@ func run():
 	# The new paper parade must be a genuine physical animation, pause/reduced-
 	# motion safe, and must not require any actual shelter cat to participate.
 	var shelter_data = pack.destinations[pack.destinations.size()-2]
-	check(shelter_data.journey_id == "shelter_parade","shelter is the final optional authored stop")
+	check(shelter_data.journey_id == "shelter_parade","shelter precedes the market in the authored Journey")
 	var shelter = script.new().build({"mode":"destination","journey_id":"shelter_parade","activity":{}},{},shelter_data)
 	root.add_child(shelter)
 	await physics_frame
@@ -217,11 +217,21 @@ func run():
 	var before_watch = cart.position
 	market.update_activity({"step":1,"selection":1,"progress":3,"done":true})
 	check(cart.position.distance_to(before_watch)<0.012,"Jo's demonstration starts from the current partial paper route without a jump")
+	# Check each real loop boundary at its own playback rate after any
+	# change-of-mind glide has finished. Jo's pace is 0.74x, not 1x.
+	market._process(0.43)
+	market.motion_elapsed = 4.6/0.74-0.001
+	market._update_market_rescue_pose()
+	var before_jo_loop = cart.position
+	market._process(0.002)
+	check(cart.position.distance_to(before_jo_loop)<0.012,"Jo's slower cart loop does not teleport at its actual boundary")
+	market.update_activity({"step":2,"selection":7,"progress":3,"done":true})
+	market._process(0.43)
 	market.motion_elapsed = 4.599
 	market._update_market_rescue_pose()
 	var before_loop = cart.position
 	market._process(0.002)
-	check(cart.position.distance_to(before_loop)<0.012,"market cart loops smoothly instead of jumping across tabletop")
+	check(cart.position.distance_to(before_loop)<0.012,"player paper-cart loop is continuous at 1x")
 	market.set_paused(true)
 	var paused_cart = cart.position
 	market._process(0.7)
