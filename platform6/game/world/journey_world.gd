@@ -1,11 +1,12 @@
 extends Node3D
-# Eleven intentionally small authored stops. The model owns memory and choices;
+# Twelve intentionally small authored stops. The model owns memory and choices;
 # this world only presents their physical consequences, with no score or clock.
 const CREAM = Color("f1e5cc")
 const WOOD = Color("8f6b53")
 const INK = Color("29384b")
 const WARM = Color("eebf79")
 const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade","market_rescue"]
+const MARKET_MARKER_PROGRESS = [0.18,0.50,0.83]
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var campaign: Dictionary = {}
@@ -615,7 +616,7 @@ func _build_market_rescue():
 	_box(routes,"PaperMarketBoard",Vector3.ZERO,Vector3(2.36,0.05,0.98),CREAM)
 	_box(routes,"PaperRoad",Vector3(0,0.035,0.13),Vector3(1.98,0.025,0.24),palette[1])
 	for i in range(3):
-		var stop = _node(routes,"Stop%d" % i,Vector3(-0.78+float(i)*0.78,0,-0.24))
+		var stop = _node(routes,"Stop%d" % i,Vector3(-0.53+float(i)*0.53,0,-0.24))
 		_box(stop,"TinyAisle",Vector3(0,0.09,0),Vector3(0.50,0.18,0.37),palette[0])
 		var light = _orb(stop,"Lantern",Vector3(0,0.25,0),0.08,palette[2])
 		light.visible = false
@@ -638,9 +639,17 @@ func _build_observation():
 func update_activity(value: Dictionary):
 	if not is_instance_valid(activity): return
 	var prior_done = bool(_activity_state.get("done",false))
+	var prior_progress = clampf(float(_activity_state.get("progress",0))/3.0,0.0,1.0)
 	_activity_state = value.duplicate(true)
-	if activity_type in ["shelter_parade","market_rescue"] and not prior_done and bool(_activity_state.get("done",false)):
-		motion_elapsed = 0.0
+	if not prior_done and bool(_activity_state.get("done",false)):
+		if activity_type == "shelter_parade":
+			motion_elapsed = 0.0
+		elif activity_type == "market_rescue":
+			# Start the eased parade at the cart's current position, not at the
+			# far-left edge. The third marker must never teleport the cart.
+			var phase = acos(clampf(1.0-2.0*prior_progress,-1.0,1.0))/TAU
+			var pace = 0.74 if int(value.get("step",0)) == 1 else 1.0
+			motion_elapsed = phase*4.6/pace
 	var step = maxi(0,int(value.get("step",0)))
 	var selection = maxi(0,int(value.get("selection",0)))
 	var progress = maxi(0,int(value.get("progress",0)))
@@ -712,9 +721,27 @@ func _update_market_rescue_pose():
 		var pace = 0.74 if watching else 1.0
 		var phase = fposmod(motion_elapsed*pace/4.6,1.0)
 		progress = 0.5-0.5*cos(TAU*phase)
-	cart.position = Vector3(-0.83+1.66*progress,0.095+0.025*sin(PI*progress),0.16)
+	elif done and reduced_motion:
+		# Keep the paper cart still at the center stop while the three lamps
+		# retain the entire chosen arrangement. No motion is needed to compare.
+		progress = 0.5
+	var route_mask = 7 if done and watching else selection
+	cart.position = Vector3(-0.83+1.66*progress,0.095+0.025*sin(PI*progress),0.16+_market_lane_offset(progress,route_mask))
 	cart.rotation.y = (0.09 if watching else -0.09)*sin(PI*progress) if done and not reduced_motion else 0.0
 	activity.get_node("PaperMarketNote").text = ("JO SHOWS A GENTLE WAY" if watching else "THE PAPER CART FINDS HOME") if done else "SMALL HELP, NO CLOCK"
+
+func _market_lane_offset(progress: float, route_mask: int) -> float:
+	# Each changed paper sign genuinely bends the little cart toward its aisle.
+	# Bumps ease to zero before the next stop and at the loop boundary, even
+	# if the choice is changed after completion; real shoppers stay unaffected.
+	var offset := 0.0
+	for i in range(3):
+		if (route_mask & (1 << i)) == 0: continue
+		var distance = absf(progress-float(MARKET_MARKER_PROGRESS[i]))
+		var strength = clampf(1.0-distance/0.14,0.0,1.0)
+		strength = strength*strength*(3.0-2.0*strength)
+		offset -= 0.26*strength
+	return offset
 
 func _update_shelter_parade_pose():
 	if activity_type != "shelter_parade" or not is_instance_valid(activity): return

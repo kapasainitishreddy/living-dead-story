@@ -1,3 +1,11 @@
+## November 18, 2026 · supermarket paper-cart contact and route fidelity (source candidate)
+
+**Vision:** The Supermarket of Small Heroes is playful make-believe that ends in ordinary care. Every paper sign should change where the little cart actually travels; finishing the arrangement should never jerk it across the table. Nothing asks players to perform a real rescue or rush.
+
+**Changed:** All three reversible aisle markers now bend the animated cardboard cart smoothly toward their respective paper aisles, with the physical stop layout aligned to the routes. The third marker transitions from the existing partial arrangement into a continuous eased cart journey instead of restarting on the far left. Jo's optional demonstration follows all three lanes at the gentler original pace; the reduced-motion scene holds a center-lane still preview and retains each chosen marker lamp. Returning shopping-bag/basket choices, campaign endings, Journey saves and the Living Dead prototype remain unchanged. Native Godot world regression assertions now cover lane-specific geometry, zero-marker paths, the completion boundary, loop wrap, pause and reduced-motion route distinctions.
+
+**Exact verification:** Six independent deterministic route-math checks passed (including three aisle centers, completion continuity, slower Jo continuation, smooth loop and still-mode distinction); source anchors and updated test expectations were checked. **Godot import, native tests, visual/audio capture, real controller/Windows and human playtesting were not run in this worker** because a complete Godot checkout and engine were unavailable. Next run `cd platform6/game && ./run_tests.sh`, then follow the market route through all marker orders and Jo's demonstration after both endings at 1×, including pause, reduced motion and fresh-process revisit. Not a release sign-off.
+
 ## November 18, 2026 · The Supermarket of Small Heroes (source-integrated; native playtesting pending)
 
 **Vision:** STILL HERE: PLATFORM 6 is an original warm, single-player 3:17 journey where happiness lives in small things, not in mandatory tasks or a score. This optional whimsical grocery adventure is fictional make-believe, ending with an ordinary act of care. The actual customers are safe, have agency, and do not require rescue.

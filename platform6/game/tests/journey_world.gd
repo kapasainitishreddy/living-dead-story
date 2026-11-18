@@ -178,6 +178,21 @@ func run():
 	var starting_cart = cart.position
 	market._process(0.65)
 	check(cart.position.distance_to(starting_cart)>0.02,"imaginary paper cart moves through actual 3D scene")
+	# The optional route markers must physically change the paper cart's
+	# route, rather than only illuminating cardboard scenery.
+	for lane in range(3):
+		var lane_progress = float(market.MARKET_MARKER_PROGRESS[lane])
+		check(market._market_lane_offset(lane_progress,1<<lane)<-0.25,"marked aisle changes real paper-cart z route "+str(lane))
+		check(is_zero_approx(market._market_lane_offset(lane_progress,0)),"unmarked aisle preserves central paper road "+str(lane))
+	market.update_activity({"step":0,"selection":3,"progress":2,"done":false})
+	var before_last_marker = cart.position
+	market.update_activity({"step":2,"selection":7,"progress":3,"done":true})
+	check(cart.position.distance_to(before_last_marker)<0.012,"last grocery route marker starts animation without teleporting cart")
+	market.motion_elapsed = 4.599
+	market._update_market_rescue_pose()
+	var before_loop = cart.position
+	market._process(0.002)
+	check(cart.position.distance_to(before_loop)<0.012,"market cart loops smoothly instead of jumping across tabletop")
 	market.set_paused(true)
 	var paused_cart = cart.position
 	market._process(0.7)
@@ -187,6 +202,10 @@ func run():
 	var still_cart = cart.position
 	market._process(0.8)
 	check(cart.position==still_cart,"reduced motion holds legible still paper-market route")
+	market.update_activity({"step":2,"selection":2,"progress":3,"done":true})
+	var marked_still = cart.position
+	market.update_activity({"step":2,"selection":5,"progress":3,"done":true})
+	check(cart.position.z-marked_still.z>0.24,"reduced-motion route preview visibly reflects center marker choice")
 	market.update_activity({"step":1,"selection":0,"progress":3,"done":true})
 	check(market.get_node("Activity/MarketRoutes/Stop0/Lantern").visible,"watching Jo provides same visible route")
 	market.update_activity({"step":0,"selection":1,"progress":1,"done":false})
