@@ -195,6 +195,7 @@ func show_activity():
   'tea_mixing': actions=[['Add / remove amber leaf','0'],['Add / remove mint','1'],['Add / remove hibiscus','2'],['Pour this blend','pour']]
   'arcade_paddle': actions=[['Paddle left','left'],['Paddle right','right'],['Launch the ball','launch'],['Watch the cabinet demonstrate','observe']]
   'shelter_parade': actions=[['Turn paper bridge','0'],['Turn soft ramp','1'],['Turn quiet door','2'],['Let paper cats parade','parade'],['Watch Jo demonstrate','watch']]
+  'market_rescue': actions=[['Mark the bread aisle','0'],['Mark the lantern aisle','1'],['Mark the wide doors','2'],['Watch Jo guide the paper cart','watch']]
   _: actions=[['Notice the next small detail','next']]
  for item in actions:
   var b=Button.new()

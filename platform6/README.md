@@ -1,3 +1,11 @@
+## November 18, 2026 · The Supermarket of Small Heroes (source-integrated; native playtesting pending)
+
+**Vision:** STILL HERE: PLATFORM 6 is an original warm, single-player 3:17 journey where happiness lives in small things, not in mandatory tasks or a score. This optional whimsical grocery adventure is fictional make-believe, ending with an ordinary act of care. The actual customers are safe, have agency, and do not require rescue.
+
+**Implemented in the Godot working branch:** A twelfth post-ending Journey stop featuring an independent shopkeeper's evening, Jo's imaginary paper-cart route across three large reversible aisle markers, an equally valid watch-Jo demonstration, a procedural walkable market, an animated cardboard cart, reduced-motion still presentation, and three authored story beats. Choices leave a spare paper bag, put a basket aside, or leave the place as found; the first two appear physically on a future visit. The existing separate Journey save schema is reused. Both endings, all seven original campaign chapters, the prior eleven Journey stops and the older browser prototype remain untouched. Catalog, activity, 3D-world, model and two-ending native regression assertions were extended.
+
+**Exact verification:** Twelve destination records and the previous eleven authored records were checked structurally; authored game scripts/tests are source-integrated only. **Godot 4.6.3 compilation, native regressions, 1× visual/audio footage, real controller/Windows and independent human playtests were not run in this environment.** Next release-quality gate: run `cd platform6/game && ./run_tests.sh` in a complete Godot checkout, play the market after both endings, verify saved choice after fresh-process reopen, and inspect walking, paper route and reduced-motion modes. This is not a release claim.
+
 ## November 18, 2026 · optional hands-on soup stirring (source integrated)
 
 **Touch follow-through:** The game's real on-screen Interact button is now visible and wired only during the optional Help stirring window; walk/look controls remain locked to the dinner close-up. The same gate owns E, controller A and touch. Added native finger-press/release assertions plus paused control availability. Source and timing checks passed; actual Godot execution is still unrun.

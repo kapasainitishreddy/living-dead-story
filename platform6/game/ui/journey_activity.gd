@@ -59,6 +59,20 @@ func act(command:String):
     state.step = 1 if command == 'watch' else 2
     state.done = true
     state.progress = 1
+  'market_rescue':
+   # Optional reversible imaginary grocery lanes, never a real rescue or score.
+   if command in ['0','1','2']:
+    state.selection = int(state.selection) ^ (1 << int(command))
+    var marked := 0
+    for marker in 3:
+     if (int(state.selection) & (1 << marker)) != 0: marked += 1
+    state.progress = marked
+    state.done = marked == 3
+    state.step = 2 if state.done else 0
+   elif command == 'watch':
+    state.done = true
+    state.step = 1
+    state.progress = 3
   'arcade_paddle':
    if command == 'left': state.selection = maxi(0,int(state.selection)-1)
    if command == 'right': state.selection = mini(10,int(state.selection)+1)
@@ -144,6 +158,18 @@ func _draw():
    if state.done:
     draw_line(Vector2(88,198),Vector2(width-95,198),amber,5)
     draw_string(ThemeDB.fallback_font,Vector2(106,215),'JO SHOWS THE WAY' if int(state.step)==1 else 'YOUR PAPER PARADE',HORIZONTAL_ALIGNMENT_LEFT,-1,15,cream)
+  'market_rescue':
+   draw_rect(Rect2(38,50,width-76,110),Color('617f86'))
+   draw_line(Vector2(65,188),Vector2(width-65,188),Color('baa182'),6)
+   for i in 3:
+    var marker_x = 115+i*180
+    var marked = (int(state.selection)&(1<<i))!=0 or (state.done and int(state.step)==1)
+    draw_rect(Rect2(marker_x-37,78,74,58),Color('f1d9a8') if marked else Color('a6afb0'))
+    draw_circle(Vector2(marker_x,144),9,amber if marked else cream)
+    draw_string(ThemeDB.fallback_font,Vector2(marker_x-38,43),['BREAD','LAMPS','DOORS'][i],HORIZONTAL_ALIGNMENT_LEFT,-1,17,cream)
+   draw_circle(Vector2(65+clampf(float(state.progress)/3.0,0.0,1.0)*(width-130),188),13,amber)
+   if state.done:
+    draw_string(ThemeDB.fallback_font,Vector2(70,211),'JO GUIDES THE PAPER CART' if int(state.step)==1 else 'THE PAPER CART FINDS HOME',HORIZONTAL_ALIGNMENT_LEFT,-1,15,cream)
   'arcade_paddle':
    draw_rect(Rect2(40,25,width-80,18),Color('789f8c'))
    draw_rect(Rect2(40+float(state.selection)/10*(width-150),185,70,10),amber)

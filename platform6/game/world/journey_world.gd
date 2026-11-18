@@ -5,7 +5,7 @@ const CREAM = Color("f1e5cc")
 const WOOD = Color("8f6b53")
 const INK = Color("29384b")
 const WARM = Color("eebf79")
-const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade"]
+const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade","market_rescue"]
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var campaign: Dictionary = {}
@@ -205,7 +205,7 @@ func _build_train():
 	_label(board,"BoardTitle","THE NEXT SMALL JOURNEY",Vector3(0,0.52,0.13),29,0.006)
 	var history = snapshot.get("board_history",snapshot.get("history",snapshot.get("recent_destinations",[])))
 	board.set_meta("history",history.duplicate(true) if history is Array else [])
-	var board_text = "RAIN / LETTERS / ARCADE / DAWN\nORCHARD / REST / FESTIVAL / CAFE\nROAD / FIREFLIES / SHELTER"
+	var board_text = "RAIN / LETTERS / ARCADE / DAWN\nORCHARD / REST / FESTIVAL / CAFE\nROAD / FIREFLIES / SHELTER / MARKET"
 	if history is Array and not history.is_empty(): board_text = "LAST STOP: " + str(history[-1]).replace("_"," ").to_upper() + "\nTHERE IS STILL NO HURRY"
 	_label(board,"BoardChoices",board_text,Vector3(0,-0.12,0.14),19,0.005)
 	_target("journey_board",Vector3(0,0,-4.6),"Choose a destination")
@@ -261,6 +261,7 @@ func _build_destination():
 		"no_destination_road": _road()
 		"fireflies": _fireflies()
 		"shelter_parade": _shelter_parade()
+		"market_rescue": _market_rescue()
 		_: _rest_room()
 	var memory = _node(scenery,"RevisitMemory",Vector3(-5.5,0,-0.7))
 	memory.set_meta("visits",visit_count)
@@ -442,6 +443,29 @@ func _shelter_parade():
 	_box(scenery,"RecyclingCart",Vector3(4.8,0.55,-5.0),Vector3(1.3,1.1,0.7),palette[1])
 	_label(scenery,"ShelterNote","SMALL DOORS. MANY CHOICES.",Vector3(0,3.75,-6.28),20,0.004)
 
+func _market_rescue():
+	# Real safe evening groceries. The heroics exist only as paper imagination.
+	# Back and side shelves leave the original central walking aisle clear.
+	var market = _node(scenery,"MarketLanterns",Vector3(0,0,-5.55))
+	_box(market,"MarketBack",Vector3(0,1.64,-0.68),Vector3(11.9,3.28,0.24),palette[0],true)
+	_box(market,"WarmAwning",Vector3(0,3.25,0.25),Vector3(12.0,0.14,1.25),palette[2])
+	for x in [-4.9,4.9]:
+		var shelf = _node(market,"MarketSideShelf",Vector3(x,0,1.4))
+		for height in [0.45,1.25,2.05]:
+			_box(shelf,"ShelfBoard",Vector3(0,height,0),Vector3(1.35,0.08,0.72),WOOD)
+			for offset in [-0.36,0.0,0.36]:
+				_box(shelf,"PaperParcel",Vector3(offset,height+0.16,0),Vector3(0.22,0.28,0.27),CREAM)
+		for offset in [-0.59,0.59]: _box(shelf,"ShelfPost",Vector3(offset,1.3,0),Vector3(0.09,2.55,0.63),WOOD)
+	for i in range(4):
+		var lamp = _orb(market,"TinyShopLantern",Vector3(-3.6+i*2.4,2.83,0.43),0.15,Color("f6d7a5"))
+		lamp.scale = Vector3(1.0,1.18,0.75)
+	_label(market,"MarketSign","THE SUPERMARKET OF SMALL HEROES",Vector3(0,2.63,-0.48),23,0.0044)
+	var counter = _node(scenery,"MarketCounter",Vector3(4.7,0,-3.0))
+	_box(counter,"CounterTop",Vector3(0,0.89,0),Vector3(1.5,0.16,0.86),WOOD)
+	_box(counter,"CounterFront",Vector3(0,0.43,0),Vector3(1.34,0.86,0.18),palette[0])
+	_box(counter,"WaitingPaperBags",Vector3(-0.34,1.13,0),Vector3(0.29,0.42,0.21),CREAM)
+	_label(scenery,"MarketGentleNote","THERE IS NO HURRY TO BE KIND",Vector3(0,3.77,-6.25),17,0.004)
+
 func _fireflies():
 	var clearing = load("res://world/firefly_clearing.gd").new()
 	clearing.name = "PaintedClearing"
@@ -494,6 +518,7 @@ func _build_activity():
 		"constellation_tracing": _build_constellation()
 		"tea_mixing": _build_tea()
 		"shelter_parade": _build_shelter_parade()
+		"market_rescue": _build_market_rescue()
 		_: _build_observation()
 	var saved = snapshot.get("activities",snapshot.get("activity_states",{}))
 	var current = saved.get(journey_id,{}) if saved is Dictionary else {}
@@ -585,6 +610,23 @@ func _build_shelter_parade():
 	ribbon.visible = false
 	_label(activity,"ParadeNote","THE CATS CHOOSE THE WAY",Vector3(0,1.66,-0.46),17,0.0035)
 
+func _build_market_rescue():
+	var routes = _node(activity,"MarketRoutes",Vector3(0,1.07,0))
+	_box(routes,"PaperMarketBoard",Vector3.ZERO,Vector3(2.36,0.05,0.98),CREAM)
+	_box(routes,"PaperRoad",Vector3(0,0.035,0.13),Vector3(1.98,0.025,0.24),palette[1])
+	for i in range(3):
+		var stop = _node(routes,"Stop%d" % i,Vector3(-0.78+float(i)*0.78,0,-0.24))
+		_box(stop,"TinyAisle",Vector3(0,0.09,0),Vector3(0.50,0.18,0.37),palette[0])
+		var light = _orb(stop,"Lantern",Vector3(0,0.25,0),0.08,palette[2])
+		light.visible = false
+	var cart = _node(routes,"PaperCart",Vector3(-0.83,0.095,0.16))
+	_box(cart,"CardboardBody",Vector3.ZERO,Vector3(0.30,0.17,0.25),palette[2])
+	for side in [-0.12,0.12]: _orb(cart,"PaperWheel",Vector3(side,-0.085,0.09),0.06,INK).scale.z = 0.6
+	_box(cart,"FriendlyFlag",Vector3(0,0.2,-0.04),Vector3(0.12,0.24,0.025),palette[1])
+	var ribbon = _box(routes,"HomeRibbon",Vector3(0,0.041,-0.48),Vector3(2.08,0.015,0.044),palette[2])
+	ribbon.visible = false
+	_label(activity,"PaperMarketNote","SMALL HELP, NO CLOCK",Vector3(0,1.67,-0.44),17,0.0035)
+
 func _build_observation():
 	var objects = _node(activity,"ObservationObjects",Vector3(0,1.035,0))
 	for i in range(3):
@@ -597,7 +639,7 @@ func update_activity(value: Dictionary):
 	if not is_instance_valid(activity): return
 	var prior_done = bool(_activity_state.get("done",false))
 	_activity_state = value.duplicate(true)
-	if activity_type == "shelter_parade" and not prior_done and bool(_activity_state.get("done",false)):
+	if activity_type in ["shelter_parade","market_rescue"] and not prior_done and bool(_activity_state.get("done",false)):
 		motion_elapsed = 0.0
 	var step = maxi(0,int(value.get("step",0)))
 	var selection = maxi(0,int(value.get("selection",0)))
@@ -635,6 +677,8 @@ func update_activity(value: Dictionary):
 			for i in range(3):
 				activity.get_node("PaperParade/Gate%d" % i).rotation.y = PI/2 if (selection & (1 << i)) != 0 else 0.0
 			activity.get_node("PaperParade/ParadeRibbon").visible = done
+		"market_rescue":
+			activity.get_node("MarketRoutes/HomeRibbon").visible = done
 		"tea_mixing":
 			var tray = activity.get_node("TeaTray")
 			var tints = [Color("8d6942"),Color("7c9162"),Color("af7a80")]
@@ -651,6 +695,26 @@ func update_activity(value: Dictionary):
 			for i in range(3): activity.get_node("ObservationObjects/NoticedObject%d" % i).rotation.y = step*0.15+i*0.22
 			activity.get_node("ObservationObjects/RestingCard").rotation.y = 0.12 if done else 0
 	if activity_type == "shelter_parade": _update_shelter_parade_pose()
+	if activity_type == "market_rescue": _update_market_rescue_pose()
+
+func _update_market_rescue_pose():
+	if activity_type != "market_rescue" or not is_instance_valid(activity): return
+	var selection = int(_activity_state.get("selection",0))
+	var done = bool(_activity_state.get("done",false))
+	var watching = int(_activity_state.get("step",0)) == 1
+	var routes = activity.get_node("MarketRoutes")
+	for i in range(3):
+		var marked = (selection & (1 << i)) != 0 or (done and watching)
+		routes.get_node("Stop%d/Lantern" % i).visible = marked
+	var cart = routes.get_node("PaperCart")
+	var progress = clampf(float(_activity_state.get("progress",0))/3.0,0.0,1.0)
+	if done and not reduced_motion:
+		var pace = 0.74 if watching else 1.0
+		var phase = fposmod(motion_elapsed*pace/4.6,1.0)
+		progress = 0.5-0.5*cos(TAU*phase)
+	cart.position = Vector3(-0.83+1.66*progress,0.095+0.025*sin(PI*progress),0.16)
+	cart.rotation.y = (0.09 if watching else -0.09)*sin(PI*progress) if done and not reduced_motion else 0.0
+	activity.get_node("PaperMarketNote").text = ("JO SHOWS A GENTLE WAY" if watching else "THE PAPER CART FINDS HOME") if done else "SMALL HELP, NO CLOCK"
 
 func _update_shelter_parade_pose():
 	if activity_type != "shelter_parade" or not is_instance_valid(activity): return
@@ -694,6 +758,7 @@ func apply_preferences(value: bool):
 	for person in scenery.find_children("*","Node3D",true,false):
 		if person.has_method("apply_preferences"): person.apply_preferences(value)
 	if activity_type == "shelter_parade": _update_shelter_parade_pose()
+	if activity_type == "market_rescue": _update_market_rescue_pose()
 
 func set_paused(value: bool):
 	paused = value
@@ -708,6 +773,7 @@ func _process(delta: float):
 	for item in _decorative:
 		if is_instance_valid(item.node): item.node.position = item.rest + Vector3(sin(motion_elapsed*0.37+item.phase)*0.035,sin(motion_elapsed*0.49+item.phase)*0.04,0)
 	if activity_type == "shelter_parade": _update_shelter_parade_pose()
+	if activity_type == "market_rescue": _update_market_rescue_pose()
 
 func _apply_local_state():
 	var states = snapshot.get("location_states",{})
@@ -722,6 +788,12 @@ func _apply_local_state():
 		"soft_nook":
 			_box(changed,"NewFoldedTowel",Vector3(4.8,0.31,-3.16),Vector3(1.2,0.12,0.72),CREAM)
 			_box(changed,"ClearDoorMat",Vector3(3.55,0.035,-4.55),Vector3(0.78,0.045,0.55),palette[1])
+		"shared_bag":
+			_box(changed,"SharedShoppingBag",Vector3(4.72,1.21,-2.93),Vector3(0.3,0.48,0.24),CREAM)
+			_box(changed,"BagFold",Vector3(4.72,1.46,-2.93),Vector3(0.27,0.045,0.23),palette[2])
+		"clear_path":
+			_box(changed,"ReturnedBasket",Vector3(5.45,0.13,-3.70),Vector3(0.62,0.24,0.42),palette[1])
+			_box(changed,"ClearAisleEdge",Vector3(4.72,0.026,-2.3),Vector3(0.75,0.035,0.10),palette[2])
 		"pot_route":
 			factory.rounded(changed,"PotSaucer",Vector3(-4.5,0.07,-2.7),0.4,0.36,0.06,CREAM)
 			factory.rounded(changed,"RainPot",Vector3(-4.5,0.33,-2.7),0.28,0.22,0.5,palette[1])

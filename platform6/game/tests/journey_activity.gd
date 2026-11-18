@@ -7,7 +7,7 @@ func check(ok,label):
 func _initialize(): call_deferred('run')
 func run():
  var A=load('res://ui/journey_activity.gd')
- for kind in ['rain_routing','letter_arrangement','constellation_tracing','tea_mixing','arcade_paddle','observation','shelter_parade']:
+ for kind in ['rain_routing','letter_arrangement','constellation_tracing','tea_mixing','arcade_paddle','observation','shelter_parade','market_rescue']:
   var a=A.new().configure(kind,{},true)
   match kind:
    'rain_routing': a.act('0'); a.act('2')
@@ -16,6 +16,7 @@ func run():
    'tea_mixing': a.act('1'); a.act('pour')
    'arcade_paddle': a.act('right'); a.act('launch')
    'shelter_parade': a.act('0'); a.act('2'); a.act('parade'); check(a.state.step==2 and a.state.selection==5,'arranged parade records actual paper route')
+   'market_rescue': a.act('0'); a.act('1'); a.act('2'); check(a.state.step==2 and a.state.selection==7 and a.state.progress==3,'three optional paper-market route markers completed')
    _: a.act('next'); a.act('next'); a.act('next')
   check(a.state.done,'distinct activity completes '+kind)
   var b=A.new().configure(kind,a.state,true)
@@ -27,6 +28,7 @@ func run():
    'constellation_tracing': a.act('undo'); check(not a.state.done and a.state.step==2,'trace undo survives completion')
    'tea_mixing': a.act('2'); check(a.state.selection!=before.selection,'tea blend remains editable')
    'shelter_parade': a.act('1'); check(not a.state.done and a.state.step==0 and a.state.selection!=before.selection,'paper gates stay reversible after completion')
+   'market_rescue': a.act('1'); check(not a.state.done and a.state.progress==2 and a.state.selection!=before.selection,'paper grocery routes are reversible')
   b.free(); a.free()
  var observed=A.new().configure('shelter_parade',{},true)
  observed.act('watch')
@@ -36,6 +38,12 @@ func run():
  resumed.act('0')
  check(not resumed.state.done and resumed.state.step==0,'spectator can change their mind and arrange a gate')
  resumed.free(); observed.free()
+ var guided=A.new().configure('market_rescue',{},true)
+ guided.act('watch')
+ check(guided.state.done and guided.state.step==1 and guided.state.progress==3,'watching Jo has equal access')
+ guided.act('0')
+ check(not guided.state.done and guided.state.step==0 and guided.state.progress==1,'watching can be followed by an ordinary route')
+ guided.free()
  var arcade=A.new().configure('arcade_paddle',{'selection':8},false)
  root.add_child(arcade)
  await process_frame

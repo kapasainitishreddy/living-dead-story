@@ -2,9 +2,9 @@ extends SceneTree
 # Real geometry and physics contract for bounded authored Journey scenes.
 var checks := 0
 var failures := 0
-const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade"]
-const TYPES = ["rain_routing","letter_arrangement","arcade_paddle","constellation_tracing","observation","tea_mixing","letter_arrangement","tea_mixing","observation","constellation_tracing","shelter_parade"]
-const FEATURES = ["RainShop","LibraryShelves","ArcadeCabinets","Lighthouse","BareOrchard","RestCushions","RejectedObjectPlinths","DawnAwning","RoadLamps","NightBridge","ShelterPorch"]
+const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade","market_rescue"]
+const TYPES = ["rain_routing","letter_arrangement","arcade_paddle","constellation_tracing","observation","tea_mixing","letter_arrangement","tea_mixing","observation","constellation_tracing","shelter_parade","market_rescue"]
+const FEATURES = ["RainShop","LibraryShelves","ArcadeCabinets","Lighthouse","BareOrchard","RestCushions","RejectedObjectPlinths","DawnAwning","RoadLamps","NightBridge","ShelterPorch","MarketLanterns"]
 func check(value: bool, message: String):
 	checks += 1
 	if not value:
@@ -81,7 +81,7 @@ func run():
 			signatures[IDS[i]] = physical_signature(world.get_node("Scenery"))
 		world.free()
 		await physics_frame
-	check(signatures.values().size() == IDS.size(),"eleven authored destination geometries")
+	check(signatures.values().size() == IDS.size(),"twelve authored destination geometries")
 	var unique: Dictionary = {}
 	for signature in signatures.values(): unique[signature] = true
 	check(unique.size() == IDS.size(),"every destination has a distinct physical silhouette")
@@ -119,7 +119,7 @@ func run():
 			await physics_frame
 	# The new paper parade must be a genuine physical animation, pause/reduced-
 	# motion safe, and must not require any actual shelter cat to participate.
-	var shelter_data = pack.destinations[pack.destinations.size()-1]
+	var shelter_data = pack.destinations[pack.destinations.size()-2]
 	check(shelter_data.journey_id == "shelter_parade","shelter is the final optional authored stop")
 	var shelter = script.new().build({"mode":"destination","journey_id":"shelter_parade","activity":{}},{},shelter_data)
 	root.add_child(shelter)
@@ -168,6 +168,35 @@ func run():
 	check(paper.position==Vector3(-0.76,0.04,0.26) and not shelter.get_node("Activity/PaperParade/ParadeRibbon").visible,"reversing a gate resets the paper parade without penalty")
 	shelter.free()
 	await physics_frame
+	var market_data = pack.destinations[pack.destinations.size()-1]
+	check(market_data.journey_id == "market_rescue","twelfth stop is the paper supermarket")
+	var market = script.new().build({"mode":"destination","journey_id":"market_rescue","activity":{}},{},market_data)
+	root.add_child(market)
+	await physics_frame
+	var cart = market.get_node("Activity/MarketRoutes/PaperCart")
+	market.update_activity({"step":2,"selection":7,"progress":3,"done":true})
+	var starting_cart = cart.position
+	market._process(0.65)
+	check(cart.position.distance_to(starting_cart)>0.02,"imaginary paper cart moves through actual 3D scene")
+	market.set_paused(true)
+	var paused_cart = cart.position
+	market._process(0.7)
+	check(cart.position==paused_cart,"pause freezes paper market")
+	market.set_paused(false)
+	market.apply_preferences(true)
+	var still_cart = cart.position
+	market._process(0.8)
+	check(cart.position==still_cart,"reduced motion holds legible still paper-market route")
+	market.update_activity({"step":1,"selection":0,"progress":3,"done":true})
+	check(market.get_node("Activity/MarketRoutes/Stop0/Lantern").visible,"watching Jo provides same visible route")
+	market.update_activity({"step":0,"selection":1,"progress":1,"done":false})
+	check(not market.get_node("Activity/MarketRoutes/HomeRibbon").visible,"paper cart arrangement is reversible")
+	market.free()
+	await physics_frame
+	for state_id in ["shared_bag","clear_path"]:
+		var returned_market = script.new().build({"mode":"destination","journey_id":"market_rescue","location_states":{"market_rescue":state_id}},{},market_data)
+		check(returned_market.has_node("Scenery/LocalConsequences/"+("SharedShoppingBag" if state_id=="shared_bag" else "ReturnedBasket")),"real shopping choice persists as a prop: "+state_id)
+		returned_market.free()
 	var mode_train = script.new().build({"mode":"train","board_history":["rain_town"],"visits":{}},{})
 	check(mode_train.get_node("Scenery/DestinationBoard").get_meta("history") == ["rain_town"],"actual model board_history reaches the physical board")
 	mode_train.free()

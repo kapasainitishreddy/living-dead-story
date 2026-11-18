@@ -1592,6 +1592,148 @@
         "No dangerous animal rescue or real-world task is required."
       ],
       "performance_tier": "low"
+    },
+    {
+      "journey_id": "market_rescue",
+      "title": "The Supermarket of Small Heroes",
+      "location_scene": "market_rescue",
+      "scene_kind": "paper_grocery_mirage",
+      "available_time_states": [
+        "dusk",
+        "night"
+      ],
+      "weather_profile": {
+        "states": [
+          "clear",
+          "mist"
+        ],
+        "intensity": 0.08,
+        "wet_surfaces": false,
+        "motion_optional": true
+      },
+      "lighting_profile": {
+        "key": "dusk",
+        "warmth": 0.68,
+        "fog": 0.03
+      },
+      "music_profile": {
+        "track": "res://assets/original/orchard_hush.wav",
+        "gain_db": -19,
+        "ambience": "paper wheels and an evening shop bell"
+      },
+      "required_flags": [
+        "campaign_complete"
+      ],
+      "excluded_flags": [],
+      "possible_cast": [
+        "jo",
+        "ada"
+      ],
+      "npc": "jo",
+      "story_theme_tags": [
+        "make_believe_market",
+        "people_helping_people",
+        "ordinary_joy"
+      ],
+      "emotional_texture_tags": [
+        "playful",
+        "tender",
+        "ordinary"
+      ],
+      "activity_tags": [
+        "market_rescue",
+        "optional",
+        "reversible",
+        "unscored"
+      ],
+      "activity_type": "market_rescue",
+      "activity_prompt": "Jo draws a miniature supermarket adventure on a paper tray. Lead its little cart past the bread, lanterns and wide open doors, in any order, or watch Jo demonstrate. Nobody is in danger; nothing is timed.",
+      "palette": [
+        "#344D59",
+        "#B39B80",
+        "#EECB91"
+      ],
+      "entry_variants": {
+        "first": "Jo comes back with a grocery bag whose handle has torn. The shop behind the station is still open, and the cashier is writing tomorrow's delivery list by hand.",
+        "return": "The small shop has the same uneven doorbell. Jo is returning a basket and telling the cashier a new joke."
+      },
+      "story_nodes": [
+        "A refrigerator hums beneath the gentle bustle. A shopper waits while the cashier ties a paper bag. Jo unfolds three figures on the counter. “My imagination calls this place a rescue headquarters,” she says. “The heroes are mostly very good at moving tiny shopping carts.”",
+        "The counter becomes a make-believe supermarket city. An imaginary announcer cheers as a cardboard cart reaches the bread shelf, the glowing lanterns and the open doors. Mark three route spots in any order, or watch Jo trace the route. The people in the actual shop are safe. Nobody is chased, trapped or required to be rescued.",
+        "Jo folds the paper cart back into her pocket. The cashier offers the waiting shopper another bag. There is no victory parade outside, just room for someone else to pass. Jo asks whether you'd like to help with one small thing, or simply let the shop settle."
+      ],
+      "choice_nodes": [
+        {
+          "choice_id": "journey.market_rescue.shared_bag",
+          "label": "Offer a spare paper bag",
+          "response": "You pass the cashier a clean spare bag. They offer it to the shopper, who decides how to pack and smiles as they go.",
+          "state_id": "shared_bag"
+        },
+        {
+          "choice_id": "journey.market_rescue.clear_path",
+          "label": "Return an empty basket to the side",
+          "response": "You put an unused basket beside the counter. The walkway opens a little. The cashier thanks you and returns to the next list.",
+          "state_id": "clear_path"
+        },
+        {
+          "choice_id": "journey.market_rescue.as_found",
+          "label": "Let the market evening continue",
+          "response": "The shop has what it needs. You stay for another soft ring of the doorbell, then follow Jo out into the cool air.",
+          "state_id": "as_found"
+        }
+      ],
+      "consequence_rules": [
+        {
+          "choice_id": "journey.market_rescue.shared_bag",
+          "scope": "destination",
+          "set_state": "shared_bag",
+          "callback": "A spare paper bag rests on the counter, ready if somebody wants it."
+        },
+        {
+          "choice_id": "journey.market_rescue.clear_path",
+          "scope": "destination",
+          "set_state": "clear_path",
+          "callback": "The returned basket sits neatly beside the counter; the aisle is clear."
+        },
+        {
+          "choice_id": "journey.market_rescue.as_found",
+          "scope": "destination",
+          "set_state": "as_found",
+          "callback": "The counter and baskets remain as they were. The market keeps its gentle rhythm."
+        }
+      ],
+      "returning_location_states": [
+        "The counter and baskets remain as they were. The market keeps its gentle rhythm.",
+        "A spare paper bag rests on the counter, ready if somebody wants it.",
+        "The returned basket sits neatly beside the counter; the aisle is clear."
+      ],
+      "local_scene_states": {
+        "as_found": "The counter and baskets remain as they were. The market keeps its gentle rhythm.",
+        "shared_bag": "A spare paper bag rests on the counter, ready if somebody wants it.",
+        "clear_path": "The returned basket sits neatly beside the counter; the aisle is clear."
+      },
+      "callback_pool": {
+        "camera": "A photograph once kept the shore's light. Jo's paper supermarket keeps a different memory of making room.",
+        "fair": "Ada's little boats could carry all this paper groceries, if the soup arrived first.",
+        "sign": "Noor once drew a route on the back of a sign invoice. Jo borrows the arrows for the paper shop.",
+        "mira": "Mira is learning every delivery stop at Lower Mill. The cashier already knows most of the people along that road."
+      },
+      "tiny_tomorrow_hooks": [
+        {
+          "hook_id": "journey.market_rescue.optional_invitation",
+          "text": "You may notice a small kindness during an ordinary errand. There is nothing you need to do, prove or report.",
+          "optional": true
+        }
+      ],
+      "estimated_duration": 5,
+      "accessibility_notes": [
+        "Three large named route buttons; no timed play or small moving targets.",
+        "Watching Jo is equally valid, with the same narrative access.",
+        "The imaginary shoppers are safe, and no real emergency action is required.",
+        "Reduced motion holds the route in a still arrangement.",
+        "Leaving unchanged, returning home and revisiting remain penalty-free."
+      ],
+      "performance_tier": "low"
     }
   ]
 }

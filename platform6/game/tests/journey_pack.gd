@@ -1,8 +1,8 @@
 extends SceneTree
 
 const PACK_PATH = "res://data/journey_pack.json"
-const DESTINATIONS = ["rain_town", "unsent_letters_library", "arcade", "beach_before_sunrise", "winter_orchard", "rest_room", "failed_things_festival", "sunrise_cafe", "no_destination_road", "fireflies", "shelter_parade"]
-const ACTIVITIES = ["rain_routing", "letter_arrangement", "arcade_paddle", "constellation_tracing", "tea_mixing", "observation", "shelter_parade"]
+const DESTINATIONS = ["rain_town", "unsent_letters_library", "arcade", "beach_before_sunrise", "winter_orchard", "rest_room", "failed_things_festival", "sunrise_cafe", "no_destination_road", "fireflies", "shelter_parade", "market_rescue"]
+const ACTIVITIES = ["rain_routing", "letter_arrangement", "arcade_paddle", "constellation_tracing", "tea_mixing", "observation", "shelter_parade", "market_rescue"]
 const TEXTURES = ["wistful", "playful", "tender", "quiet", "awe", "bittersweet", "hopeful", "ordinary"]
 const REQUIRED = ["journey_id", "title", "location_scene", "available_time_states", "weather_profile", "lighting_profile", "music_profile", "required_flags", "excluded_flags", "possible_cast", "story_theme_tags", "activity_tags", "entry_variants", "story_nodes", "choice_nodes", "consequence_rules", "returning_location_states", "callback_pool", "tiny_tomorrow_hooks", "estimated_duration", "accessibility_notes", "performance_tier", "activity_type", "palette", "scene_kind", "npc", "activity_prompt", "emotional_texture_tags", "local_scene_states"]
 var checks := 0
@@ -43,7 +43,7 @@ func _initialize():
 		var life = pack.get("npc_lives", {}).get(cast_id, {})
 		check(life is Dictionary and strings([life.get("name", ""), life.get("independent_life", ""), life.get("current_work", "")]), "grounded name and work for " + cast_id)
 	var destinations = pack.get("destinations", [])
-	check(destinations is Array and destinations.size() == 11, "eleven authored destinations")
+	check(destinations is Array and destinations.size() == 12, "twelve authored destinations")
 	if not destinations is Array:
 		finish()
 		return
