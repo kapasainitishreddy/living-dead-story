@@ -276,11 +276,11 @@ func _build_working_kitchen():
 	factory.rounded(pot,"SoupSurface",Vector3(0,0.154,0),0.321,0.321,0.008,Color("d49657"))
 	# Small visible ingredients for the optional hands-on help route; no new
 	# recipe score, save keys, or obligation to cook before joining the table.
-	var herbs = _node(self,"HerbSprinkle",Vector3(-3.42,2.08,-5.94))
+	var seasoning = _node(self,"HerbSprinkle",Vector3(-3.42,2.08,-5.94))
 	for i in range(7):
-		var flake = factory.box(herbs,"Leaf%d" % i,Vector3(sin(float(i)*2.1)*0.13,0.17+float(i%3)*0.06,cos(float(i)*2.1)*0.13),Vector3(0.038,0.006,0.019),Color("688057"),false)
+		var flake = factory.box(seasoning,"Leaf%d" % i,Vector3(sin(float(i)*2.1)*0.13,0.17+float(i%3)*0.06,cos(float(i)*2.1)*0.13),Vector3(0.038,0.006,0.019),Color("688057"),false)
 		flake.rotation.y = float(i)*0.7
-	herbs.visible = false
+	seasoning.visible = false
 	for x in [-0.4,0.4]: factory.box(pot,"PotHandle",Vector3(x,0.065,0),Vector3(0.17,0.075,0.13),Color("5d5744"),false)
 	var steam = _node(self,"Steam",Vector3(-3.42,1.93,-5.94))
 	for i in range(10):
