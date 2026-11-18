@@ -8,6 +8,9 @@ var visual: Node3D
 const Performer = preload("res://characters/character_performer.gd")
 var nearest: Node3D
 var touch_move := Vector2.ZERO
+# Delay idle attention so nearby props feel discoverable without distracting jitter.
+var glance_candidate: Node3D
+var glance_dwell := 0.0
 var touch_mode := OS.has_feature("mobile") or DisplayServer.is_touchscreen_available()
 func _ready():
 	var capsule = CapsuleShape3D.new()
@@ -40,6 +43,7 @@ func set_controls_enabled(value: bool):
 	enabled = value
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if value and not touch_mode else Input.MOUSE_MODE_VISIBLE
 	if not enabled:
+		update_nearby_attention(null,0.0,0.0)
 		touch_move = Vector2.ZERO
 		velocity = Vector3.ZERO
 		if visual: visual.set_locomotion(0.0)
@@ -58,6 +62,7 @@ func reset_view():
 func set_preferences(settings: Dictionary):
 	preferences = settings.duplicate(true)
 	if visual: visual.apply_preferences(bool(preferences.get("reduced_motion",false)))
+	update_nearby_attention(null,0.0,0.0)
 	if preferences.reduced_motion and framing_tween and framing_tween.is_running():
 		framing_tween.kill()
 func _unhandled_input(event):
@@ -92,6 +97,23 @@ func _physics_process(delta):
 	var horizontal_speed = Vector2(velocity.x,velocity.z).length()
 	visual.position.y = 0.0 # gait animates the body; no camera bob
 	visual.set_locomotion(horizontal_speed,heading_change)
+	update_nearby_attention(nearest,horizontal_speed,delta)
+
+func update_nearby_attention(target: Node3D, horizontal_speed: float, delta: float):
+	# Use the existing character eye-first/head-follow rig, not camera motion.
+	# Require 200ms at rest near a stable target; never stare while walking.
+	var calm: bool = enabled and not bool(preferences.get("reduced_motion",false)) and horizontal_speed < 0.36 and is_instance_valid(target)
+	if not calm:
+		glance_candidate = null
+		glance_dwell = 0.0
+		if is_instance_valid(visual): visual.set_attention_target(null)
+		return
+	if glance_candidate != target:
+		glance_candidate = target
+		glance_dwell = 0.0
+	glance_dwell += maxf(0.0,delta)
+	if is_instance_valid(visual):
+		visual.set_attention_target(target if glance_dwell >= 0.2 else null)
 
 func gait_weight(delta: float) -> float:
 	# Frame-rate independent damping, inspired by Sakura Crossing (MIT).

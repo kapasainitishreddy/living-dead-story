@@ -89,6 +89,7 @@ godot --headless --path . --script tests/illustrated_graphics.gd
 python3 ../tools/test_authored_character_assets.py
 python3 ../tools/test_character_polish.py
 godot --headless --path . --script tests/character_motion_polish.gd
+godot --headless --path . --script tests/player_nearby_attention.gd
 godot --headless --path . --script tests/supporting_conversation.gd
 
 # Bounded authored Journey Mode V1, separate from campaign persistence.
