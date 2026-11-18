@@ -11,6 +11,8 @@ var touch_move := Vector2.ZERO
 # Delay idle attention so nearby props feel discoverable without distracting jitter.
 var glance_candidate: Node3D
 var glance_dwell := 0.0
+const INTERACT_RADIUS := 3.2
+const INTERACT_SWITCH_MARGIN := 0.28
 var touch_mode := OS.has_feature("mobile") or DisplayServer.is_touchscreen_available()
 func _ready():
 	var capsule = CapsuleShape3D.new()
@@ -73,13 +75,7 @@ func _unhandled_input(event):
 		reset_view()
 	if event.is_action_pressed("interact") and is_instance_valid(nearest): interact.emit(nearest)
 func _physics_process(delta):
-	nearest = null
-	var distance := 3.2
-	for target in get_tree().get_nodes_in_group("interactables"):
-		var d = global_position.distance_to(target.global_position)
-		if d < distance:
-			distance = d
-			nearest = target
+	nearest = choose_nearest_interactable()
 	if not enabled: return
 	pivot.rotation.y -= Input.get_axis("look_left","look_right") * delta * 1.8 * preferences.sensitivity
 	arm.rotation.x = clamp(arm.rotation.x + Input.get_axis("look_up","look_down") * delta * 1.2 * preferences.sensitivity,-0.65,0.65)
@@ -98,6 +94,30 @@ func _physics_process(delta):
 	visual.position.y = 0.0 # gait animates the body; no camera bob
 	visual.set_locomotion(horizontal_speed,heading_change)
 	update_nearby_attention(nearest,horizontal_speed,delta)
+
+func choose_nearest_interactable() -> Node3D:
+	# Keep an existing nearby discovery until another is clearly closer.
+	# The HUD, E/A interaction and delayed eye/head attention use this target.
+	var closest: Node3D = null
+	var closest_distance: float = INTERACT_RADIUS
+	var previous_distance: float = INF
+	for node in get_tree().get_nodes_in_group("interactables"):
+		if not (node is Node3D):
+			continue
+		var target: Node3D = node as Node3D
+		if target.is_queued_for_deletion():
+			continue
+		var distance: float = global_position.distance_to(target.global_position)
+		if target == nearest:
+			previous_distance = distance
+		if distance < closest_distance:
+			closest_distance = distance
+			closest = target
+	# Never retain deleted, removed or out-of-range targets.
+	if is_instance_valid(nearest) and previous_distance < INTERACT_RADIUS:
+		if closest != nearest and closest_distance + INTERACT_SWITCH_MARGIN >= previous_distance:
+			return nearest
+	return closest
 
 func update_nearby_attention(target: Node3D, horizontal_speed: float, delta: float):
 	# Use the existing character eye-first/head-follow rig, not camera motion.
