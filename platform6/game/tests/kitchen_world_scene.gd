@@ -65,6 +65,8 @@ func run():
 	world.set_paused(false)
 	# Optional help now has a genuinely different short cooking choreography,
 	# rather than reusing the sit/watch ladle move. It still settles to saved dinner.
+	var heard: Array[String] = []
+	world.gesture_cue.connect(func(kind: String): heard.append(kind))
 	world.begin_gesture("join_help",Callable())
 	var stir_start = world.get_node("Ladle").position
 	world._process(1.5)
@@ -77,10 +79,12 @@ func run():
 	check(world.get_node("Ladle").position.distance_to(stir_start)>0.5,"help advances from pot toward player's bowl")
 	world._process(0.8)
 	check(world.get_node("PlayerPlace/Bowl/Soup").visible,"help ends by filling the actual waiting bowl")
+	check(heard == ["stir","herbs","serve"],"physical help gesture emits stir, herbs, serve in order once")
 	world.finish_gesture()
 	check(not world.gesture_active and not world.get_node("HerbSprinkle").visible,"help finishes cleanly without transient ingredients")
 	check(world.get_node("SoupPot/SoupSurface").rotation.y==0.0,"help restores soup-pot pose after completion")
 	check(world.get_node("PlayerPlace/Bowl/Soup").visible,"help uses the original durable served state")
+	check(heard.size() == 3,"gesture settling does not replay Foley")
 	var completions: Array[String] = []
 	world.gesture_finished.connect(func(id): completions.append(id))
 	for id in ["join_sit","join_help","join_watch","bread","cup","pepper","watch"]:
@@ -108,6 +112,9 @@ func run():
 		world._process(20.0)
 		check(exit_count[0] == 1,"duplicate immediate exit never calls completion twice")
 	world.apply_preferences(true)
+	var before_reduced_cues := heard.size()
+	world.begin_gesture("join_help",Callable())
+	check(heard.size() == before_reduced_cues,"reduced-motion instant completion has no stacked cues")
 	for id in moving: before[id] = world.get_node(id).transform
 	world._process(2.0)
 	for id in moving: check(world.get_node(id).transform.is_equal_approx(before[id]),"reduced motion freezes decorative " + id)

@@ -1,6 +1,7 @@
 extends Node3D
 # An original, lived-in room. Save data owns choices; motion never owns progression.
 signal gesture_finished(action: String)
+signal gesture_cue(kind: String)
 const CREAM = Color("f3e4c7")
 const WOOD = Color("9d6849")
 const TEAL = Color("597a72")
@@ -19,6 +20,7 @@ var gesture_action := ""
 var gesture_elapsed := 0.0
 var gesture_duration := 0.0
 var gesture_completion: Callable
+var _gesture_cues_played := {}
 var _gesture_caption := ""
 var _rest: Dictionary = {}
 var _motion_ids: Array[String] = []
@@ -484,6 +486,7 @@ func begin_gesture(action: String, completion: Callable = Callable()):
 	gesture_action = action.trim_prefix("kitchen_")
 	gesture_completion = completion
 	gesture_elapsed = 0.0
+	_gesture_cues_played.clear()
 	gesture_duration = float(GESTURE_SECONDS.get(gesture_action,0.0))
 	gesture_active = true
 	_gesture_caption = _caption_for(gesture_action,0.0)
@@ -507,6 +510,13 @@ func _caption_for(action: String, progress: float) -> String:
 		"pepper": return "Noor asks for the pepper." if progress < 0.5 else "The shaker travels across the linen."
 		"watch": return "Ada passes bread while Noor pours." if progress < 0.5 else "Mira turns the workshop key in her hand."
 	return ""
+
+func _cue_at(kind: String, threshold: float, progress: float):
+	# Do not burst late cues if a gesture is skipped or reduced motion completes it.
+	if reduced or paused or progress >= 0.999 or progress < threshold or _gesture_cues_played.has(kind):
+		return
+	_gesture_cues_played[kind] = true
+	gesture_cue.emit(kind)
 
 func _stage_gesture(progress: float):
 	var p = clampf(progress,0.0,1.0)
@@ -567,6 +577,15 @@ func _stage_gesture(progress: float):
 			get_node("PassingBread").position.y = TABLE_TOP+0.12+curve*0.12
 			get_node("Ladle").rotation.z = curve*0.15
 			get_node("Ada/ArmLeft").rotation.x = -0.53*curve
+	# Sound follows real physical actions, not dialogue changes.
+	match gesture_action:
+		"join_help":
+			_cue_at("stir",0.12,p)
+			_cue_at("herbs",0.32,p)
+			_cue_at("serve",0.80,p)
+		"bread": _cue_at("bread",0.34,p)
+		"cup": _cue_at("cup",0.52,p)
+		"pepper": _cue_at("pepper",0.40,p)
 
 func finish_gesture():
 	# Explicit exit can settle immediately even while a menu has paused time.

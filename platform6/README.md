@@ -1,3 +1,11 @@
+## November 18, 2026 · Night Kitchen original gesture foley (source integrated)
+
+**Vision:** Small ordinary sounds should make stirring soup, scattering herbs, serving a bowl, tearing bread and passing cups feel intimate and rewarding, without a cooking score or mandatory task.
+
+**Implemented:** Actual Kitchen gesture animation emits six authored one-shot cue types at motion thresholds. The existing audio director creates short original deterministic mono 16-bit sounds locally, caches them and honors Master/Effects mute. Optional help produces separate stirring, herb and serving cues; bread/cup/pepper get quieter contact cues. Pauses freeze gesture time; reduced-motion and forced completion avoid stacks of late sounds. Existing spoken captions, saved states and sit/watch choices remain intact. Kitchen sound and world tests now assert cue encoding, order, lifecycle and muting.
+
+**Verified:** Source anchors and deterministic signal-envelope math inspected; exact private commit/blob readback is required. **Not executed:** Godot 4.6.3 import/native tests, 1x audible capture, physical controller and human evaluation. Next: run the native test suite, listen at normal speed to help/sit/watch, verify pause, reduced motion and zero Effects volume. This is not release signoff.
+
 ## November 18, 2026 · steady interaction focus between close discoveries (source integrated)
 
 **Creative vision:** STILL HERE: PLATFORM 6 should make wandering, shared cooking and small kindnesses rewarding in themselves. When the player's cup, postcard and other nearby objects overlap, the interaction prompt and character glance should feel intentional rather than jitter with every tiny footstep.

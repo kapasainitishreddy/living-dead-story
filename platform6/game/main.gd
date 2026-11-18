@@ -171,6 +171,10 @@ func route(preserve_opening_position: bool = true):
 	elif snapshot.get("campaign_chapter", "") == "the_small_fair": world = load("res://world/fair_world.gd").new().build(snapshot)
 	else: world = Factory.new().build(snapshot.checkpoint_id)
 	world_container.add_child(world)
+	if snapshot.get("campaign_chapter","") == "night_kitchen" and world.has_signal("gesture_cue"):
+		world.gesture_cue.connect(func(kind: String):
+			if is_instance_valid(audio): audio.play_kitchen_cue(kind)
+		)
 	player = Player.new()
 	world.add_child(player)
 	player.global_position = world.get_node("Spawn").global_position
