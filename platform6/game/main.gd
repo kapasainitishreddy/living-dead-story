@@ -455,6 +455,13 @@ func show_pause():
 		for button_ in hud.footer.get_children():
 			if button_.text.begins_with("Start a new journey"): button_.disabled = true
 func _unhandled_input(event):
+	# During the optional help route, interact adds a real ladle flourish
+	# while the normal, saved dinner completes whether or not it is pressed.
+	if kitchen_animating and not hud.pause_active and not hud.modal_visible() and event.is_action_pressed("interact") and world_container.get_child_count() > 0:
+		var kitchen_room = world_container.get_child(0)
+		if kitchen_room.has_method("offer_stir_input") and kitchen_room.offer_stir_input():
+			get_viewport().set_input_as_handled()
+			return
 	if home_cinematic and not hud.pause_active and (event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.pressed and event.physical_keycode == KEY_ESCAPE)):
 		world_container.get_child(0).finish_ending()
 		get_viewport().set_input_as_handled()
@@ -848,7 +855,8 @@ func dispatch_kitchen(action: String, value: Variant = null):
 		kitchen_skip_dialogue = false
 		kitchen_close_view()
 		var lines = hud.kitchen_authored.get("gesture_lines", {}).get(kitchen_gesture_id, [])
-		if not lines.is_empty(): show_kitchen_notice(lines[0])
+		if not lines.is_empty():
+			show_kitchen_notice(lines[0] + ("\nE / A / touch · gently stir if you like" if kitchen_gesture_id == "join_help" else ""))
 		world.begin_gesture(kitchen_gesture_id, func():
 			if not is_instance_valid(world) or world != world_container.get_child(0): return
 			kitchen_animating = false

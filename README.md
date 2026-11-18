@@ -1,3 +1,11 @@
+## November 18, 2026 · optional hands-on soup stirring (source integrated)
+
+**Vision:** STILL HERE: PLATFORM 6 finds happiness in small things: gently helping Noor stir a pot should feel responsive and warm, not like a scored cooking challenge. The 3:17 journey, Mira's plans and all sit/watch choices stay intact.
+
+**Implemented:** During the existing 4.5-second Night Kitchen **Help** gesture, up to three optional E/A/touch presses add distinct, short physical ladle circles, soup-surface turns and local soft stir sounds. A brief cooldown prevents holding the button from spamming. Automatic preparation continues with zero presses; soup is served identically, with no new save fields or rewards. Sit/watch do not ask for input. Pausing, skipping, finishing, and reduced motion settle safely. New actual-scene test `tests/kitchen_stir_input.gd` covers interaction, spoon/soup response, sounds, limits, pause and reduced motion.
+
+**Verified this session:** GDScript source contracts, offline motion/timing calculations and exact GitHub tree/blob readback after the commit. **Not executed:** Godot 4.6.3 import/native regression, normal-speed visual/audio capture, controller/human testing. Next: run `cd platform6/game && ./run_tests.sh`, test E/A/touch during Help at 1×, and compare zero-press and three-press paths and fresh reopening. Do not call this a released build.
+
 ## November 18, 2026 · Night Kitchen original gesture foley (source integrated)
 
 **Vision:** Small ordinary sounds should make stirring soup, scattering herbs, serving a bowl, tearing bread and passing cups feel intimate and rewarding, without a cooking score or mandatory task.

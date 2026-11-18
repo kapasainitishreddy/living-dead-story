@@ -46,6 +46,7 @@ godot --headless --path . --script tests/paper_shutdown_runtime.gd
 
 godot --headless --path . --script tests/kitchen_model.gd
 godot --headless --path . --script tests/kitchen_world_scene.gd
+godot --headless --path . --script tests/kitchen_stir_input.gd
 godot --headless --path . --script tests/kitchen_world_physics.gd
 godot --headless --path . --script tests/kitchen_runtime.gd
 godot --headless --path . --script tests/kitchen_save_failures.gd

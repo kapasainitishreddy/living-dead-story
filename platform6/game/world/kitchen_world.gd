@@ -8,6 +8,8 @@ const TEAL = Color("597a72")
 const BRASS = Color("c7a26c")
 const TABLE_TOP := 1.235
 const GESTURE_SECONDS = {"join_sit":3.6,"join_help":4.5,"join_watch":3.6,"bread":3.6,"cup":3.6,"pepper":3.6,"watch":3.6}
+const STIR_INPUT_LIMIT := 3
+const STIR_INPUT_COOLDOWN := 0.27
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var interactions: Node3D
@@ -21,6 +23,9 @@ var gesture_elapsed := 0.0
 var gesture_duration := 0.0
 var gesture_completion: Callable
 var _gesture_cues_played := {}
+# Optional, presentation-only player contribution: never part of a save or reward.
+var stir_input_count := 0
+var stir_last_elapsed := -100.0
 var _gesture_caption := ""
 var _rest: Dictionary = {}
 var _motion_ids: Array[String] = []
@@ -487,6 +492,8 @@ func begin_gesture(action: String, completion: Callable = Callable()):
 	gesture_completion = completion
 	gesture_elapsed = 0.0
 	_gesture_cues_played.clear()
+	stir_input_count = 0
+	stir_last_elapsed = -100.0
 	gesture_duration = float(GESTURE_SECONDS.get(gesture_action,0.0))
 	gesture_active = true
 	_gesture_caption = _caption_for(gesture_action,0.0)
@@ -499,6 +506,21 @@ func begin_gesture(action: String, completion: Callable = Callable()):
 		if not paused: _finish_gesture()
 	else:
 		_stage_gesture(0.0)
+
+func offer_stir_input() -> bool:
+	# E/A/touch can add up to three small, heard ladle turns to the same supper.
+	# The room stirs naturally without input; no timed challenge, rating or save.
+	if not gesture_active or gesture_action != "join_help" or paused or reduced:
+		return false
+	if gesture_elapsed < 0.18 or gesture_elapsed >= gesture_duration * 0.48:
+		return false
+	if stir_input_count >= STIR_INPUT_LIMIT or gesture_elapsed - stir_last_elapsed < STIR_INPUT_COOLDOWN:
+		return false
+	stir_input_count += 1
+	stir_last_elapsed = gesture_elapsed
+	_stage_gesture(gesture_elapsed / maxf(gesture_duration,0.001))
+	gesture_cue.emit("stir")
+	return true
 
 func _caption_for(action: String, progress: float) -> String:
 	match action:
@@ -534,10 +556,14 @@ func _stage_gesture(progress: float):
 				# sprinkle herbs, lift the ladle, then fill the waiting place.
 				if p < 0.48:
 					var stir = p / 0.48
-					var circles = stir * TAU * 1.8
-					get_node("Ladle").position = pot_position + Vector3(sin(circles)*0.13,-0.06+sin(stir*PI)*0.035,cos(circles)*0.13)
-					get_node("Ladle").rotation.z = -0.18+sin(circles)*0.12
-					get_node("SoupPot/SoupSurface").rotation.y = stir*PI*1.2
+					# A player tap adds one soft circular flourish which settles
+					# over 420ms. With no taps the original choreography is identical.
+					var pulse: float = clampf(1.0-(gesture_elapsed-stir_last_elapsed)/0.42,0.0,1.0) if stir_input_count > 0 else 0.0
+					var circles = stir * TAU * 1.8 + pulse * 1.05
+					var radius = 0.13 + pulse * 0.065
+					get_node("Ladle").position = pot_position + Vector3(sin(circles)*radius,-0.06+sin(stir*PI)*0.035,cos(circles)*radius)
+					get_node("Ladle").rotation.z = -0.18+sin(circles)*0.12-pulse*0.13
+					get_node("SoupPot/SoupSurface").rotation.y = stir*PI*1.2+pulse*0.34
 					get_node("HerbSprinkle").visible = p > 0.28
 					get_node("HerbSprinkle").position.y = 2.08-maxf(0.0,(p-0.28)/0.20)*0.12
 				else:
