@@ -57,6 +57,42 @@ func run():
 	stable = heard.size()
 	for i in range(15): player.advance_footstep(0.12,4.2,0.04,true)
 	check(heard.size() == stable+1,"Effects mute and reduced motion never stop gameplay")
+	# Hard tile, hollow deck and soft orchard have distinctly authored local PCM.
+	var orchard = StaticBody3D.new()
+	orchard.name = "OrchardFloor"
+	var deck = StaticBody3D.new()
+	deck.name = "AccessibleDeck"
+	var kitchen = StaticBody3D.new()
+	kitchen.name = "KitchenFloor"
+	check(player.footstep_surface_from(orchard) == "soft", "actual orchard floor selects softer shoe contact")
+	check(player.footstep_surface_from(deck) == "wood", "fairground wooden deck selects hollow contact")
+	check(player.footstep_surface_from(kitchen) == "stone", "kitchen tile retains original close shoe contact")
+	check(player.footstep_surface_from(null) == "stone", "missing contact safely falls back to neutral")
+	kitchen.set_meta("footstep_surface","wood")
+	check(player.footstep_surface_from(kitchen) == "wood", "authored collider material overrides chapter name")
+	kitchen.set_meta("footstep_surface","unrecognized")
+	check(player.footstep_surface_from(kitchen) == "stone", "unrecognized material cannot break fallback")
+	var rock = player._original_footstep(0,"stone")
+	var timber = player._original_footstep(0,"wood")
+	var soil = player._original_footstep(0,"soft")
+	check(rock.data.size() == 4410 and timber.data.size() == 4410 and soil.data.size() == 4410, "all three surfaces keep a bounded 100ms mono sample")
+	check(rock.data != timber.data and rock.data != soil.data and timber.data != soil.data, "three surfaces have distinct original PCM timbres")
+	player.set_preferences({"sensitivity":1.0,"reduced_motion":true,"master":0.8,"effects":0.6})
+	var contacts_before := heard.size()
+	player.step_surface = "wood"
+	player._reset_footsteps()
+	for i in range(15): player.advance_footstep(0.12,4.2,0.04,true)
+	check(heard.size() == contacts_before+1 and foley.stream.data == player.step_samples["wood:" + str(1-player.step_side)].data, "a wood contact still uses grounded cadence")
+	check(player.step_samples.has("wood:0") or player.step_samples.has("wood:1"), "wood contact caches its own shoe sample")
+	player.step_surface = "soft"
+	player._reset_footsteps()
+	for i in range(15): player.advance_footstep(0.12,4.2,0.04,true)
+	check(player.step_samples.has("soft:0") or player.step_samples.has("soft:1"), "orchard sample survives a change of supporting floor")
+	check(foley.stream.data != rock.data and foley.stream.data != timber.data, "the latest soft contact never reuses hard/wood audio")
+	player.step_surface = "stone"
+	player._reset_footsteps()
+	for i in range(15): player.advance_footstep(0.12,4.2,0.04,true)
+	check(player.step_samples.size() <= 6, "only two shoe samples per surface may be cached")
 	player.queue_free()
 	await process_frame
 	print("Grounded footstep Godot checks: %d; failures: %d" % [checks,failures])

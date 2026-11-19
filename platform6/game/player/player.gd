@@ -25,6 +25,7 @@ var step_distance := 0.0
 var step_age := 0.0
 var step_side := 0
 var step_samples := {}
+var step_surface := "stone"
 var touch_mode := OS.has_feature("mobile") or DisplayServer.is_touchscreen_available()
 func _ready():
 	var capsule = CapsuleShape3D.new()
@@ -112,6 +113,9 @@ func _physics_process(delta):
 	# Motion is measured AFTER move_and_slide. Pushing against a wall must not
 	# leave the rig walking in place when the feet have stopped translating.
 	var horizontal_speed := grounded_locomotion_speed(actual_travel,delta,is_on_floor())
+	# Use the actual supporting collider after sliding, not the scenery below
+	# the camera or an assumed chapter-wide floor material.
+	step_surface = detect_footstep_surface() if is_on_floor() else "stone"
 	advance_footstep(actual_travel,horizontal_speed,delta,is_on_floor())
 	# The feet can remain planted while the player chooses a new heading. Use
 	# the ACTUAL body yaw gained in this physics tick, not a held directional
@@ -208,7 +212,29 @@ func _update_step_volume():
 	foot_audio.volume_db = linear_to_db(gain) if gain > 0.0 else -80.0
 	if gain <= 0.0: foot_audio.stop()
 
-func _original_footstep(side: int) -> AudioStreamWAV:
+func footstep_surface_from(collider: Object) -> String:
+	# Scene makers can explicitly tag a supporting body; existing authored
+	# orchard floor and fair decks also work without retrofitting their scenes.
+	if not (collider is Node): return "stone"
+	var body := collider as Node
+	if body.has_meta("footstep_surface"):
+		var explicit_surface := str(body.get_meta("footstep_surface"))
+		if explicit_surface in ["stone","wood","soft"]: return explicit_surface
+	var body_name := str(body.name).to_lower()
+	if "orchard" in body_name or "grass" in body_name or "soil" in body_name or "meadow" in body_name: return "soft"
+	if "deck" in body_name or "plank" in body_name or "boardwalk" in body_name: return "wood"
+	return "stone"
+
+func detect_footstep_surface() -> String:
+	# CharacterBody3D reports each post-slide collision. Walls do not count as
+	# the ground: only an upward-facing support may change the shoe timbre.
+	for i in range(get_slide_collision_count()):
+		var collision := get_slide_collision(i)
+		if collision.get_normal().dot(Vector3.UP) > 0.55:
+			return footstep_surface_from(collision.get_collider())
+	return step_surface
+
+func _original_footstep(side: int, surface: String = "stone") -> AudioStreamWAV:
 	# Locally synthesized soft cloth scuff and sole tap; left/right are different.
 	var rate := 22050
 	var count := 2205
@@ -219,8 +245,17 @@ func _original_footstep(side: int) -> AudioStreamWAV:
 		var attack := minf(1.0,float(i)/85.0)
 		var tail := pow(maxf(0.0,1.0-float(i)/float(count)),2.6)
 		var cloth := sin(float(i)*(13.37+float(side)*1.11))*sin(float(i)*2.717)
-		var sole := sin(TAU*(112.0+float(side)*17.0)*t)*exp(-t*32.0)
-		var pcm := clampi(roundi((cloth*0.45+sole*0.55)*attack*tail*0.29*32767.0),-32768,32767)
+		var soft := surface == "soft"
+		var wood := surface == "wood"
+		var pitch := 102.0 if soft else (143.0 if wood else 112.0)
+		var decay := 47.0 if soft else (21.0 if wood else 32.0)
+		var sole := sin(TAU*(pitch+float(side)*17.0)*t)*exp(-t*decay)
+		# Hollow wood contact, soft earth scuff, and ordinary stone/tile tap.
+		var wood_body := sin(TAU*(227.0+float(side)*9.0)*t)*exp(-t*24.0)*0.27 if wood else 0.0
+		var cloth_mix := 0.55 if soft else (0.32 if wood else 0.45)
+		var sole_mix := 0.20 if soft else (0.54 if wood else 0.55)
+		var gain := 0.74 if soft else 1.0
+		var pcm := clampi(roundi((cloth*cloth_mix+sole*sole_mix+wood_body)*attack*tail*gain*0.29*32767.0),-32768,32767)
 		samples[2*i] = pcm & 255
 		samples[2*i+1] = (pcm >> 8) & 255
 	var sound := AudioStreamWAV.new()
@@ -246,8 +281,10 @@ func advance_footstep(actual_travel: float, speed: float, delta: float, grounded
 	step_side = 1-step_side
 	footstep_contact.emit(side)
 	if not is_instance_valid(foot_audio): return
-	if not step_samples.has(side): step_samples[side] = _original_footstep(side)
-	foot_audio.stream = step_samples[side]
+	var surface := step_surface if step_surface in ["stone","wood","soft"] else "stone"
+	var sample_key := surface + ":" + str(side)
+	if not step_samples.has(sample_key): step_samples[sample_key] = _original_footstep(side,surface)
+	foot_audio.stream = step_samples[sample_key]
 	if foot_audio.volume_db > -79.0 and DisplayServer.get_name() != "headless":
 		foot_audio.play()
 

@@ -1,3 +1,11 @@
+## November 19, 2026 · footsteps respond to the ground (source-integrated; native QA pending)
+
+**Vision:** STILL HERE: PLATFORM 6 is a warm, unscored single-player 3:17 journey about happiness in small things. Walking from the tiled shared kitchen to the orchard or the fair's wooden deck should sound like touching different places, without adding tasks, meters or camera shake.
+
+**Playable improvement:** Real grounded post-collision support now chooses one of three subtle original shoe timbres: tile/stone, hollow wooden deck, or muted orchard/soft earth. The actual collider matters, not a chapter-wide guess or where the camera points. An optional `footstep_surface` tag supports future authored floors; unsupported/missing tags fall back safely. The two alternating shoe sides retain their real-distance cadence, wall silence, dialogue/pause cancellation, user Master/Effects levels and reduced-motion support. All samples are local 100ms mono PCM, cached per surface/foot, with no downloads, save changes or new services.
+
+**Verification and remaining gate:** Extended the existing registered native `platform6/game/tests/player_footsteps.gd` to check floor classification, explicit tags, distinct bounded PCM, side alternation/caching, and changes from wood to earth to stone; the preceding grounded wall/airborne/volume regressions remain in place. A separate deterministic numerical sample check and exact remote blob readback are required before claiming source integration. **Not executed in this environment:** the real Godot import/native suite, audible 1× walking across floor transitions, physical controller/Windows, or independent human accessibility/balance review; Godot and the complete asset-prepared checkout are unavailable. Next: `cd platform6/game && ./run_tests.sh`; walk kitchen → fair deck → orchard, then test pushing a wall, pausing, mute, and reduced motion at normal speed before release approval.
+
 ## November 19, 2026 · discoverable optional kitchen actions (source-integrated; native QA pending)
 
 **Vision:** STILL HERE: PLATFORM 6 is an unscored single-player journey of small happiness. Soup stirring, sharing bread and passing pepper should feel welcoming and optional, not like an obscure timing challenge.
