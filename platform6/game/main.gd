@@ -96,8 +96,8 @@ func _ready():
 		if is_instance_valid(player): player.look_by(value)
 	)
 	touch.interact_pressed.connect(func():
-		if kitchen_stir_ready():
-			world_container.get_child(0).offer_stir_input()
+		if kitchen_gesture_input_ready():
+			offer_kitchen_gesture_input()
 		elif orchard_viewing and not orchard_observation:
 			var state = model.snapshot()
 			if state.orchard_checkpoint == "rest": dispatch_orchard("orchard_finish" if state.orchard.beat >= 3 else "orchard_advance")
@@ -456,17 +456,26 @@ func show_pause():
 	if racing or (journey != null and journey.active):
 		for button_ in hud.footer.get_children():
 			if button_.text.begins_with("Start a new journey"): button_.disabled = true
-func kitchen_stir_ready() -> bool:
-	# Window-level guard. Touch visibility and keyboard/gamepad share this gate.
-	if not kitchen_animating or kitchen_gesture_id != "join_help" or hud.pause_active or hud.modal_visible() or world_container.get_child_count() == 0:
+func kitchen_gesture_input_ready() -> bool:
+	# One E/A/touch affordance for two unscored, optional hands-on dinner moments.
+	if not kitchen_animating or hud.pause_active or hud.modal_visible() or world_container.get_child_count() == 0:
 		return false
 	var kitchen_room = world_container.get_child(0)
-	return kitchen_room.has_method("stir_input_window_open") and kitchen_room.stir_input_window_open()
+	if kitchen_gesture_id == "join_help": return kitchen_room.has_method("stir_input_window_open") and kitchen_room.stir_input_window_open()
+	if kitchen_gesture_id == "bread": return kitchen_room.has_method("bread_input_window_open") and kitchen_room.bread_input_window_open()
+	return false
+
+func offer_kitchen_gesture_input() -> bool:
+	if not kitchen_gesture_input_ready(): return false
+	var kitchen_room = world_container.get_child(0)
+	if kitchen_gesture_id == "join_help": return kitchen_room.offer_stir_input()
+	if kitchen_gesture_id == "bread": return kitchen_room.offer_bread_input()
+	return false
 
 func _unhandled_input(event):
 	# The authored dinner saves immediately; this optional press only adds motion.
-	if event.is_action_pressed("interact") and kitchen_stir_ready():
-		if world_container.get_child(0).offer_stir_input():
+	if event.is_action_pressed("interact") and kitchen_gesture_input_ready():
+		if offer_kitchen_gesture_input():
 			get_viewport().set_input_as_handled()
 			return
 	if home_cinematic and not hud.pause_active and (event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.pressed and event.physical_keycode == KEY_ESCAPE)):
@@ -527,7 +536,7 @@ func _process(delta):
 	if is_instance_valid(player):
 		player.set_touch_mode(touch.touch_mode)
 		touch.bottom_inset = maxf(72.0,hud.notice.get_minimum_size().y + 24.0)
-		touch.set_available(player.enabled, (player.enabled and is_instance_valid(player.nearest)) or (orchard_viewing and not orchard_observation) or kitchen_stir_ready(), not busy or racing)
+		touch.set_available(player.enabled, (player.enabled and is_instance_valid(player.nearest)) or (orchard_viewing and not orchard_observation) or kitchen_gesture_input_ready(), not busy or racing)
 		var hint = ""
 		if is_instance_valid(player.nearest) and player.enabled:
 			hint = ("Tap Interact" if touch.touch_mode else ("A" if Input.get_connected_joypads().size() else "E")) + " · " + str(player.nearest.get_meta("label"))
@@ -863,7 +872,7 @@ func dispatch_kitchen(action: String, value: Variant = null):
 		kitchen_close_view()
 		var lines = hud.kitchen_authored.get("gesture_lines", {}).get(kitchen_gesture_id, [])
 		if not lines.is_empty():
-			show_kitchen_notice(lines[0] + ("\nE / A / touch · gently stir if you like" if kitchen_gesture_id == "join_help" else ""))
+			show_kitchen_notice(lines[0] + ("\nE / A / touch · gently stir if you like" if kitchen_gesture_id == "join_help" else ("\nE / A / touch · help tear the bread (optional)" if kitchen_gesture_id == "bread" else "")))
 		world.begin_gesture(kitchen_gesture_id, func():
 			if not is_instance_valid(world) or world != world_container.get_child(0): return
 			kitchen_animating = false

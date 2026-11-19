@@ -10,6 +10,8 @@ const TABLE_TOP := 1.235
 const GESTURE_SECONDS = {"join_sit":3.6,"join_help":4.5,"join_watch":3.6,"bread":3.6,"cup":3.6,"pepper":3.6,"watch":3.6}
 const STIR_INPUT_LIMIT := 3
 const STIR_INPUT_COOLDOWN := 0.27
+const BREAD_INPUT_LIMIT := 3
+const BREAD_INPUT_COOLDOWN := 0.30
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var interactions: Node3D
@@ -26,6 +28,8 @@ var _gesture_cues_played := {}
 # Optional, presentation-only player contribution: never part of a save or reward.
 var stir_input_count := 0
 var stir_last_elapsed := -100.0
+var bread_input_count := 0
+var bread_last_elapsed := -100.0
 var _gesture_caption := ""
 var _rest: Dictionary = {}
 var _motion_ids: Array[String] = []
@@ -242,6 +246,13 @@ func _build_table():
 		var hand = _node(tearing_hands,"LeftHand" if side < 0 else "RightHand",Vector3(side*0.25,0.13,0.09))
 		factory.orb(hand,Vector3.ZERO,0.073,Color("e9c09d")).scale = Vector3(1.0,0.65,1.28)
 		factory.box(hand,"LinenCuff",Vector3(side*0.085,-0.01,0.11),Vector3(0.1,0.06,0.17),Color("929f8c"),false)
+	# Optional fingertip tears lift a few original crumbs; they are not a minigame.
+	var crumbs = _node(bread,"TearCrumbs")
+	crumbs.visible = false
+	for i in range(5):
+		var crumb = factory.orb(crumbs,Vector3(0.14+float(i)*0.028,0.166,-0.08+float(i%3)*0.059),0.015,Color("e6c18e"))
+		crumb.name = "Crumb%d" % i
+		crumb.scale = Vector3(0.65,0.35,0.8)
 	for i in range(3):
 		var score = factory.box(bread,"FlourScore",Vector3(-0.23+i*0.095,0.235,-0.01),Vector3(0.045,0.009,0.18),Color("e1ba83"),false)
 		score.rotation.y = 0.31
@@ -258,6 +269,13 @@ func _build_table():
 	var passing_hand = factory.orb(pass_bread,Vector3(-0.25,-0.025,0),0.086,Color("edc5a3"))
 	passing_hand.name = "PassingHand"
 	passing_hand.scale = Vector3(1.3,0.5,0.8)
+	# A little plate near Ada records the real, already-saved bread-sharing choice.
+	# It remains on the table after conversation, including on restored saves.
+	var shared = _node(self,"AdaSharedBread",Vector3(-2.38,TABLE_TOP+0.055,-0.69))
+	factory.rounded(shared,"ReceivingPlate",Vector3.ZERO,0.20,0.19,0.023,Color("a2a88b"))
+	for i in range(3):
+		factory.orb(shared,Vector3(-0.079+float(i)*0.075,0.052,-0.012+float(i%2)*0.04),0.067,Color("e4bc7c")).scale = Vector3(0.83,0.44,0.72)
+	shared.visible = false
 	var ladle = _node(self,"Ladle",Vector3(-0.56,TABLE_TOP+0.3,-0.56))
 	factory.rounded(ladle,"LadleBowl",Vector3.ZERO,0.12,0.09,0.08,BRASS)
 	var shaft = factory.box(ladle,"LadleHandle",Vector3(0,0.24,-0.11),Vector3(0.035,0.57,0.035),BRASS,false)
@@ -415,6 +433,7 @@ func _capture_rest():
 	_motion_ids = ["Ladle","BreadBoard/TornHalf","PepperShaker","PassingBread","PlayerChair","PlayerPlace/Cup","PlayerPlace/Bowl","PlayerPlace/Bowl/Soup","SoupPot/SoupSurface","HerbSprinkle","Noor/ArmRight","Noor/ArmLeft","Ada/ArmLeft","Ada/ArmRight","Mira"]
 	for i in range(10): _motion_ids.append("Steam/Puff%d" % i)
 	for i in range(14): _motion_ids.append("Condensation/Drop%d" % i)
+	for i in range(5): _motion_ids.append("BreadBoard/TearCrumbs/Crumb%d" % i)
 	for id in _motion_ids: _rest[id] = get_node(id).transform
 
 func _reset_pose():
@@ -423,6 +442,8 @@ func _reset_pose():
 	get_node("PepperGrains").visible = false
 	get_node("Ladle/PourStream").visible = false
 	get_node("BreadBoard/TearingHands").visible = false
+	get_node("BreadBoard/TearCrumbs").visible = false
+	get_node("AdaSharedBread").visible = false
 	get_node("HerbSprinkle").visible = false
 	_set_stir_ripples(false)
 
@@ -499,7 +520,9 @@ func _apply_saved_staging():
 	_reset_pose()
 	get_node("PlayerPlace/Bowl/Soup").visible = bool(kitchen.get("served",false))
 	if str(kitchen.get("mode","unselected")) == "sit": get_node("PlayerChair").position.z = 1.25
-	if str(kitchen.get("exchange","unselected")) == "bread": get_node("BreadBoard/TornHalf").position.x = 0.36
+	if str(kitchen.get("exchange","unselected")) == "bread":
+		get_node("BreadBoard/TornHalf").position.x = 0.36
+		get_node("AdaSharedBread").visible = true
 	if str(kitchen.get("exchange","unselected")) == "cup": get_node("PlayerPlace/Cup").position.x = 0.65
 	if str(kitchen.get("exchange","unselected")) == "pepper": get_node("PepperShaker").position = Vector3(-0.03,TABLE_TOP,-0.3)
 
@@ -538,6 +561,8 @@ func begin_gesture(action: String, completion: Callable = Callable()):
 	_gesture_cues_played.clear()
 	stir_input_count = 0
 	stir_last_elapsed = -100.0
+	bread_input_count = 0
+	bread_last_elapsed = -100.0
 	gesture_duration = float(GESTURE_SECONDS.get(gesture_action,0.0))
 	gesture_active = true
 	_gesture_caption = _caption_for(gesture_action,0.0)
@@ -566,6 +591,20 @@ func offer_stir_input() -> bool:
 	stir_last_elapsed = gesture_elapsed
 	_stage_gesture(gesture_elapsed / maxf(gesture_duration,0.001))
 	gesture_cue.emit("stir")
+	return true
+
+func bread_input_window_open() -> bool:
+	# The scene keeps tearing on its own. No taps, scores or precise timing required.
+	return gesture_active and gesture_action == "bread" and not paused and not reduced and bread_input_count < BREAD_INPUT_LIMIT and gesture_elapsed >= 0.16 and gesture_elapsed < gesture_duration * 0.78
+
+func offer_bread_input() -> bool:
+	# E/A/touch adds at most three physical fingertip tears and quiet bread Foley.
+	if not bread_input_window_open() or gesture_elapsed - bread_last_elapsed < BREAD_INPUT_COOLDOWN:
+		return false
+	bread_input_count += 1
+	bread_last_elapsed = gesture_elapsed
+	_stage_gesture(gesture_elapsed / maxf(gesture_duration,0.001))
+	gesture_cue.emit("bread")
 	return true
 
 func _caption_for(action: String, progress: float) -> String:
@@ -629,10 +668,19 @@ func _stage_gesture(progress: float):
 			get_node("Noor/ArmRight").rotation.x = -0.6*curve
 			get_node("Noor/ArmRight").rotation.z = 0.13+curve*0.33
 		"bread":
+			var tear_pulse: float = clampf(1.0-(gesture_elapsed-bread_last_elapsed)/0.35,0.0,1.0) if bread_input_count > 0 else 0.0
 			get_node("BreadBoard/TearingHands").visible = p < 0.85
-			get_node("BreadBoard/TearingHands/LeftHand").position.x = -0.25-eased*0.065
-			get_node("BreadBoard/TearingHands/RightHand").position = Vector3(0.25+eased*0.32,0.13+curve*0.15,0.09)
-			get_node("BreadBoard/TornHalf").position = Vector3(0.12+eased*0.32,0.13+curve*0.18,0.0)
+			get_node("BreadBoard/TearingHands/LeftHand").position.x = -0.25-eased*0.065-tear_pulse*0.035
+			get_node("BreadBoard/TearingHands/RightHand").position = Vector3(0.25+eased*0.32+tear_pulse*0.105,0.13+curve*0.15+tear_pulse*0.065,0.09)
+			get_node("BreadBoard/TornHalf").position = Vector3(0.12+eased*0.32+tear_pulse*0.09,0.13+curve*0.18+tear_pulse*0.045,0.0)
+			var crumbs: Node3D = get_node("BreadBoard/TearCrumbs")
+			crumbs.visible = tear_pulse > 0.01 and p < 0.85
+			for i in range(5):
+				var piece: Node3D = crumbs.get_node("Crumb%d" % i)
+				var origin: Vector3 = _rest["BreadBoard/TearCrumbs/Crumb%d" % i].origin
+				piece.position = origin + Vector3((float(i)-2.0)*0.019*tear_pulse,tear_pulse*(0.027+float(i%2)*0.022),0.013*tear_pulse)
+			# An earlier saved exchange is never required to produce a visible plate.
+			get_node("AdaSharedBread").visible = p >= 0.84
 			get_node("BreadBoard/TornHalf").rotation.y = curve*0.26
 			get_node("PassingBread").position = Vector3(-1.9+eased*1.32,TABLE_TOP+0.12+curve*0.14,-0.65+eased*0.28)
 			get_node("Ada/ArmLeft").rotation.x = -0.72*curve

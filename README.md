@@ -1,3 +1,11 @@
+## November 19, 2026 · bread-sharing you can actually touch (source-integrated; native QA pending)
+
+**Vision:** STILL HERE: PLATFORM 6 is a single-player 3:17 journey about unscored happiness in small things. Sharing food should leave a physical memory at the table, not require a minigame. Noor, Ada and Mira keep their grounded relationships and existing agency.
+
+**Playable increment:** During the existing optional bread exchange, E / controller A / touch Interact can now add up to three gentle physical tears. The hands visibly separate, a few original bread crumbs lift and settle, and the existing locally synthesized bread sound responds; doing nothing still plays the entire authored exchange. A little receiving plate with bread stays near Ada once the already-saved bread choice is made, including through later conversation and fresh save restoration. Pausing freezes the scene, and reduced motion completes it without decoration. No recipe score, extra save field, compulsory cooking, new downloaded assets or changed ending.
+
+**Verification:** Source-path and geometry/input checks were performed, and `tests/kitchen_bread_input.gd` was registered in the real `platform6/game/run_tests.sh` suite for hand motion, debounced taps, Foley, touch, pause, saved plate, repeat exchanges and reduced motion. **Not yet executed:** native Godot import/regressions, 1× audible and visible dinner playback, physical controller/touch/Windows and independent accessibility review. The engine and a complete asset-prepared private checkout are unavailable in this session. Next: run `cd platform6/game && ./run_tests.sh`, press E/A/touch during bread, compare against no presses, pause while tearing, reload the saved exchange and capture a genuine normal-speed clip with its sound.
+
 ## November 19, 2026 · soup visibly fills the shared bowl (source-integrated; native QA pending)
 
 **Vision:** STILL HERE: PLATFORM 6 finds happiness in ordinary things. Night Kitchen's real serving gesture should feel warm and material, while sitting, helping and watching remain equally welcoming, unscored choices in the original 3:17 journey.
