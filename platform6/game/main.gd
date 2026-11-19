@@ -457,12 +457,13 @@ func show_pause():
 		for button_ in hud.footer.get_children():
 			if button_.text.begins_with("Start a new journey"): button_.disabled = true
 func kitchen_gesture_input_ready() -> bool:
-	# One E/A/touch affordance for two unscored, optional hands-on dinner moments.
+	# One E/A/touch affordance for three unscored, optional hands-on dinner moments.
 	if not kitchen_animating or hud.pause_active or hud.modal_visible() or world_container.get_child_count() == 0:
 		return false
 	var kitchen_room = world_container.get_child(0)
 	if kitchen_gesture_id == "join_help": return kitchen_room.has_method("stir_input_window_open") and kitchen_room.stir_input_window_open()
 	if kitchen_gesture_id == "bread": return kitchen_room.has_method("bread_input_window_open") and kitchen_room.bread_input_window_open()
+	if kitchen_gesture_id == "pepper": return kitchen_room.has_method("pepper_input_window_open") and kitchen_room.pepper_input_window_open()
 	return false
 
 func offer_kitchen_gesture_input() -> bool:
@@ -470,6 +471,7 @@ func offer_kitchen_gesture_input() -> bool:
 	var kitchen_room = world_container.get_child(0)
 	if kitchen_gesture_id == "join_help": return kitchen_room.offer_stir_input()
 	if kitchen_gesture_id == "bread": return kitchen_room.offer_bread_input()
+	if kitchen_gesture_id == "pepper": return kitchen_room.offer_pepper_input()
 	return false
 
 func _unhandled_input(event):
@@ -872,7 +874,11 @@ func dispatch_kitchen(action: String, value: Variant = null):
 		kitchen_close_view()
 		var lines = hud.kitchen_authored.get("gesture_lines", {}).get(kitchen_gesture_id, [])
 		if not lines.is_empty():
-			show_kitchen_notice(lines[0] + ("\nE / A / touch · gently stir if you like" if kitchen_gesture_id == "join_help" else ("\nE / A / touch · help tear the bread (optional)" if kitchen_gesture_id == "bread" else "")))
+			var input_tip := ""
+			if kitchen_gesture_id == "join_help": input_tip = "\nE / A / touch · gently stir if you like"
+			elif kitchen_gesture_id == "bread": input_tip = "\nE / A / touch · help tear the bread (optional)"
+			elif kitchen_gesture_id == "pepper": input_tip = "\nE / A / touch · give the pepper a gentle tap (optional)"
+			show_kitchen_notice(lines[0] + input_tip)
 		world.begin_gesture(kitchen_gesture_id, func():
 			if not is_instance_valid(world) or world != world_container.get_child(0): return
 			kitchen_animating = false

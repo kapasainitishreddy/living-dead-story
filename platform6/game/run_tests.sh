@@ -49,6 +49,7 @@ godot --headless --path . --script tests/kitchen_world_scene.gd
 godot --headless --path . --script tests/kitchen_soup_fill.gd
 godot --headless --path . --script tests/kitchen_stir_input.gd
 godot --headless --path . --script tests/kitchen_bread_input.gd
+godot --headless --path . --script tests/kitchen_pepper_input.gd
 godot --headless --path . --script tests/kitchen_world_physics.gd
 godot --headless --path . --script tests/kitchen_runtime.gd
 godot --headless --path . --script tests/kitchen_save_failures.gd

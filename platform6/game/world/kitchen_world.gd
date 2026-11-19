@@ -12,6 +12,8 @@ const STIR_INPUT_LIMIT := 3
 const STIR_INPUT_COOLDOWN := 0.27
 const BREAD_INPUT_LIMIT := 3
 const BREAD_INPUT_COOLDOWN := 0.30
+const PEPPER_INPUT_LIMIT := 3
+const PEPPER_INPUT_COOLDOWN := 0.30
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var interactions: Node3D
@@ -30,6 +32,8 @@ var stir_input_count := 0
 var stir_last_elapsed := -100.0
 var bread_input_count := 0
 var bread_last_elapsed := -100.0
+var pepper_input_count := 0
+var pepper_last_elapsed := -100.0
 var _gesture_caption := ""
 var _rest: Dictionary = {}
 var _motion_ids: Array[String] = []
@@ -212,6 +216,14 @@ func _build_table():
 	var place = _node(self,"PlayerPlace",Vector3(-0.44,TABLE_TOP,0.24))
 	place.set_meta("already_set",true)
 	_bowl(place,"Bowl",Vector3.ZERO,false)
+	# The saved pepper exchange leaves tiny flecks on the actual soup. They
+	# share the liquid's scale and restore without a separate save field.
+	var flecks = _node(place.get_node("Bowl/Soup"),"PepperFlecks")
+	flecks.visible = false
+	for i in range(6):
+		var fleck = factory.orb(flecks,Vector3(sin(float(i)*2.4)*0.104,0.015,cos(float(i)*2.4)*0.091),0.009,Color("574438"))
+		fleck.name = "PepperFleck%d" % i
+		fleck.scale = Vector3(1.0,0.25,1.0)
 	_cup(place,"Cup",Vector3(0.42,0,-0.09),Color("8caaa0"))
 	factory.box(place,"Napkin",Vector3(-0.42,0.009,0.05),Vector3(0.25,0.018,0.31),CREAM,false)
 	var fair_button = factory.rounded(place,"FairButton",Vector3(-0.49,0.039,0.13),0.065,0.065,0.026,Color("d4a764"))
@@ -261,7 +273,9 @@ func _build_table():
 	factory.rounded(pepper,"PepperLid",Vector3(0,0.235,0),0.075,0.075,0.035,BRASS)
 	for i in range(5): factory.orb(pepper,Vector3(sin(i*TAU/5)*0.037,0.259,cos(i*TAU/5)*0.037),0.006,Color("423a30"))
 	var grains = _node(self,"PepperGrains",Vector3(-0.44,TABLE_TOP+0.3,0.24))
-	for i in range(6): factory.orb(grains,Vector3(sin(i*2.2)*0.1,i*0.028,cos(i*2.2)*0.09),0.007,Color("40362c"))
+	for i in range(6):
+		var grain = factory.orb(grains,Vector3(sin(i*2.2)*0.1,i*0.028,cos(i*2.2)*0.09),0.007,Color("40362c"))
+		grain.name = "Grain%d" % i
 	grains.visible = false
 	var pass_bread = _node(self,"PassingBread",Vector3(-1.9,TABLE_TOP+0.12,-0.65))
 	factory.rounded(pass_bread,"BreadPlate",Vector3.ZERO,0.245,0.2,0.027,Color("8b9b83"))
@@ -434,6 +448,7 @@ func _capture_rest():
 	for i in range(10): _motion_ids.append("Steam/Puff%d" % i)
 	for i in range(14): _motion_ids.append("Condensation/Drop%d" % i)
 	for i in range(5): _motion_ids.append("BreadBoard/TearCrumbs/Crumb%d" % i)
+	for i in range(6): _motion_ids.append("PepperGrains/Grain%d" % i)
 	for id in _motion_ids: _rest[id] = get_node(id).transform
 
 func _reset_pose():
@@ -443,6 +458,7 @@ func _reset_pose():
 	get_node("Ladle/PourStream").visible = false
 	get_node("BreadBoard/TearingHands").visible = false
 	get_node("BreadBoard/TearCrumbs").visible = false
+	get_node("PlayerPlace/Bowl/Soup/PepperFlecks").visible = false
 	get_node("AdaSharedBread").visible = false
 	get_node("HerbSprinkle").visible = false
 	_set_stir_ripples(false)
@@ -524,7 +540,9 @@ func _apply_saved_staging():
 		get_node("BreadBoard/TornHalf").position.x = 0.36
 		get_node("AdaSharedBread").visible = true
 	if str(kitchen.get("exchange","unselected")) == "cup": get_node("PlayerPlace/Cup").position.x = 0.65
-	if str(kitchen.get("exchange","unselected")) == "pepper": get_node("PepperShaker").position = Vector3(-0.03,TABLE_TOP,-0.3)
+	if str(kitchen.get("exchange","unselected")) == "pepper":
+		get_node("PepperShaker").position = Vector3(-0.03,TABLE_TOP,-0.3)
+		get_node("PlayerPlace/Bowl/Soup/PepperFlecks").visible = true
 
 func apply_preferences(value: bool):
 	reduced = value
@@ -563,6 +581,8 @@ func begin_gesture(action: String, completion: Callable = Callable()):
 	stir_last_elapsed = -100.0
 	bread_input_count = 0
 	bread_last_elapsed = -100.0
+	pepper_input_count = 0
+	pepper_last_elapsed = -100.0
 	gesture_duration = float(GESTURE_SECONDS.get(gesture_action,0.0))
 	gesture_active = true
 	_gesture_caption = _caption_for(gesture_action,0.0)
@@ -605,6 +625,22 @@ func offer_bread_input() -> bool:
 	bread_last_elapsed = gesture_elapsed
 	_stage_gesture(gesture_elapsed / maxf(gesture_duration,0.001))
 	gesture_cue.emit("bread")
+	return true
+
+
+func pepper_input_window_open() -> bool:
+	# No precision timing: the authored handoff finishes without any presses.
+	return gesture_active and gesture_action == "pepper" and not paused and not reduced and pepper_input_count < PEPPER_INPUT_LIMIT and gesture_elapsed >= 0.23 and gesture_elapsed < gesture_duration * 0.72
+
+func offer_pepper_input() -> bool:
+	# Optional tactile shakes add a small rattle, visible falling grains and
+	# their existing local Foley. Nothing changes about the saved dinner.
+	if not pepper_input_window_open() or gesture_elapsed - pepper_last_elapsed < PEPPER_INPUT_COOLDOWN:
+		return false
+	pepper_input_count += 1
+	pepper_last_elapsed = gesture_elapsed
+	_stage_gesture(gesture_elapsed / maxf(gesture_duration,0.001))
+	gesture_cue.emit("pepper")
 	return true
 
 func _caption_for(action: String, progress: float) -> String:
@@ -689,9 +725,20 @@ func _stage_gesture(progress: float):
 			get_node("PlayerPlace/Cup").rotation.z = curve*0.055
 			get_node("Mira").rotation.y = -0.31+curve*0.09
 		"pepper":
-			get_node("PepperShaker").position = Vector3(0.67,TABLE_TOP,-0.09).lerp(Vector3(-0.03,TABLE_TOP,-0.3),eased)+Vector3(0,curve*0.15,0)
-			get_node("PepperShaker").rotation.z = sin(p*TAU*4)*curve*0.21
-			get_node("PepperGrains").visible = p > 0.25 and p < 0.7
+			# A gentle optional tap rocks the actual shaker and shakes the
+			# existing original grains down toward the bowl. Without input the
+			# original pass, timing, dialogue and Foley remain unchanged.
+			var shake_pulse: float = clampf(1.0-(gesture_elapsed-pepper_last_elapsed)/0.36,0.0,1.0) if pepper_input_count > 0 else 0.0
+			get_node("PepperShaker").position = Vector3(0.67,TABLE_TOP,-0.09).lerp(Vector3(-0.03,TABLE_TOP,-0.3),eased)+Vector3(0,curve*0.15+shake_pulse*0.025,0)
+			get_node("PepperShaker").rotation.z = sin(p*TAU*4)*curve*0.21+shake_pulse*0.24
+			get_node("PepperShaker").rotation.x = shake_pulse*0.19
+			get_node("PepperGrains").visible = (p > 0.25 and p < 0.7) or (shake_pulse > 0.01 and p < 0.75)
+			for i in range(6):
+				var grain_id = "PepperGrains/Grain%d" % i
+				var origin: Vector3 = _rest[grain_id].origin
+				var fall: float = fposmod(p*3.0+float(i)/6.0,1.0)
+				get_node(grain_id).position = origin+Vector3(sin(float(i)*2.2)*0.014*fall,-0.14*fall-0.035*shake_pulse,cos(float(i)*2.2)*0.011*fall)
+			get_node("PlayerPlace/Bowl/Soup/PepperFlecks").visible = p >= 0.76
 			get_node("Noor/ArmLeft").rotation.x = -0.52*curve
 		"watch":
 			get_node("PassingBread").position.x = -1.9+eased*1.5

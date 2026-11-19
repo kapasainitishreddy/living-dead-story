@@ -1,3 +1,11 @@
+## November 19, 2026 · a gently playable pepper pass (source-integrated; native QA pending)
+
+**Vision:** STILL HERE: PLATFORM 6 treats shared supper as a small, unscored joy in the single-player 3:17 journey. Noor's pepper request stays a friendly exchange, not a cooking challenge or a new quest; characters and endings retain their agency.
+
+**Playable increment:** The already-existing pepper pass now accepts up to three optional E / controller A / touch Interact taps. Each briefly tips the real shaker, sends tiny original pepper grains toward the bowl and repeats the locally existing pepper Foley; with zero taps the original, complete exchange still plays. After the handoff, six subtle flecks remain on the actual soup, including on a restored save and through later conversation. Pausing holds grains in place, and reduced motion skips decoration to the same seasoned bowl. No new assets, save keys, online services, scores or compulsory inputs.
+
+**Verification and remaining gate:** Added `tests/kitchen_pepper_input.gd` to the existing Godot native runner to cover tap timing/debounce, visual grain/shaker response, Foley, zero-tap continuity, saved soup, pause, reduced motion and real touch press. Deterministic bounds and source-path checks were performed, and all changed blobs are verified against the exact remote branch commit. **Native Godot import/tests, a real 1× audible/visible soup-and-pepper playthrough, physical controller/Windows and independent accessibility review remain unverified** because this runner lacks a prepared complete checkout and Godot executable. Next: run `cd platform6/game && ./run_tests.sh`, pass pepper with and without tapping, revisit after a fresh save load, and capture real-time audio/video evidence before release sign-off.
+
 ## November 19, 2026 · bread-sharing you can actually touch (source-integrated; native QA pending)
 
 **Vision:** STILL HERE: PLATFORM 6 is a single-player 3:17 journey about unscored happiness in small things. Sharing food should leave a physical memory at the table, not require a minigame. Noor, Ada and Mira keep their grounded relationships and existing agency.
