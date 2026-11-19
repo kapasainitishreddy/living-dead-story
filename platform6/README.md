@@ -1,3 +1,11 @@
+## November 18, 2026 · grounded footsteps for unhurried wandering (source-integrated; native verification pending)
+
+**Vision:** Ordinary walks between the 3:17 train, shared soup and optional imagination adventures should have gentle physical feedback, not a reward meter. Shoes only sound when they actually move across the ground.
+
+**Playable increment:** Two distinct, original, local 100 ms cloth-and-sole sounds alternate according to *actual grounded displacement* after collision, not movement input. Running against a wall, being airborne, stopping, entering dialogue or pause resets the cadence instead of accumulating delayed sounds. One near-foot 3D sound source stays within 8 m, uses existing Master/Effects levels, and stops on mute or control lock. The minimum interval is 220 ms, with no camera shake, new save keys, service calls or downloaded samples. Reduced-motion retains audio without visual motion.
+
+**Exact verification:** Added `tests/player_footsteps.gd` to the real Godot test runner, covering left/right sample generation, grounded steps, blocking walls, airborne travel, pause/dialogue, fresh resume, mute and reduced motion. Deterministic contact-policy calculations and source contracts were checked outside Godot. **Godot import/native tests, 1× audio/video playback, real controller/Windows and independent human feel review were not executed here** (engine and complete checkout unavailable). Next: `cd platform6/game && ./run_tests.sh`; listen at normal speed, start/stop and run into a wall, compare mix with rain/soup, then complete controller/accessibility and fresh-process review. This is not release approval.
+
 ## November 18, 2026 · touchable paper-market signs and rolling cart (source-integrated; native verification pending)
 
 **Vision:** STILL HERE: PLATFORM 6 is a warm, unscored single-player 3:17 journey. The optional Supermarket of Small Heroes should make small imagined choices physically pleasant; real customers are safe and retain their agency.

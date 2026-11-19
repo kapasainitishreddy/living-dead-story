@@ -1,5 +1,6 @@
 extends CharacterBody3D
 signal interact(target)
+signal footstep_contact(side: int)
 var enabled := true
 var preferences = {"sensitivity":1.0,"reduced_motion":false}
 var pivot: Node3D
@@ -13,6 +14,13 @@ var glance_candidate: Node3D
 var glance_dwell := 0.0
 const INTERACT_RADIUS := 3.2
 const INTERACT_SWITCH_MARGIN := 0.28
+const STEP_MIN_SPEED := 0.45
+const STEP_MIN_INTERVAL := 0.22
+var foot_audio: AudioStreamPlayer3D
+var step_distance := 0.0
+var step_age := 0.0
+var step_side := 0
+var step_samples := {}
 var touch_mode := OS.has_feature("mobile") or DisplayServer.is_touchscreen_available()
 func _ready():
 	var capsule = CapsuleShape3D.new()
@@ -41,10 +49,18 @@ func _ready():
 	camera.fov = 54
 	arm.add_child(camera)
 	_make_contact_shadow()
+	foot_audio = AudioStreamPlayer3D.new()
+	foot_audio.name = "FootContactAudio"
+	foot_audio.position = Vector3(0.0,0.06,0.0)
+	foot_audio.max_distance = 8.0
+	foot_audio.unit_size = 1.3
+	add_child(foot_audio)
+	_update_step_volume()
 func set_controls_enabled(value: bool):
 	enabled = value
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if value and not touch_mode else Input.MOUSE_MODE_VISIBLE
 	if not enabled:
+		_reset_footsteps()
 		update_nearby_attention(null,0.0,0.0)
 		touch_move = Vector2.ZERO
 		velocity = Vector3.ZERO
@@ -64,6 +80,7 @@ func reset_view():
 func set_preferences(settings: Dictionary):
 	preferences = settings.duplicate(true)
 	if visual: visual.apply_preferences(bool(preferences.get("reduced_motion",false)))
+	_update_step_volume()
 	update_nearby_attention(null,0.0,0.0)
 	if preferences.reduced_motion and framing_tween and framing_tween.is_running():
 		framing_tween.kill()
@@ -85,7 +102,11 @@ func _physics_process(delta):
 	velocity.z = move_toward(velocity.z,direction.z*4.2,delta*15)
 	if not is_on_floor(): velocity.y -= 18*delta
 	else: velocity.y = 0
+	var before_slide := global_position
 	move_and_slide()
+	var actual_travel := Vector2(global_position.x-before_slide.x,global_position.z-before_slide.z).length()
+	var actual_speed := Vector2(velocity.x,velocity.z).length()
+	advance_footstep(actual_travel,actual_speed,delta,is_on_floor())
 	var heading_change := 0.0
 	if direction.length() > 0.1:
 		heading_change = wrapf(atan2(direction.x,direction.z)-visual.rotation.y,-PI,PI)
@@ -134,6 +155,65 @@ func update_nearby_attention(target: Node3D, horizontal_speed: float, delta: flo
 	glance_dwell += maxf(0.0,delta)
 	if is_instance_valid(visual):
 		visual.set_attention_target(target if glance_dwell >= 0.2 else null)
+
+func _reset_footsteps():
+	step_distance = 0.0
+	step_age = 0.0
+	if is_instance_valid(foot_audio): foot_audio.stop()
+
+func _update_step_volume():
+	if not is_instance_valid(foot_audio): return
+	# Share the user-facing Master/Effects levels without a new setting.
+	var gain := clampf(float(preferences.get("master",0.8))*float(preferences.get("effects",0.6))*0.24,0.0,1.0)
+	foot_audio.volume_db = linear_to_db(gain) if gain > 0.0 else -80.0
+	if gain <= 0.0: foot_audio.stop()
+
+func _original_footstep(side: int) -> AudioStreamWAV:
+	# Locally synthesized soft cloth scuff and sole tap; left/right are different.
+	var rate := 22050
+	var count := 2205
+	var samples := PackedByteArray()
+	samples.resize(count*2)
+	for i in range(count):
+		var t := float(i)/float(rate)
+		var attack := minf(1.0,float(i)/85.0)
+		var tail := pow(maxf(0.0,1.0-float(i)/float(count)),2.6)
+		var cloth := sin(float(i)*(13.37+float(side)*1.11))*sin(float(i)*2.717)
+		var sole := sin(TAU*(112.0+float(side)*17.0)*t)*exp(-t*32.0)
+		var pcm := clampi(roundi((cloth*0.45+sole*0.55)*attack*tail*0.29*32767.0),-32768,32767)
+		samples[2*i] = pcm & 255
+		samples[2*i+1] = (pcm >> 8) & 255
+	var sound := AudioStreamWAV.new()
+	sound.format = AudioStreamWAV.FORMAT_16_BITS
+	sound.mix_rate = rate
+	sound.stereo = false
+	sound.loop_mode = AudioStreamWAV.LOOP_DISABLED
+	sound.data = samples
+	return sound
+
+func advance_footstep(actual_travel: float, speed: float, delta: float, grounded: bool):
+	# Use distance travelled after collision, not held keys: walls stay silent.
+	if not enabled or not grounded or speed < STEP_MIN_SPEED:
+		_reset_footsteps()
+		return
+	step_distance += clampf(actual_travel,0.0,0.50)
+	step_age += maxf(0.0,delta)
+	var distance_per_step := lerpf(0.68,1.42,clampf(speed/4.2,0.0,1.0))
+	if step_distance < distance_per_step or step_age < STEP_MIN_INTERVAL: return
+	step_distance = maxf(0.0,step_distance-distance_per_step)
+	step_age = 0.0
+	var side := step_side
+	step_side = 1-step_side
+	footstep_contact.emit(side)
+	if not is_instance_valid(foot_audio): return
+	if not step_samples.has(side): step_samples[side] = _original_footstep(side)
+	foot_audio.stream = step_samples[side]
+	if foot_audio.volume_db > -79.0 and DisplayServer.get_name() != "headless":
+		foot_audio.play()
+
+func _exit_tree():
+	_reset_footsteps()
+	step_samples.clear()
 
 func gait_weight(delta: float) -> float:
 	# Frame-rate independent damping, inspired by Sakura Crossing (MIT).
