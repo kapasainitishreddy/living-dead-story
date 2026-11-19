@@ -19,6 +19,7 @@ const INTERACT_SWITCH_MARGIN := 0.28
 const INTERACT_VIEW_BIAS := 0.24
 const STEP_MIN_SPEED := 0.45
 const STEP_MIN_INTERVAL := 0.22
+const TURN_REFERENCE_RATE := 2.8 # radians/second at full planted torso turn
 var foot_audio: AudioStreamPlayer3D
 var step_distance := 0.0
 var step_age := 0.0
@@ -112,14 +113,17 @@ func _physics_process(delta):
 	# leave the rig walking in place when the feet have stopped translating.
 	var horizontal_speed := grounded_locomotion_speed(actual_travel,delta,is_on_floor())
 	advance_footstep(actual_travel,horizontal_speed,delta,is_on_floor())
-	var heading_change := 0.0
+	# The feet can remain planted while the player chooses a new heading. Use
+	# the ACTUAL body yaw gained in this physics tick, not a held directional
+	# request that would make a blocked wall endlessly sway the torso.
+	var yaw_before := visual.rotation.y
 	if direction.length() > 0.1:
-		heading_change = wrapf(atan2(direction.x,direction.z)-visual.rotation.y,-PI,PI)
 		visual.rotation.y = lerp_angle(visual.rotation.y,atan2(direction.x,direction.z),gait_weight(delta))
+	var heading_change := grounded_turn_amount(yaw_before,visual.rotation.y,delta,is_on_floor())
 	visual.position.y = 0.0 # gait animates the body; no camera bob
 	# Footsteps, imported walk clip and the gentle idle glance all respond
 	# to the same true ground travel, even along a sliding wall.
-	visual.set_locomotion(horizontal_speed,heading_change if horizontal_speed > 0.16 else 0.0)
+	visual.set_locomotion(horizontal_speed,heading_change if not bool(preferences.get("reduced_motion",false)) else 0.0)
 	update_nearby_attention(nearest,horizontal_speed,delta)
 
 func interaction_focus_score(target: Node3D, distance: float) -> float:
@@ -179,6 +183,12 @@ func update_nearby_attention(target: Node3D, horizontal_speed: float, delta: flo
 	glance_dwell += maxf(0.0,delta)
 	if is_instance_valid(visual):
 		visual.set_attention_target(target if glance_dwell >= 0.2 else null)
+
+func grounded_turn_amount(before_yaw: float, after_yaw: float, delta: float, grounded: bool) -> float:
+	# A stationary turn is purposeful movement, but it never counts as a step.
+	# Wrap across +/-PI; only the measured angular change can bend the torso.
+	if not grounded or delta <= 0.00001: return 0.0
+	return clampf(wrapf(after_yaw-before_yaw,-PI,PI)/(TURN_REFERENCE_RATE*delta),-1.0,1.0)
 
 func grounded_locomotion_speed(actual_travel: float,delta: float,grounded: bool) -> float:
 	# The requested velocity is not proof of movement after a collision.

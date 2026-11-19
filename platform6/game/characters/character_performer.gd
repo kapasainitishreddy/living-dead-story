@@ -202,7 +202,9 @@ func apply_preferences(reduced: bool):
 	reduced_motion = reduced
 	secondary_motion_weight = 0.0 if reduced else 1.0
 	if reduced:
-		# Preference changes settle a dart immediately, including paused staging.
+		# Preference changes settle a dart and decorative turn immediately.
+		turn_amount = 0.0
+		desired_turn = 0.0
 		eye_yaw = 0.0
 		eye_pitch = 0.0
 	if animation_tree:
@@ -237,7 +239,7 @@ func advance_performance(delta: float):
 	var cadence = clampf(speed / WALK_REFERENCE_SPEED,MIN_WALK_TIMESCALE,MAX_WALK_TIMESCALE)
 	walk_time_scale = lerpf(walk_time_scale,cadence,weight)
 	conversation_blend = lerpf(conversation_blend,1.0 if conversing else 0.0,weight)
-	turn_amount = lerpf(turn_amount,0.0 if conversing else desired_turn,weight)
+	turn_amount = lerpf(turn_amount,0.0 if conversing or reduced_motion else desired_turn,weight)
 	_update_gaze(delta)
 	_update_blend_parameters()
 	animation_tree.advance(delta)
@@ -248,7 +250,7 @@ func _update_blend_parameters():
 	animation_tree.set("parameters/Locomotion/blend_amount",locomotion_blend)
 	animation_tree.set("parameters/WalkTempo/scale",walk_time_scale)
 	animation_tree.set("parameters/TurnDirection/blend_amount",0.0 if turn_amount < 0.0 else 1.0)
-	animation_tree.set("parameters/Turn/add_amount",absf(turn_amount))
+	animation_tree.set("parameters/Turn/add_amount",0.0 if reduced_motion else absf(turn_amount))
 	animation_tree.set("parameters/Conversation/add_amount",conversation_blend)
 
 func _update_gaze(delta: float):

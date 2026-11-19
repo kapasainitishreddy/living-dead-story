@@ -1,3 +1,11 @@
+## November 19, 2026 · planted turns during quiet exploration (source-integrated; native QA pending)
+
+**Vision:** STILL HERE: PLATFORM 6 is an unhurried single-player 3:17 story: looking from a cup to a postcard or choosing another direction should feel bodily real even when feet stay still. The original seven chapters, optional imagination adventures, grounded relationships, saves and endings remain untouched.
+
+**Playable increment:** On movement-stick/keyboard direction changes, the protagonist's actual measured body yaw now drives the imported rig's left/right torso-turn poses even at zero forward displacement. This makes a deliberate turn at a wall readable without pretending to walk or emitting a phantom shoe contact. Repeating the same blocked direction does not keep the body swaying. Camera-only orbit still orbits without forcing the actor to turn; air motion does not play grounded turn cues. Enabling reduced motion immediately removes the decorative twist while leaving heading control and essential walking intact. No new assets, gameplay scores, settings or save fields.
+
+**Verification:** Added `tests/player_turn_in_place.gd` to the native test command for real imported-bone left/right poses, return to neutral, angular wrap, zero/airborne frames, live reduced-motion toggles, camera independence and silent stationary feet. Source anchors and exact GitHub readback were checked. **Not executed here:** Godot import, native tests, 1× visual/audible playthrough, physical touch/controller/Windows, or independent accessibility review; the Godot executable and asset-prepared checkout are unavailable in this runtime. Next: run `cd platform6/game && ./run_tests.sh`, then physically turn at a wall and compare torso/feet/camera with reduced motion on/off before any release claim.
+
 ## November 18–19, 2026 · touchable shelter gates with gentle physical hinges (source-integrated; native QA pending)
 
 **Vision:** The shelter's optional imaginary paper-cat parade should feel like handling a tiny handmade stage, while real shelter cats stay comfortable and decide their own movements. This is an unscored moment within the warm single-player 3:17 journey, not a compulsory task.
