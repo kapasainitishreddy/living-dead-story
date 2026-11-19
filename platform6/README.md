@@ -1,3 +1,11 @@
+## November 18, 2026 · hands-on soup wake in Night Kitchen (source-integrated; Godot verification pending)
+
+**Vision:** Stirring supper with Noor should be a warm little joy, not a cooking quota or scored timing challenge within the original single-player 3:17 journey.
+
+**Playable change:** Two lightweight translucent rings now expand and fade on the actual soup as the ladle stirs. Optional E/A/touch nudges immediately widen and brighten the liquid wake, accompanying the existing authentic stirring sound. No input is required; the same soup is served. Pause freezes the geometry; serving, watching and reduced-motion presentation clear it. No save-schema changes, new downloads, extra services, new quests or altered endings.
+
+**Exact verification:** Added native regressions for two visible bounded rings, player-press response, pause freeze, serving/watch cleanup and reduced-motion completion. A deterministic sweep of 1,266 radius/opacity calculations and source-anchor checks passed. **Godot import, native tests, a 1× audible/visual playthrough, physical controller/touch/Windows and independent human review were not performed** because Godot and a complete local checkout were unavailable. Next run `cd platform6/game && ./run_tests.sh`; help cook at 1× with/without nudges, pause mid-stir and compare normal/reduced motion before sign-off.
+
 ## November 18, 2026 · no more walking into walls (source-integrated; Godot verification pending)
 
 **Vision:** In STILL HERE: PLATFORM 6, the walk from the 3:17 train to a cup, shared soup or an imagined adventure should feel grounded. Walking in place against a locked door or shelf breaks that sense of ordinary presence; these are small joys, never quotas or scores.

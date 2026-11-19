@@ -281,6 +281,26 @@ func _build_working_kitchen():
 	var pot = _node(self,"SoupPot",Vector3(-3.42,1.69,-5.94))
 	factory.rounded(pot,"EnamelPot",Vector3.ZERO,0.35,0.29,0.3,Color("a86548"))
 	factory.rounded(pot,"SoupSurface",Vector3(0,0.154,0),0.321,0.321,0.008,Color("d49657"))
+	# Physical surface wakes are transient visual feedback, not a saved recipe.
+	var ripples = _node(pot,"StirRipples",Vector3(0,0.169,0))
+	for i in range(2):
+		var ring = MeshInstance3D.new()
+		ring.name = "Ripple%d" % i
+		var torus = TorusMesh.new()
+		torus.inner_radius = 0.092
+		torus.outer_radius = 0.101
+		torus.rings = 24
+		torus.ring_segments = 8
+		ring.mesh = torus
+		var sheen = StandardMaterial3D.new()
+		sheen.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		sheen.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		sheen.albedo_color = Color(0.96,0.81,0.58,0.0)
+		sheen.cull_mode = BaseMaterial3D.CULL_DISABLED
+		ring.material_override = sheen
+		ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		ring.visible = false
+		ripples.add_child(ring)
 	# Small visible ingredients for the optional hands-on help route; no new
 	# recipe score, save keys, or obligation to cook before joining the table.
 	var seasoning = _node(self,"HerbSprinkle",Vector3(-3.42,2.08,-5.94))
@@ -404,6 +424,20 @@ func _reset_pose():
 	get_node("Ladle/PourStream").visible = false
 	get_node("BreadBoard/TearingHands").visible = false
 	get_node("HerbSprinkle").visible = false
+	_set_stir_ripples(false)
+
+func _set_stir_ripples(stirring: bool, pulse: float = 0.0):
+	# Input nudges widen the liquid wake; the unprompted route still stirs softly.
+	# Pause holds the prior frame, and reduced-motion suppresses the effect.
+	for i in range(2):
+		var ring: MeshInstance3D = get_node("SoupPot/StirRipples/Ripple%d" % i)
+		ring.visible = stirring and not reduced and gesture_elapsed >= 0.18
+		if not ring.visible: continue
+		var phase: float = fposmod(gesture_elapsed*1.55+float(i)*0.52,1.25)/1.25
+		var size: float = 0.66+phase*1.7+pulse*0.10
+		ring.scale = Vector3(size,1.0,size)
+		var sheen: StandardMaterial3D = ring.material_override as StandardMaterial3D
+		sheen.albedo_color = Color(0.96,0.81,0.58,(1.0-phase)*(0.20+0.14*pulse))
 
 func _target(where: Vector3, label_: String, id: String):
 	var marker = Marker3D.new()
@@ -544,6 +578,7 @@ func _stage_gesture(progress: float):
 	var p = clampf(progress,0.0,1.0)
 	var curve = sin(p*PI)
 	var eased = smoothstep(0.0,1.0,p)
+	if gesture_action != "join_help" or p >= 0.48: _set_stir_ripples(false)
 	_gesture_caption = _caption_for(gesture_action,p)
 	get_node("GestureCaption").text = _gesture_caption
 	match gesture_action:
@@ -561,6 +596,7 @@ func _stage_gesture(progress: float):
 					var pulse: float = clampf(1.0-(gesture_elapsed-stir_last_elapsed)/0.42,0.0,1.0) if stir_input_count > 0 else 0.0
 					var circles = stir * TAU * 1.8 + pulse * 1.05
 					var radius = 0.13 + pulse * 0.065
+					_set_stir_ripples(true,pulse)
 					get_node("Ladle").position = pot_position + Vector3(sin(circles)*radius,-0.06+sin(stir*PI)*0.035,cos(circles)*radius)
 					get_node("Ladle").rotation.z = -0.18+sin(circles)*0.12-pulse*0.13
 					get_node("SoupPot/SoupSurface").rotation.y = stir*PI*1.2+pulse*0.34

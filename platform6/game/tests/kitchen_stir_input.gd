@@ -28,10 +28,18 @@ func run():
 	room.begin_gesture("join_help",Callable())
 	check(not room.stir_input_window_open() and not room.offer_stir_input(), "input before stirring begins is ignored")
 	room._process(0.60)
+	var ripple = room.get_node("SoupPot/StirRipples/Ripple0") as MeshInstance3D
+	var ripple_mat = ripple.material_override as StandardMaterial3D
+	check(ripple.visible and ripple.mesh is TorusMesh, "help makes actual soup-surface wake visible")
+	check(ripple_mat.albedo_color.a > 0.0, "moving soup catches faint amber light")
+	var ring_before: float = ripple.scale.x
+	var alpha_before: float = ripple_mat.albedo_color.a
 	var soup_before: float = room.get_node("SoupPot/SoupSurface").rotation.y
 	var ladle_before: Vector3 = room.get_node("Ladle").position
 	check(room.stir_input_window_open() and room.offer_stir_input(), "a real interact press contributes a turn")
 	check(room.stir_input_count == 1, "first nudge is counted only once")
+	check(ripple.scale.x > ring_before+0.09, "touch visibly widens the real ripple")
+	check(ripple_mat.albedo_color.a > alpha_before+0.02, "touch brightens the existing soup wake")
 	check(room.get_node("SoupPot/SoupSurface").rotation.y > soup_before + 0.30, "input visibly moves the actual soup surface")
 	check(room.get_node("Ladle").position.distance_to(ladle_before) > 0.04, "input moves the actual ladle instead of only a caption")
 	check(not room.offer_stir_input(), "held or rapid inputs do not pile up sounds")
@@ -42,20 +50,26 @@ func run():
 	room._process(0.30)
 	check(not room.offer_stir_input() and room.stir_input_count == 3, "input remains bounded, with no grind mechanic")
 	room.set_paused(true)
+	var frozen_ring: Vector3 = ripple.scale
+	room._process(1.5)
+	check(ripple.scale.is_equal_approx(frozen_ring), "pause freezes actual liquid wake")
 	check(not room.offer_stir_input(), "pause never stirs or generates sound")
 	room.set_paused(false)
 	room._process(2.8)
 	check(not room.offer_stir_input(), "serving does not accept a late stirring press")
 	room.finish_gesture()
 	check(not room.gesture_active and room.get_node("PlayerPlace/Bowl/Soup").visible, "identical durable served meal without tap requirement")
+	check(not ripple.visible, "serving hides transient soup wake")
 	check(heard.count("stir") == 4, "three nudges add exactly three sounds to one automatic stir")
 	room.begin_gesture("join_watch",Callable())
 	room._process(0.65)
 	check(not room.offer_stir_input() and room.stir_input_count == 0, "spectator mode never requires or receives cooking input")
+	check(not ripple.visible, "watching does not retain an old cooking ripple")
 	room.finish_gesture()
 	room.apply_preferences(true)
 	room.begin_gesture("join_help",Callable())
 	check(not room.gesture_active and not room.offer_stir_input(), "reduced motion completes the same meal without animation or taps")
+	check(not ripple.visible, "reduced motion hides rings without changing supper")
 	check(room.get_node("PlayerPlace/Bowl/Soup").visible, "reduced motion preserves the actual bowl")
 	# The actual touch button must stay available during a modal-free help gesture,
 	# even though the player's walking controls are deliberately disabled.

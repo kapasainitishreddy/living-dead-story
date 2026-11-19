@@ -72,6 +72,9 @@ func run():
 	world._process(1.5)
 	check(world.get_node("Ladle").position.distance_to(stir_start)>0.07,"help visibly stirs the pot before serving")
 	check(world.get_node("SoupPot/SoupSurface").rotation.y>0.25,"help moves the real soup surface while stirring")
+	for i in range(2):
+		var wake = world.get_node("SoupPot/StirRipples/Ripple%d" % i) as MeshInstance3D
+		check(wake.visible and wake.scale.x > 0.6 and wake.scale.x < 2.6,"help renders bounded independent soup wake %d" % i)
 	check(world.get_node("HerbSprinkle").visible,"help shows the visible herb sprinkle mid-preparation")
 	check(world.gesture_subtitle().contains("stir"),"help has preparation-specific subtitle")
 	world._process(1.5)
@@ -83,6 +86,7 @@ func run():
 	world.finish_gesture()
 	check(not world.gesture_active and not world.get_node("HerbSprinkle").visible,"help finishes cleanly without transient ingredients")
 	check(world.get_node("SoupPot/SoupSurface").rotation.y==0.0,"help restores soup-pot pose after completion")
+	check(not world.get_node("SoupPot/StirRipples/Ripple0").visible,"finishing cooking clears its liquid wake")
 	check(world.get_node("PlayerPlace/Bowl/Soup").visible,"help uses the original durable served state")
 	check(heard.size() == 3,"gesture settling does not replay Foley")
 	var completions: Array[String] = []
