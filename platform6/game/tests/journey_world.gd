@@ -126,6 +126,25 @@ func run():
 	await physics_frame
 	var paper = shelter.get_node("Activity/PaperParade/PaperCats/PaperCat0")
 	var resting = shelter.get_node("Scenery/CatCorner0/RestingCat")
+	# The drawn gate press becomes a short physical hinge turn. Pause freezes
+	# it; reduced motion snaps to an accurate static selected configuration.
+	var hinged_gate = shelter.get_node("Activity/PaperParade/Gate0")
+	shelter.update_activity({"step":0,"selection":1,"progress":0,"done":false})
+	check(is_zero_approx(hinged_gate.rotation.y),"new normal-motion gate choice starts at its previous pose")
+	shelter._process(0.08)
+	check(hinged_gate.rotation.y>0.2 and hinged_gate.rotation.y<PI/2,"selected cardboard gate turns through a visible intermediate pose")
+	shelter.set_paused(true)
+	var paused_gate_angle = hinged_gate.rotation.y
+	shelter._process(0.5)
+	check(is_equal_approx(hinged_gate.rotation.y,paused_gate_angle),"paused shelter gate stays at the exact hinged pose")
+	shelter.set_paused(false)
+	shelter._process(0.4)
+	check(is_equal_approx(hinged_gate.rotation.y,PI/2),"unpaused gate completes its quarter-turn")
+	shelter.update_activity({"step":0,"selection":0,"progress":0,"done":false})
+	check(is_equal_approx(hinged_gate.rotation.y,PI/2),"reversing an open gate does not snap it shut")
+	shelter.apply_preferences(true)
+	check(is_zero_approx(hinged_gate.rotation.y),"reduced motion immediately shows the correct closed gate")
+	shelter.apply_preferences(false)
 	shelter.update_activity({"step":2,"selection":5,"progress":1,"done":true})
 	var first_position = paper.position
 	shelter._process(0.65)

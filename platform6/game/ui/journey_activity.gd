@@ -112,18 +112,26 @@ func _process(delta):
  if ball.y<=0.1 and velocity.y<0: complete_arcade()
  queue_redraw()
 func _gui_input(event):
- # Drawn market cards are large actual pointer targets, not only a diagram.
- # Engine touch-to-mouse emulation sends finger taps through the same gate.
- # Named keyboard/controller buttons remain independently available below.
- if kind == 'market_rescue' and not suspended and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+ # Touch-to-mouse finger presses and actual left clicks use the same large
+ # paper-card targets as named keyboard/controller buttons. A paused panel
+ # cannot accidentally change a route or restart the arcade.
+ if suspended or not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed): return
+ if kind == 'shelter_parade':
+  for i in 3:
+   if Rect2(74+i*180,58,92,105).has_point(event.position):
+    act(str(i))
+    accept_event()
+    return
+ elif kind == 'market_rescue':
   for i in 3:
    if Rect2(75+i*180,65,80,92).has_point(event.position):
     act(str(i))
     accept_event()
     return
- if kind == 'arcade_paddle' and event is InputEventMouseButton and event.pressed:
+ elif kind == 'arcade_paddle':
   state.selection = clampi(int(event.position.x/maxf(size.x,1)*10),0,10)
   act('launch')
+  accept_event()
 func _draw():
  var width = maxf(size.x,620)
  draw_style_box(make_box(),Rect2(0,0,width,220))
@@ -167,6 +175,8 @@ func _draw():
    if state.done:
     draw_line(Vector2(88,198),Vector2(width-95,198),amber,5)
     draw_string(ThemeDB.fallback_font,Vector2(106,215),'JO SHOWS THE WAY' if int(state.step)==1 else 'YOUR PAPER PARADE',HORIZONTAL_ALIGNMENT_LEFT,-1,15,cream)
+   else:
+    draw_string(ThemeDB.fallback_font,Vector2(106,210),'TAP A PAPER GATE OR USE THE BUTTONS',HORIZONTAL_ALIGNMENT_LEFT,-1,15,cream)
   'market_rescue':
    draw_rect(Rect2(38,50,width-76,110),Color('617f86'))
    draw_line(Vector2(65,188),Vector2(width-65,188),Color('baa182'),6)

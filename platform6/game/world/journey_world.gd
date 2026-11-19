@@ -8,6 +8,7 @@ const WARM = Color("eebf79")
 const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise","winter_orchard","rest_room","failed_things_festival","sunrise_cafe","no_destination_road","fireflies","shelter_parade","market_rescue"]
 const MARKET_MARKER_PROGRESS = [0.18,0.50,0.83]
 const MARKET_ROUTE_GLIDE_SECONDS := 0.42
+const SHELTER_GATE_TURN_SPEED := 5.8 # ~0.27 s for a quarter-turn; display only
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var campaign: Dictionary = {}
@@ -29,6 +30,7 @@ var _decorative: Array[Dictionary] = []
 var _activity_state: Dictionary = {}
 # Presentation-only cart interpolation; no save or progress changes.
 var _market_pose_ready := false
+var _shelter_gates_ready := false
 var _market_glide_elapsed := -1.0
 var _market_glide_origin := Vector3.ZERO
 
@@ -700,7 +702,10 @@ func update_activity(value: Dictionary):
 			for i in range(3): activity.get_node("Constellation/Point%d" % i).scale = Vector3.ONE*(1.35 if i == (step%3) else 1.0)
 		"shelter_parade":
 			for i in range(3):
-				activity.get_node("PaperParade/Gate%d" % i).rotation.y = PI/2 if (selection & (1 << i)) != 0 else 0.0
+				# Initial loads and reduced motion show the correct pose immediately.
+				# Live normal-motion changes are hinged in _process, not snapped.
+				if not _shelter_gates_ready or reduced_motion:
+					activity.get_node("PaperParade/Gate%d" % i).rotation.y = PI/2 if (selection & (1 << i)) != 0 else 0.0
 			activity.get_node("PaperParade/ParadeRibbon").visible = done
 		"market_rescue":
 			activity.get_node("MarketRoutes/HomeRibbon").visible = done
@@ -719,7 +724,9 @@ func update_activity(value: Dictionary):
 		_:
 			for i in range(3): activity.get_node("ObservationObjects/NoticedObject%d" % i).rotation.y = step*0.15+i*0.22
 			activity.get_node("ObservationObjects/RestingCard").rotation.y = 0.12 if done else 0
-	if activity_type == "shelter_parade": _update_shelter_parade_pose()
+	if activity_type == "shelter_parade":
+		_shelter_gates_ready = true
+		_update_shelter_parade_pose()
 	if activity_type == "market_rescue":
 		# Lanterns reflect the new choice now; the cart retains its displayed
 		# position before easing to the updated route, even mid-animation.
@@ -825,7 +832,13 @@ func apply_preferences(value: bool):
 		activity.get_node("TeaTray/Steam").visible = not value and (bool(_activity_state.get("done",false)) or int(_activity_state.get("progress",0)) > 0)
 	for person in scenery.find_children("*","Node3D",true,false):
 		if person.has_method("apply_preferences"): person.apply_preferences(value)
-	if activity_type == "shelter_parade": _update_shelter_parade_pose()
+	if activity_type == "shelter_parade":
+		if value and is_instance_valid(activity):
+			# Setting reduced motion during a half-turn finishes the gate quietly.
+			for i in range(3):
+				var selected := (int(_activity_state.get("selection",0)) & (1 << i)) != 0
+				activity.get_node("PaperParade/Gate%d" % i).rotation.y = PI/2 if selected else 0.0
+		_update_shelter_parade_pose()
 	if activity_type == "market_rescue": _update_market_rescue_pose()
 
 func set_paused(value: bool):
@@ -843,7 +856,14 @@ func _process(delta: float):
 		if _market_glide_elapsed >= MARKET_ROUTE_GLIDE_SECONDS: _market_glide_elapsed = -1.0
 	for item in _decorative:
 		if is_instance_valid(item.node): item.node.position = item.rest + Vector3(sin(motion_elapsed*0.37+item.phase)*0.035,sin(motion_elapsed*0.49+item.phase)*0.04,0)
-	if activity_type == "shelter_parade": _update_shelter_parade_pose()
+	if activity_type == "shelter_parade":
+		# Hinged cardboard changes use real elapsed time; the paper cats still
+		# follow the selected course immediately, without blocking any input.
+		for i in range(3):
+			var gate = activity.get_node("PaperParade/Gate%d" % i)
+			var target_angle := PI/2 if (int(_activity_state.get("selection",0)) & (1 << i)) != 0 else 0.0
+			gate.rotation.y = move_toward(gate.rotation.y,target_angle,maxf(0.0,delta)*SHELTER_GATE_TURN_SPEED)
+		_update_shelter_parade_pose()
 	if activity_type == "market_rescue": _update_market_rescue_pose()
 
 func _apply_local_state():

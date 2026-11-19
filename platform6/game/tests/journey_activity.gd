@@ -44,6 +44,43 @@ func run():
  guided.act('0')
  check(not guided.state.done and guided.state.step==0 and guided.state.progress==1,'watching can be followed by an ordinary route')
  guided.free()
+ # Jo's three cardboard gates can be arranged by directly touching the
+ # illustration; completing or watching never makes a gate irreversible.
+ var shelter_tap=A.new().configure('shelter_parade',{},false)
+ root.add_child(shelter_tap)
+ await process_frame
+ shelter_tap.set_process(false)
+ var gate_events: Array = []
+ shelter_tap.changed.connect(func(_state): gate_events.append(true))
+ var gate_press=InputEventMouseButton.new()
+ gate_press.button_index=MOUSE_BUTTON_LEFT
+ gate_press.pressed=true
+ for index in 3:
+  gate_press.position=Vector2(120+180*index,105)
+  shelter_tap._gui_input(gate_press)
+  check((int(shelter_tap.state.selection)&(1<<index))!=0,'drawn shelter gate responds to press '+str(index))
+ check(shelter_tap.state.selection==7 and not shelter_tap.state.done and gate_events.size()==3,'three taps arrange the paper gates without auto-finishing')
+ shelter_tap.act('parade')
+ check(shelter_tap.state.done and shelter_tap.state.step==2,'deliberate paper parade has its own payoff')
+ gate_press.position=Vector2(120,105)
+ shelter_tap._gui_input(gate_press)
+ check(not shelter_tap.state.done and shelter_tap.state.selection==6,'completed route remains reversible through the illustrated gate')
+ var before_empty=gate_events.size()
+ gate_press.position=Vector2(30,190)
+ shelter_tap._gui_input(gate_press)
+ check(gate_events.size()==before_empty,'blank shelter board space never flips gates')
+ shelter_tap.suspended=true
+ gate_press.position=Vector2(120,105)
+ shelter_tap._gui_input(gate_press)
+ check(gate_events.size()==before_empty,'paused shelter panel does not alter the route')
+ shelter_tap.suspended=false
+ var wrong_gate=InputEventMouseButton.new()
+ wrong_gate.button_index=MOUSE_BUTTON_RIGHT
+ wrong_gate.pressed=true
+ wrong_gate.position=Vector2(120,105)
+ shelter_tap._gui_input(wrong_gate)
+ check(gate_events.size()==before_empty,'secondary click cannot flip a gate')
+ shelter_tap.free()
  # The on-panel cards respond to mouse and emulated finger taps. The same
  # act() path remains callable by named keyboard/controller buttons.
  var tapped=A.new().configure('market_rescue',{},false)
@@ -81,7 +118,16 @@ func run():
  var still=arcade.ball
  arcade._process(0.05)
  check(arcade.ball==still,'arcade paused physical ball frozen')
+ var arcade_press=InputEventMouseButton.new()
+ arcade_press.button_index=MOUSE_BUTTON_LEFT
+ arcade_press.pressed=true
+ arcade_press.position=Vector2(80,110)
+ arcade._gui_input(arcade_press)
+ check(arcade.state.selection==8 and arcade.ball==still,'paused arcade press cannot re-aim or restart')
  arcade.suspended=false
+ arcade_press.button_index=MOUSE_BUTTON_RIGHT
+ arcade._gui_input(arcade_press)
+ check(arcade.state.selection==8 and arcade.ball==still,'secondary arcade click cannot restart the ball')
  for i in 90: arcade._process(0.05)
  check(arcade.state.done and arcade.state.progress==1,'aligned paddle physically returns ball')
  arcade.state={'step':0,'selection':0,'progress':0,'done':false}

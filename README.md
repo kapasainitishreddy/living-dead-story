@@ -1,3 +1,11 @@
+## November 18–19, 2026 · touchable shelter gates with gentle physical hinges (source-integrated; native QA pending)
+
+**Vision:** The shelter's optional imaginary paper-cat parade should feel like handling a tiny handmade stage, while real shelter cats stay comfortable and decide their own movements. This is an unscored moment within the warm single-player 3:17 journey, not a compulsory task.
+
+**Playable change:** Players can now tap/click each of the three illustrated BRIDGE, RAMP and DOOR cards; the same reversible state and saved choices still work through keyboard/controller buttons. The corresponding actual 3D cardboard gates turn through a ~0.27-second hinge movement rather than snapping. Pause freezes a half-turn and reduced-motion mode immediately presents the correct still arrangement. Watching Jo, later changing one's mind, the real shelter water/nook choices, original endings and existing saves remain intact. Left click only; paused pointer events cannot restart the arcade or change either paper activity.
+
+**Verification:** Added native Journey activity/world regressions for all three direct card presses, post-completion reversals, empty-area/secondary/paused presses, actual intermediate 3D hinge poses, pause and reduced-motion snapping, and arcade input safety. Deterministic geometry and rotation-contract sweeps plus exact remote blob readback were performed. **Not executed:** Godot import, native suite, 1× capture, physical touch/controller/Windows or independent accessibility review; this cannot be called a gameplay-verified release. Next: run `cd platform6/game && ./run_tests.sh`; complete the shelter paper route with mouse, controller and touch, pause mid-hinge, toggle reduced motion and verify real cats stay at rest.
+
 ## November 18, 2026 · hands-on soup wake in Night Kitchen (source-integrated; Godot verification pending)
 
 **Vision:** Stirring supper with Noor should be a warm little joy, not a cooking quota or scored timing challenge within the original single-player 3:17 journey.
