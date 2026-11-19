@@ -1,3 +1,11 @@
+## November 19, 2026 · soup visibly fills the shared bowl (source-integrated; native QA pending)
+
+**Vision:** STILL HERE: PLATFORM 6 finds happiness in ordinary things. Night Kitchen's real serving gesture should feel warm and material, while sitting, helping and watching remain equally welcoming, unscored choices in the original 3:17 journey.
+
+**Playable increment:** As Noor serves, soup now spreads outward and rises gently inside the actual player's bowl rather than appearing as a full disk in one frame. The helping route fills alongside its existing ladle/stir feedback; sitting and watching use the same final meal. Starting another exchange now restores the durable dinner staging before animating it, so a previously seated chair stays in place and served soup doesn't briefly vanish. Pause freezes a partial pour; reduced motion or skipping settles instantly. No changes to recipes, required actions, authored dialogue, existing save keys, story chapters, endings or player choices.
+
+**Exact verification:** Added `tests/kitchen_soup_fill.gd` to `platform6/game/run_tests.sh` for actual soup mesh size/height, all three routes, pausing, saved chair/bowl continuity, and live reduced-motion completion. A deterministic 3,003-case interpolation/bounds sweep and source integration checks passed. **Not run here:** Godot import/native regression, a true 1× audible/rendered cooking walkthrough, real touch/controller/Windows or independent human review (engine and full prepared checkout unavailable). Next: run `cd platform6/game && ./run_tests.sh`, replay each arrival choice and bread exchange, pause midway through serving, and record an honest normal-speed soup/plating clip before release review.
+
 ## November 19, 2026 · planted turns during quiet exploration (source-integrated; native QA pending)
 
 **Vision:** STILL HERE: PLATFORM 6 is an unhurried single-player 3:17 story: looking from a cup to a postcard or choosing another direction should feel bodily real even when feet stay still. The original seven chapters, optional imagination adventures, grounded relationships, saves and endings remain untouched.

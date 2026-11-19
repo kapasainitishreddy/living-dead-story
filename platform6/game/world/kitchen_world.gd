@@ -412,7 +412,7 @@ func _set_camera_callback(choice: String):
 		_label(callback,"CallbackNote","YOUR SHORE FRAME" if choice == "take" else "MIRA'S SHORE FRAME",Vector3(0,0.36,0.13),13,0.0027)
 
 func _capture_rest():
-	_motion_ids = ["Ladle","BreadBoard/TornHalf","PepperShaker","PassingBread","PlayerChair","PlayerPlace/Cup","PlayerPlace/Bowl","SoupPot/SoupSurface","HerbSprinkle","Noor/ArmRight","Noor/ArmLeft","Ada/ArmLeft","Ada/ArmRight","Mira"]
+	_motion_ids = ["Ladle","BreadBoard/TornHalf","PepperShaker","PassingBread","PlayerChair","PlayerPlace/Cup","PlayerPlace/Bowl","PlayerPlace/Bowl/Soup","SoupPot/SoupSurface","HerbSprinkle","Noor/ArmRight","Noor/ArmLeft","Ada/ArmLeft","Ada/ArmRight","Mira"]
 	for i in range(10): _motion_ids.append("Steam/Puff%d" % i)
 	for i in range(14): _motion_ids.append("Condensation/Drop%d" % i)
 	for id in _motion_ids: _rest[id] = get_node(id).transform
@@ -438,6 +438,16 @@ func _set_stir_ripples(stirring: bool, pulse: float = 0.0):
 		ring.scale = Vector3(size,1.0,size)
 		var sheen: StandardMaterial3D = ring.material_override as StandardMaterial3D
 		sheen.albedo_color = Color(0.96,0.81,0.58,(1.0-phase)*(0.20+0.14*pulse))
+
+func _animate_soup_fill(progress: float, is_helping: bool):
+	# The ladle gradually fills the same durable bowl; only its presentation changes.
+	# A skipped/reduced-motion gesture still settles to the exact saved full bowl.
+	var fill_start: float = 0.80 if is_helping else 0.74
+	var fill: float = smoothstep(fill_start,0.94,clampf(progress,0.0,1.0))
+	var soup: Node3D = get_node("PlayerPlace/Bowl/Soup")
+	soup.visible = fill > 0.005
+	soup.scale = Vector3(maxf(fill,0.001),1.0,maxf(fill,0.001))
+	soup.position.y = 0.13-0.04*(1.0-fill)
 
 func _target(where: Vector3, label_: String, id: String):
 	var marker = Marker3D.new()
@@ -533,7 +543,9 @@ func begin_gesture(action: String, completion: Callable = Callable()):
 	_gesture_caption = _caption_for(gesture_action,0.0)
 	get_node("GestureCaption").text = _gesture_caption
 	get_node("GestureCaption").visible = false # Accessible HUD owns captions; projected text would duplicate it
-	_reset_pose()
+	# Begin from durable dinner staging, not a bare table: the next exchange
+	# must not pull a seated chair back or make a served bowl go empty.
+	_apply_saved_staging()
 	if gesture_action.begins_with("join_"):
 		get_node("PlayerPlace/Bowl/Soup").visible = false
 	if reduced or gesture_duration <= 0.0:
@@ -608,12 +620,11 @@ func _stage_gesture(progress: float):
 					get_node("Ladle").rotation.z = -maxf(0.0,serving-0.65)*1.2
 					get_node("HerbSprinkle").visible = false
 				get_node("Ladle/PourStream").visible = p > 0.79 and p < 0.94
-				get_node("PlayerPlace/Bowl/Soup").visible = p > 0.83
 			else:
 				get_node("Ladle").position = pot_position.lerp(bowl_position,eased)+Vector3(0,curve*0.24,0)
 				get_node("Ladle").rotation.z = -maxf(0.0,p-0.64)*1.2
 				get_node("Ladle/PourStream").visible = p > 0.64 and p < 0.94
-				get_node("PlayerPlace/Bowl/Soup").visible = p > 0.75
+			_animate_soup_fill(p,gesture_action == "join_help")
 			get_node("PlayerPlace/Bowl").position = Vector3(curve*0.025,curve*0.028,0)
 			get_node("Noor/ArmRight").rotation.x = -0.6*curve
 			get_node("Noor/ArmRight").rotation.z = 0.13+curve*0.33
