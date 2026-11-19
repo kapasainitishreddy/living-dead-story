@@ -1,3 +1,11 @@
+## November 18, 2026 · no more walking into walls (source-integrated; Godot verification pending)
+
+**Vision:** In STILL HERE: PLATFORM 6, the walk from the 3:17 train to a cup, shared soup or an imagined adventure should feel grounded. Walking in place against a locked door or shelf breaks that sense of ordinary presence; these are small joys, never quotas or scores.
+
+**Playable change:** The protagonist now derives animation stride, shoe-contact cadence and quiet nearby-object attention from the same measured horizontal *ground displacement after collision*, not the requested or leftover velocity. A blocked wall settles the imported walk animation and produces no new shoe contact; genuine sliding alongside a surface still walks. Airborne motion, zero-duration frames and abnormal displacement do not falsely animate the grounded gait. Rotation on movement, camera framing, interaction reach, reduced-motion settings, campaign/ending/Journey states and existing saves remain unchanged.
+
+**Verification:** Eight native assertions were added to `platform6/game/tests/player_footsteps.gd`, covering real-speed mapping, blocked/airborne/zero-duration/negative/large displacement, real imported walking blend and prompt leg-swing release. Source integration and deterministic calculations were checked. **Not run here:** Godot import, native runner, a normal-speed audiovisual walk-into-wall test, controller/touch/Windows or independent human review (no installed Godot executable or complete private checkout). Next run `cd platform6/game && ./run_tests.sh`, then play into a shelf, slide along it, stop, and inspect feet/footsteps/head glance at 1×. Not a release sign-off.
+
 ## November 18, 2026 · camera-aware little discoveries (source integrated; native verification pending)
 
 **Vision:** In the warm single-player 3:17 journey, noticing the cup, postcard or small kindness in front of you should feel intentional. Turning the camera is a gentle way to settle overlapping prompts, not a precision aim challenge or a reward quota.

@@ -13,6 +13,13 @@ func run():
 	root.add_child(player)
 	await process_frame
 	player.set_physics_process(false)
+	# Collision-resolved displacement, not held controls, drives all walking feedback.
+	check(is_equal_approx(player.grounded_locomotion_speed(0.07,0.025,true),2.8),"ground travel translates to real rig speed")
+	check(player.grounded_locomotion_speed(0.0,0.025,true) == 0.0,"pushing a wall leaves walk speed zero")
+	check(player.grounded_locomotion_speed(0.07,0.025,false) == 0.0,"airborne motion cannot fake grounded stride")
+	check(player.grounded_locomotion_speed(0.07,0.0,true) == 0.0,"zero physics step remains finite and still")
+	check(is_equal_approx(player.grounded_locomotion_speed(2.0,0.025,true),4.2),"warp or external displacement cannot overspeed gait")
+	check(player.grounded_locomotion_speed(-0.2,0.025,true) == 0.0,"invalid negative contact travel is ignored")
 	var heard: Array[int] = []
 	player.footstep_contact.connect(func(side: int): heard.append(side))
 	player.set_preferences({"sensitivity":1.0,"reduced_motion":false,"master":0.8,"effects":0.6})
@@ -26,6 +33,14 @@ func run():
 	for i in range(14): player.advance_footstep(0.12,4.2,0.04,true)
 	check(heard == [0,1],"next step alternates foot rather than looping the first")
 	check(foley.stream != first_stream and player.step_samples.size() == 2,"second contact has a separately cached original timbre")
+	# Real rig should settle instead of walking against an immovable prop.
+	player.visual.set_process(false)
+	player.visual.set_locomotion(2.8)
+	for frame in range(16): player.visual.advance_performance(1.0/60.0)
+	check(player.visual.locomotion_blend > 0.9,"measured walking travels through imported gait")
+	player.visual.set_locomotion(player.grounded_locomotion_speed(0.0,1.0/60.0,true))
+	for frame in range(15): player.visual.advance_performance(1.0/60.0)
+	check(player.visual.locomotion_blend < 0.04,"blocked movement releases leg swing promptly")
 	var stable = heard.size()
 	for i in range(15): player.advance_footstep(0.0,4.2,0.04,true)
 	check(heard.size() == stable,"held input against wall makes no contact")

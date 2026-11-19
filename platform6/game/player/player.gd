@@ -108,15 +108,18 @@ func _physics_process(delta):
 	var before_slide := global_position
 	move_and_slide()
 	var actual_travel := Vector2(global_position.x-before_slide.x,global_position.z-before_slide.z).length()
-	var actual_speed := Vector2(velocity.x,velocity.z).length()
-	advance_footstep(actual_travel,actual_speed,delta,is_on_floor())
+	# Motion is measured AFTER move_and_slide. Pushing against a wall must not
+	# leave the rig walking in place when the feet have stopped translating.
+	var horizontal_speed := grounded_locomotion_speed(actual_travel,delta,is_on_floor())
+	advance_footstep(actual_travel,horizontal_speed,delta,is_on_floor())
 	var heading_change := 0.0
 	if direction.length() > 0.1:
 		heading_change = wrapf(atan2(direction.x,direction.z)-visual.rotation.y,-PI,PI)
 		visual.rotation.y = lerp_angle(visual.rotation.y,atan2(direction.x,direction.z),gait_weight(delta))
-	var horizontal_speed = Vector2(velocity.x,velocity.z).length()
 	visual.position.y = 0.0 # gait animates the body; no camera bob
-	visual.set_locomotion(horizontal_speed,heading_change)
+	# Footsteps, imported walk clip and the gentle idle glance all respond
+	# to the same true ground travel, even along a sliding wall.
+	visual.set_locomotion(horizontal_speed,heading_change if horizontal_speed > 0.16 else 0.0)
 	update_nearby_attention(nearest,horizontal_speed,delta)
 
 func interaction_focus_score(target: Node3D, distance: float) -> float:
@@ -176,6 +179,12 @@ func update_nearby_attention(target: Node3D, horizontal_speed: float, delta: flo
 	glance_dwell += maxf(0.0,delta)
 	if is_instance_valid(visual):
 		visual.set_attention_target(target if glance_dwell >= 0.2 else null)
+
+func grounded_locomotion_speed(actual_travel: float,delta: float,grounded: bool) -> float:
+	# The requested velocity is not proof of movement after a collision.
+	# An airborne or zero-duration tick never drives grounded walk animation.
+	if not grounded or delta <= 0.00001: return 0.0
+	return clampf(maxf(0.0,actual_travel)/delta,0.0,4.2)
 
 func _reset_footsteps():
 	step_distance = 0.0
