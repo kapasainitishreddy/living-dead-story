@@ -456,6 +456,15 @@ func show_pause():
 	if racing or (journey != null and journey.active):
 		for button_ in hud.footer.get_children():
 			if button_.text.begins_with("Start a new journey"): button_.disabled = true
+func kitchen_gesture_action_label() -> String:
+	# Keep the optional action clear after the second authored dialogue line
+	# replaces the first kitchen notice.
+	match kitchen_gesture_id:
+		"join_help": return "Stir soup"
+		"bread": return "Tear bread"
+		"pepper": return "Shake pepper"
+	return ""
+
 func kitchen_gesture_input_ready() -> bool:
 	# One E/A/touch affordance for three unscored, optional hands-on dinner moments.
 	if not kitchen_animating or hud.pause_active or hud.modal_visible() or world_container.get_child_count() == 0:
@@ -538,9 +547,17 @@ func _process(delta):
 	if is_instance_valid(player):
 		player.set_touch_mode(touch.touch_mode)
 		touch.bottom_inset = maxf(72.0,hud.notice.get_minimum_size().y + 24.0)
-		touch.set_available(player.enabled, (player.enabled and is_instance_valid(player.nearest)) or (orchard_viewing and not orchard_observation) or kitchen_gesture_input_ready(), not busy or racing)
-		var hint = ""
-		if is_instance_valid(player.nearest) and player.enabled:
+		var cooking_ready := kitchen_gesture_input_ready()
+		touch.set_available(player.enabled, (player.enabled and is_instance_valid(player.nearest)) or (orchard_viewing and not orchard_observation) or cooking_ready, not busy or racing)
+		var action_label := kitchen_gesture_action_label() if cooking_ready else ""
+		# Keep the real touch button and HUD prompt synchronized, restoring
+		# ordinary Interact immediately when the optional window closes.
+		touch.set_interact_label(action_label)
+		var hint := ""
+		if cooking_ready:
+			var key_label := "Tap" if touch.touch_mode else ("A" if Input.get_connected_joypads().size() > 0 else "E")
+			hint = key_label + " · " + action_label + " (optional)"
+		elif is_instance_valid(player.nearest) and player.enabled:
 			hint = ("Tap Interact" if touch.touch_mode else ("A" if Input.get_connected_joypads().size() else "E")) + " · " + str(player.nearest.get_meta("label"))
 		hud.set_prompt(hint)
 

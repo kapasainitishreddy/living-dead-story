@@ -1,3 +1,11 @@
+## November 19, 2026 · discoverable optional kitchen actions (source-integrated; native QA pending)
+
+**Vision:** STILL HERE: PLATFORM 6 is an unscored single-player journey of small happiness. Soup stirring, sharing bread and passing pepper should feel welcoming and optional, not like an obscure timing challenge.
+
+**Playable/release-quality increment:** The real HUD prompt now identifies *Stir soup*, *Tear bread*, or *Shake pepper* with E/controller A/touch and an explicit optional cue throughout each available interaction window, even when the second authored dialogue line replaces the original one-time tutorial notice. The actual touch button changes from generic Interact to the short verbs Stir, Tear and Shake, then reliably returns to Interact as soon as the scene moves on. Pausing, reduced-motion modes and other conversations never advertise unavailable gestures. All prior actions, timings, Foley, saved dinner choices, story chapters, relationships and endings remain unchanged.
+
+**Exact verification and remaining gates:** Registered a new actual-Godot script, tests/kitchen_context_hints.gd, in platform6/game/run_tests.sh. It checks the real main-script action policy, context changes, finger control names, one-press touch dispatch, disabled states, large text and ordinary Interact fallback. Source anchors and five independent naming-policy combinations were validated, and remote tree/blob readback is required before claiming integration. **Not executed here:** Godot import/native suite, normal-speed readable HUD/audio playthrough, physical controller/Windows and independent human accessibility testing, because this runner lacks Godot and a complete private checkout. Next: run cd platform6/game && ./run_tests.sh; replay all three kitchen gestures at 1× through the second line with keyboard, controller, touch, pausing and reduced motion, then capture real gameplay evidence before release approval.
+
 ## November 19, 2026 · a gently playable pepper pass (source-integrated; native QA pending)
 
 **Vision:** STILL HERE: PLATFORM 6 treats shared supper as a small, unscored joy in the single-player 3:17 journey. Noor's pepper request stays a friendly exchange, not a cooking challenge or a new quest; characters and endings retain their agency.

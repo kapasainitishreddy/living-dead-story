@@ -88,6 +88,17 @@ func apply_settings(settings: Dictionary):
 	look_hint.add_theme_font_size_override("font_size",int(18 * scale_))
 	layout()
 
+func set_interact_label(action: String):
+	# The same finger target names the active gesture without overflowing
+	# the button at large text scale. Exploring restores generic Interact.
+	if interact_button == null: return
+	var label_text := "Interact"
+	match action:
+		"Stir soup": label_text = "Stir"
+		"Tear bread": label_text = "Tear"
+		"Shake pepper": label_text = "Shake"
+	if interact_button.text != label_text: interact_button.text = label_text
+
 func set_available(can_walk: bool, can_interact: bool, can_pause: bool = true):
 	if walking and not can_walk: cancel_input()
 	walking = can_walk
