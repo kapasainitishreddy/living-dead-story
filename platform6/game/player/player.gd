@@ -14,6 +14,9 @@ var glance_candidate: Node3D
 var glance_dwell := 0.0
 const INTERACT_RADIUS := 3.2
 const INTERACT_SWITCH_MARGIN := 0.28
+# A nearby object under the camera's gaze wins a close tie without making
+# anything behind the player impossible to interact with.
+const INTERACT_VIEW_BIAS := 0.24
 const STEP_MIN_SPEED := 0.45
 const STEP_MIN_INTERVAL := 0.22
 var foot_audio: AudioStreamPlayer3D
@@ -116,12 +119,27 @@ func _physics_process(delta):
 	visual.set_locomotion(horizontal_speed,heading_change)
 	update_nearby_attention(nearest,horizontal_speed,delta)
 
+func interaction_focus_score(target: Node3D, distance: float) -> float:
+	# Score only: actual 3.2 m reach remains a hard distance check.
+	# Looking at a small joy helps you discover it, but never locks out the
+	# nearby object behind you. Use planar yaw rather than camera pitch.
+	var to_target := Vector2(target.global_position.x-global_position.x,target.global_position.z-global_position.z)
+	if to_target.length_squared() < 0.0001 or not is_instance_valid(pivot):
+		return distance
+	var camera_forward: Vector3 = pivot.global_transform.basis * Vector3.FORWARD
+	var flat_forward := Vector2(camera_forward.x,camera_forward.z)
+	if flat_forward.length_squared() < 0.0001:
+		return distance
+	var facing := clampf(flat_forward.normalized().dot(to_target.normalized()),-1.0,1.0)
+	return distance + INTERACT_VIEW_BIAS * (1.0-facing)
+
 func choose_nearest_interactable() -> Node3D:
-	# Keep an existing nearby discovery until another is clearly closer.
-	# The HUD, E/A interaction and delayed eye/head attention use this target.
+	# Keep existing focus until another close object is decisively better.
+	# The HUD, E/A/touch interaction and delayed gaze share the exact target.
 	var closest: Node3D = null
-	var closest_distance: float = INTERACT_RADIUS
+	var closest_score: float = INF
 	var previous_distance: float = INF
+	var previous_score: float = INF
 	for node in get_tree().get_nodes_in_group("interactables"):
 		if not (node is Node3D):
 			continue
@@ -129,14 +147,17 @@ func choose_nearest_interactable() -> Node3D:
 		if target.is_queued_for_deletion():
 			continue
 		var distance: float = global_position.distance_to(target.global_position)
+		var score := interaction_focus_score(target,distance)
 		if target == nearest:
 			previous_distance = distance
-		if distance < closest_distance:
-			closest_distance = distance
+			previous_score = score
+		# Camera preference never extends the physical interaction radius.
+		if distance < INTERACT_RADIUS and score < closest_score:
+			closest_score = score
 			closest = target
 	# Never retain deleted, removed or out-of-range targets.
 	if is_instance_valid(nearest) and previous_distance < INTERACT_RADIUS:
-		if closest != nearest and closest_distance + INTERACT_SWITCH_MARGIN >= previous_distance:
+		if closest != nearest and closest_score + INTERACT_SWITCH_MARGIN >= previous_score:
 			return nearest
 	return closest
 

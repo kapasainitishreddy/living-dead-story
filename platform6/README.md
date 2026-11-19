@@ -1,3 +1,11 @@
+## November 18, 2026 · camera-aware little discoveries (source integrated; native verification pending)
+
+**Vision:** In the warm single-player 3:17 journey, noticing the cup, postcard or small kindness in front of you should feel intentional. Turning the camera is a gentle way to settle overlapping prompts, not a precision aim challenge or a reward quota.
+
+**Playable increment:** When two objects are similarly close, the actual player now lightly favors the one near the camera's horizontal forward direction. The preference is capped at 0.48 m of *selection score*; real 3.2 m interaction reach, existing 0.28 m stability margin, and E/A/touch action remain intact. A substantially closer object behind the player is still reachable. Prompt, selected object and natural head/eye glance remain a single focus, with no auto-camera turn, new settings/save keys or loss of reduced-motion access.
+
+**Verification:** Added native player_interaction_focus.gd assertions for front/rear ties, camera turns, closer rear objects, action dispatch, reduced-motion targeting and the hard reach limit. Independent geometric score sweeps confirmed the bias bound and no out-of-range acquisition; source contracts and GitHub remote blob readback checked. **Godot import/native suite, actual 1× playthrough, controller/touch/Windows and human accessibility review were not run here** because the Godot executable and full checkout were unavailable. Next: run the platform6/game/run_tests.sh regression gate, rotate beside clustered objects while watching the focus prompt, and test a rear interaction without moving. This is not release sign-off.
+
 ## November 18, 2026 · grounded footsteps for unhurried wandering (source-integrated; native verification pending)
 
 **Vision:** Ordinary walks between the 3:17 train, shared soup and optional imagination adventures should have gentle physical feedback, not a reward meter. Shoes only sound when they actually move across the ground.

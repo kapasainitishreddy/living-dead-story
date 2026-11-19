@@ -69,6 +69,41 @@ func run():
 	await process_frame
 	player.update_nearby_attention(null, 0.0, 0.016)
 	check(player.visual.gaze_target == null, "removed object also releases head glance")
+	# Close bystanders remain reachable, but a deliberate look can settle a tie.
+	var ahead = Node3D.new()
+	ahead.name = "FrontDiscovery"
+	ahead.position = Vector3(0.0,0.0,-1.3)
+	root.add_child(ahead)
+	ahead.add_to_group("interactables")
+	var behind = Node3D.new()
+	behind.name = "BehindDiscovery"
+	behind.position = Vector3(0.0,0.0,1.15)
+	root.add_child(behind)
+	behind.add_to_group("interactables")
+	player.pivot.rotation.y = 0.0
+	player.nearest = player.choose_nearest_interactable()
+	check(player.nearest == ahead, "looking ahead favors a visible discovery over a slightly closer rear object")
+	check(player.interaction_focus_score(ahead,1.3) < player.interaction_focus_score(behind,1.15), "camera tie-break is bounded and directional")
+	player.pivot.rotation.y = PI
+	player.nearest = player.choose_nearest_interactable()
+	check(player.nearest == behind, "turning the camera decisively changes a close focus")
+	player.pivot.rotation.y = 0.0
+	player.nearest = player.choose_nearest_interactable()
+	check(player.nearest == ahead, "turning back restores the visible discovery without moving")
+	behind.position.z = 0.38
+	player.nearest = player.choose_nearest_interactable()
+	check(player.nearest == behind, "much closer rear objects remain interactable without facing them")
+	var seen = activations.size()
+	player._unhandled_input(event)
+	check(activations.size() == seen+1 and activations.back() == behind, "E/A still activates actual rear focus")
+	player.set_preferences({"sensitivity":1.0,"reduced_motion":true})
+	check(player.choose_nearest_interactable() == behind, "reduced motion retains usable interaction targeting")
+	behind.position.z = 3.24
+	ahead.position.z = -3.24
+	player.nearest = player.choose_nearest_interactable()
+	check(player.nearest == null, "view preference never extends hard interaction reach")
+	ahead.queue_free()
+	behind.queue_free()
 	postcard.queue_free()
 	player.queue_free()
 	await process_frame
