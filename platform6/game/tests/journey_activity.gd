@@ -44,6 +44,33 @@ func run():
  guided.act('0')
  check(not guided.state.done and guided.state.step==0 and guided.state.progress==1,'watching can be followed by an ordinary route')
  guided.free()
+ # The on-panel cards respond to mouse and emulated finger taps. The same
+ # act() path remains callable by named keyboard/controller buttons.
+ var tapped=A.new().configure('market_rescue',{},false)
+ root.add_child(tapped)
+ await process_frame
+ tapped.set_process(false)
+ var taps: Array = []
+ tapped.changed.connect(func(_state): taps.append(true))
+ var tap=InputEventMouseButton.new()
+ tap.button_index=MOUSE_BUTTON_LEFT
+ tap.pressed=true
+ for index in 3:
+  tap.position=Vector2(115+180*index,110)
+  tapped._gui_input(tap)
+  check((int(tapped.state.selection) & (1<<index)) != 0,'drawn market marker responds to direct press '+str(index))
+ check(tapped.state.done and tapped.state.progress==3 and taps.size()==3,'three in-panel presses complete actual market activity once each')
+ tap.position=Vector2(257,203)
+ tapped._gui_input(tap)
+ check(taps.size()==3,'blank board area never toggles a marker')
+ tapped.suspended=true
+ tap.position=Vector2(115,110)
+ tapped._gui_input(tap)
+ check(taps.size()==3,'paused direct marker press is ignored')
+ tapped.suspended=false
+ tapped._gui_input(tap)
+ check(not tapped.state.done and tapped.state.progress==2 and taps.size()==4,'direct marker tap reverses an already finished route')
+ tapped.free()
  var arcade=A.new().configure('arcade_paddle',{'selection':8},false)
  root.add_child(arcade)
  await process_frame

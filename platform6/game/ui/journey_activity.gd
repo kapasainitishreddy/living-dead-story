@@ -112,6 +112,15 @@ func _process(delta):
  if ball.y<=0.1 and velocity.y<0: complete_arcade()
  queue_redraw()
 func _gui_input(event):
+ # Drawn market cards are large actual pointer targets, not only a diagram.
+ # Engine touch-to-mouse emulation sends finger taps through the same gate.
+ # Named keyboard/controller buttons remain independently available below.
+ if kind == 'market_rescue' and not suspended and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+  for i in 3:
+   if Rect2(75+i*180,65,80,92).has_point(event.position):
+    act(str(i))
+    accept_event()
+    return
  if kind == 'arcade_paddle' and event is InputEventMouseButton and event.pressed:
   state.selection = clampi(int(event.position.x/maxf(size.x,1)*10),0,10)
   act('launch')
@@ -164,12 +173,12 @@ func _draw():
    for i in 3:
     var marker_x = 115+i*180
     var marked = (int(state.selection)&(1<<i))!=0 or (state.done and int(state.step)==1)
+    draw_rect(Rect2(marker_x-44,69,88,79),Color('a98966') if marked else Color('4c666e'))
     draw_rect(Rect2(marker_x-37,78,74,58),Color('f1d9a8') if marked else Color('a6afb0'))
     draw_circle(Vector2(marker_x,144),9,amber if marked else cream)
     draw_string(ThemeDB.fallback_font,Vector2(marker_x-38,43),['BREAD','LAMPS','DOORS'][i],HORIZONTAL_ALIGNMENT_LEFT,-1,17,cream)
    draw_circle(Vector2(65+clampf(float(state.progress)/3.0,0.0,1.0)*(width-130),188),13,amber)
-   if state.done:
-    draw_string(ThemeDB.fallback_font,Vector2(70,211),'JO GUIDES THE PAPER CART' if int(state.step)==1 else 'THE PAPER CART FINDS HOME',HORIZONTAL_ALIGNMENT_LEFT,-1,15,cream)
+   draw_string(ThemeDB.fallback_font,Vector2(70,211),('JO GUIDES THE PAPER CART' if int(state.step)==1 else 'THE PAPER CART FINDS HOME') if state.done else 'TAP A SIGN OR USE THE BUTTONS',HORIZONTAL_ALIGNMENT_LEFT,-1,15,cream)
   'arcade_paddle':
    draw_rect(Rect2(40,25,width-80,18),Color('789f8c'))
    draw_rect(Rect2(40+float(state.selection)/10*(width-150),185,70,10),amber)

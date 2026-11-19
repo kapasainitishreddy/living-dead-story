@@ -1,3 +1,11 @@
+## November 18, 2026 · touchable paper-market signs and rolling cart (source-integrated; native verification pending)
+
+**Vision:** STILL HERE: PLATFORM 6 is a warm, unscored single-player 3:17 journey. The optional Supermarket of Small Heroes should make small imagined choices physically pleasant; real customers are safe and retain their agency.
+
+**Playable improvement:** Each of the three large drawn market signs now accepts a direct mouse click or touch-to-mouse finger tap. Existing named keyboard/controller buttons remain available. Tapping follows the same reversible, locally saved activity, including changing your mind after completing the route. On the physical miniature board, all four uniquely named cart wheels roll according to actual forward/backward displacement, the three cardboard signs visibly tilt when selected, and a small flag stirs during the moving parade. Pause freezes the wheels; reduced motion settles the wheels and cart immediately. The original seven chapters, both endings, twelve Journey destinations, return choices and browser prototype are preserved.
+
+**Exact verification:** 14 independent deterministic pointer-target/roll-wrap checks passed; extra native assertions were added to the existing Journey activity/world suites for direct presses, reversals, real wheel motion, pause and reduced motion. **Godot import, native suite execution, 1× audiovisual capture, physical touchscreen/controller and Windows/human playtesting were NOT performed** here because the full local checkout and Godot executable were unavailable. Next: `cd platform6/game && ./run_tests.sh`; click/tap signs in different orders, watch Jo's alternate route at 1×, test pause/reduced motion and reopen after a fresh launch. This is not a release sign-off.
+
 ## November 18, 2026 · tactile supermarket marker glides (source-integrated, native verification pending)
 
 **Vision:** STILL HERE: PLATFORM 6 makes the ordinary rewarding to touch. The whimsical paper grocery cart should respond to each reversible marker like a physical toy rather than teleporting. Real shoppers are safe and retain their own agency; there are no real-world rescue tactics, time limits or compulsory tasks.

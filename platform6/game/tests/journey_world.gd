@@ -174,10 +174,15 @@ func run():
 	root.add_child(market)
 	await physics_frame
 	var cart = market.get_node("Activity/MarketRoutes/PaperCart")
+	var wheels := []
+	for child in cart.get_children():
+		if str(child.name).begins_with("PaperWheel"): wheels.append(child)
+	check(wheels.size() == 4,"paper supermarket cart has four physical wheel contacts")
 	market.update_activity({"step":2,"selection":7,"progress":3,"done":true})
 	var starting_cart = cart.position
 	market._process(0.65)
 	check(cart.position.distance_to(starting_cart)>0.02,"imaginary paper cart moves through actual 3D scene")
+	check(wheels.size() == 4 and absf(wheels[0].rotation.z) > 0.05,"paper wheels roll when the actual cart travels")
 	# The optional route markers must physically change the paper cart's
 	# route, rather than only illuminating cardboard scenery.
 	var lane_checkpoints = [0.18,0.50,0.83]
@@ -192,11 +197,15 @@ func run():
 	market.update_activity({"step":0,"selection":1,"progress":1,"done":false})
 	check(cart.position.distance_to(empty_route_position)<0.001,"first marker leaves cart at current position")
 	market.set_paused(true)
+	var frozen_wheel_angle = wheels[0].rotation.z
 	market._process(0.21)
 	check(cart.position==empty_route_position,"pause freezes in-progress marker glide")
+	check(wheels[0].rotation.z == frozen_wheel_angle,"pause freezes the actual paper wheels")
 	market.set_paused(false)
 	market._process(0.21)
 	check(cart.position.x>empty_route_position.x+0.12 and cart.position.x<empty_route_position.x+0.44,"cart glides visibly toward first paper aisle")
+	check(wheels[0].rotation.z != frozen_wheel_angle,"wheel rotation follows the resumed cart glide")
+	check(market.get_node("Activity/MarketRoutes/Stop0/PaperMarker").rotation.x < 0.0,"selected paper route marker visibly folds down")
 	market._process(0.21)
 	check(absf(cart.position.x-(-0.83+1.66/3.0))<0.012,"first paper aisle reaches exact endpoint")
 	var first_marker_position = cart.position
@@ -239,6 +248,7 @@ func run():
 	market.set_paused(false)
 	market.apply_preferences(true)
 	var still_cart = cart.position
+	check(is_zero_approx(wheels[0].rotation.z),"reduced motion settles wheel rotation immediately")
 	market._process(0.8)
 	check(cart.position==still_cart,"reduced motion holds legible still paper-market route")
 	market.update_activity({"step":2,"selection":2,"progress":3,"done":true})

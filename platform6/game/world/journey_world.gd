@@ -625,9 +625,18 @@ func _build_market_rescue():
 		_box(stop,"TinyAisle",Vector3(0,0.09,0),Vector3(0.50,0.18,0.37),palette[0])
 		var light = _orb(stop,"Lantern",Vector3(0,0.25,0),0.08,palette[2])
 		light.visible = false
+		var marker = _box(stop,"PaperMarker",Vector3(0,0.235,0.18),Vector3(0.24,0.018,0.11),palette[2])
+		marker.rotation.x = 0.12
 	var cart = _node(routes,"PaperCart",Vector3(-0.83,0.095,0.16))
 	_box(cart,"CardboardBody",Vector3.ZERO,Vector3(0.30,0.17,0.25),palette[2])
-	for side in [-0.12,0.12]: _orb(cart,"PaperWheel",Vector3(side,-0.085,0.09),0.06,INK).scale.z = 0.6
+	# Four narrow wheels touch the paper road. Rotation follows actual travel,
+	# including reversed marker glides, rather than a decorative timer.
+	var wheel_index := 0
+	for axle in [-0.105,0.105]:
+		for side in [-0.13,0.13]:
+			var wheel = _orb(cart,"PaperWheel"+str(wheel_index),Vector3(axle,-0.085,side),0.052,INK)
+			wheel.scale.z = 0.45
+			wheel_index += 1
 	_box(cart,"FriendlyFlag",Vector3(0,0.2,-0.04),Vector3(0.12,0.24,0.025),palette[1])
 	var ribbon = _box(routes,"HomeRibbon",Vector3(0,0.041,-0.48),Vector3(2.08,0.015,0.044),palette[2])
 	ribbon.visible = false
@@ -732,6 +741,7 @@ func _update_market_rescue_pose():
 	for i in range(3):
 		var marked = (selection & (1 << i)) != 0 or (done and watching)
 		routes.get_node("Stop%d/Lantern" % i).visible = marked
+		routes.get_node("Stop%d/PaperMarker" % i).rotation.x = -0.28 if marked else 0.12
 	var cart = routes.get_node("PaperCart")
 	var progress = clampf(float(_activity_state.get("progress",0))/3.0,0.0,1.0)
 	if done and not reduced_motion:
@@ -744,6 +754,7 @@ func _update_market_rescue_pose():
 		progress = 0.5
 	var route_mask = 7 if done and watching else selection
 	var target_position = Vector3(-0.83+1.66*progress,0.095+0.025*sin(PI*progress),0.16+_market_lane_offset(progress,route_mask))
+	var previous_x = cart.position.x
 	if _market_glide_elapsed >= 0.0 and not reduced_motion:
 		var t = clampf(_market_glide_elapsed / MARKET_ROUTE_GLIDE_SECONDS,0.0,1.0)
 		var gentle_t = t*t*(3.0-2.0*t)
@@ -751,6 +762,11 @@ func _update_market_rescue_pose():
 	else:
 		cart.position = target_position
 	cart.rotation.y = (0.09 if watching else -0.09)*sin(PI*progress) if done and not reduced_motion else 0.0
+	cart.get_node("FriendlyFlag").rotation.z = 0.05*sin(motion_elapsed*5.0) if done and not reduced_motion else 0.0
+	for wheel in cart.get_children():
+		if not str(wheel.name).begins_with("PaperWheel"): continue
+		if reduced_motion: wheel.rotation.z = 0.0
+		else: wheel.rotation.z = fposmod(wheel.rotation.z - (cart.position.x-previous_x)/0.052,TAU)
 	activity.get_node("PaperMarketNote").text = ("JO SHOWS A GENTLE WAY" if watching else "THE PAPER CART FINDS HOME") if done else "SMALL HELP, NO CLOCK"
 
 func _market_lane_offset(progress: float, route_mask: int) -> float:
