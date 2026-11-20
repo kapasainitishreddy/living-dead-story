@@ -1,3 +1,11 @@
+## November 19, 2026 · quiet original sound for real shelter care (source-integrated; native QA pending)
+
+**Vision:** STILL HERE: PLATFORM 6 is a warm, unscored single-player 3:17 story about happiness in small things. The imaginary paper-cat freedom parade ends in gentle shelter care; actual cats remain independent and doing nothing is still a valid choice.
+
+**Playable increment:** A new fresh-water choice produces three light original ceramic/water notes, while folding a soft nook produces a different fabric brush. These locally synthesized, non-looping 22,050 Hz mono 16-bit samples have matching short readable sound descriptions, obey Master/Effects mute and never play for the undisturbed option or ordinary saved revisit. The shelter now uses an existing quiet original ambient bed instead of generic train/shoreline audio; leaving the shelter stops its care sound. Reduced motion continues to control visual animation only, not the optional audio. The playable path, authored dialogue, cats' independence, saves and endings are preserved; no downloaded assets, new account, paid service, goal, field or publication.
+
+**Exact verification / remaining gates:** Added `tests/shelter_care_sound.gd` to the native Godot runner for different finite PCM streams, caching, volume, invalid choices, location gating and cleanup. Extended the integrated Journey runtime regression for the fresh-water cue and written caption. The source changes are verified against the specific remote branch blobs and parent when committed. **Not executed here:** Godot compilation/native regression, actual 1× audiovisual gameplay, physical Windows/controller/touch or independent listening/accessibility testing; neither Godot nor a full asset-prepared checkout is available. Next run `cd platform6/game && ./run_tests.sh`, play all three care choices at normal speed with mute and reduced motion on/off, leave/revisit from saved progress and record genuine sound-on proof before release approval.
+
 ## November 19, 2026 · shelter care has a small physical gesture (source-integrated; native QA pending)
 
 **Vision:** STILL HERE: PLATFORM 6 is a warm, single-player, unscored 3:17 journey; an imagined paper-cat parade gives way to gentle real care without making living cats obey or turning kindness into a task.

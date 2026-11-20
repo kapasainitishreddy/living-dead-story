@@ -106,6 +106,7 @@ godot --headless --path . --script tests/journey_model.gd
 godot --headless --path . --script tests/journey_world.gd
 godot --headless --path . --script tests/journey_activity.gd
 godot --headless --path . --script tests/journey_runtime.gd
+godot --headless --path . --script tests/shelter_care_sound.gd
 
 # Firefly-only scenic presentation preserves existing contracts.
 godot --headless --path . --script tests/firefly_visual_contract.gd

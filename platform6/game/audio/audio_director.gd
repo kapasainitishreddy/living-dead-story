@@ -19,6 +19,9 @@ var streams := {}
 # Original local one-shot foley, never a downloaded sample.
 var kitchen_cue_player: AudioStreamPlayer
 var kitchen_cue_cache := {}
+# Original local one-shots for real shelter care; separate from the kitchen.
+var shelter_cue_player: AudioStreamPlayer
+var shelter_cue_cache := {}
 const KITCHEN_CUE_SPECS = {
 	"stir": Vector2(0.20,390.0), "herbs": Vector2(0.18,470.0),
 	"serve": Vector2(0.26,580.0), "bread": Vector2(0.20,270.0),
@@ -33,12 +36,14 @@ const PROFILES = {
 	"station":{"ambience":"rails","gain":0.18,"subtitle":"[Distant rails humming beneath the canopy]"},
 	"rails":{"ambience":"rails","gain":0.62,"subtitle":"[Wheels over rail joints, warm musical refrain]"},
 	"fair_clockwork":{"ambience":"fair_clockwork","gain":0.5,"subtitle":"[Quiet clockwork turns and a distant market hush]"},
-	"surf":{"ambience":"surf","gain":0.8,"subtitle":"[Slow surf folding through the stone arch]"}
+	"surf":{"ambience":"surf","gain":0.8,"subtitle":"[Slow surf folding through the stone arch]"},
+	"shelter_porch":{"ambience":"orchard_hush","gain":0.28,"subtitle":"[Quiet air along the shelter porch]"}
 }
 func location_profile(location: String) -> Dictionary:
 	var kind = "rails"
 	if location == "still_here": kind = "home_rain"
 	elif location == "quiet_orchard": kind = "orchard_hush"
+	elif location == "shelter_porch": kind = "shelter_porch"
 	elif location == "night_kitchen": kind = "kitchen_simmer"
 	elif location == "the_small_fair": kind = "fair_clockwork"
 	elif location == "paper_sky": kind = "rain_window"
@@ -65,6 +70,9 @@ func _ready():
 	kitchen_cue_player = AudioStreamPlayer.new()
 	kitchen_cue_player.name = "KitchenFoley"
 	add_child(kitchen_cue_player)
+	shelter_cue_player = AudioStreamPlayer.new()
+	shelter_cue_player.name = "ShelterCareFoley"
+	add_child(shelter_cue_player)
 	music.stream = load_score(current_score)
 	for id in ["rain_window","rain_roof","rails","surf","fair_clockwork"]:
 		streams[id] = load("res://assets/original/"+id+".wav")
@@ -98,6 +106,9 @@ func update_levels():
 	if is_instance_valid(kitchen_cue_player):
 		var cue_volume: float = float(levels.get("master",0.0))*float(levels.get("effects",0.0))*0.58
 		kitchen_cue_player.volume_db = linear_to_db(cue_volume) if cue_volume > 0.0 else -80.0
+	if is_instance_valid(shelter_cue_player):
+		var care_volume: float = float(levels.get("master",0.0))*float(levels.get("effects",0.0))*0.42
+		shelter_cue_player.volume_db = linear_to_db(care_volume) if care_volume > 0.0 else -80.0
 func set_mix(value: Vector2):
 	gains = [value.x,value.y]
 	update_levels()
@@ -128,6 +139,7 @@ func crossfade_score(score: String):
 func set_location(location: String): crossfade_location(location)
 func crossfade_location(location: String):
 	if location == current_location: return
+	if current_location == "shelter_porch" and is_instance_valid(shelter_cue_player): shelter_cue_player.stop()
 	var profile = location_profile(location)
 	# Optional later chapters load their local bed when first reached.
 	if not streams.has(profile.ambience):
@@ -199,6 +211,48 @@ func play_kitchen_cue(kind: String) -> bool:
 		kitchen_cue_player.play()
 	return true
 
+# Finite original mono PCM: three soft ceramic-water notes, or a brush
+# of folded fabric. Saved rooms never replay a gesture automatically.
+func _make_shelter_foley(kind: String) -> AudioStreamWAV:
+	var rate := 22050
+	var duration := 0.38 if kind == "water_bowl" else 0.32
+	var count := int(float(rate)*duration)
+	var samples := PackedByteArray()
+	samples.resize(count*2)
+	for i in range(count):
+		var t := float(i)/float(rate)
+		var phase := t/duration
+		var envelope := minf(1.0,float(i)/105.0)*pow(maxf(0.0,1.0-phase),1.8)
+		var grain := sin(float(i)*17.137)*sin(float(i)*3.517)
+		var wave := 0.0
+		if kind == "water_bowl":
+			var drip := fposmod(t,0.132)
+			var note := sin(TAU*(620.0*drip-145.0*drip*drip))*exp(-34.0*drip)
+			wave = note*0.79+grain*exp(-32.0*drip)*0.21
+		else:
+			var swish := 0.45+0.55*sin(PI*phase)
+			wave = grain*swish*0.86+sin(TAU*180.0*t)*0.14
+		var pcm := clampi(roundi(wave*envelope*0.21*32767.0),-32768,32767)
+		samples[2*i] = pcm & 255
+		samples[2*i+1] = (pcm >> 8) & 255
+	var sound := AudioStreamWAV.new()
+	sound.format = AudioStreamWAV.FORMAT_16_BITS
+	sound.mix_rate = rate
+	sound.stereo = false
+	sound.loop_mode = AudioStreamWAV.LOOP_DISABLED
+	sound.data = samples
+	return sound
+
+func play_shelter_cue(kind: String) -> bool:
+	if kind not in ["water_bowl","soft_nook"] or current_location != "shelter_porch" or not is_instance_valid(shelter_cue_player): return false
+	if not shelter_cue_cache.has(kind): shelter_cue_cache[kind] = _make_shelter_foley(kind)
+	shelter_cue_player.stop()
+	shelter_cue_player.stream = shelter_cue_cache[kind]
+	update_levels()
+	if DisplayServer.get_name() != "headless" and float(levels.get("master",0.0))*float(levels.get("effects",0.0)) > 0.0:
+		shelter_cue_player.play()
+	return true
+
 func shutdown():
 	# Call before quitting so AudioServer can retire stopped playback next mix.
 	if fade:
@@ -207,13 +261,14 @@ func shutdown():
 	if music_fade:
 		music_fade.kill()
 		music_fade = null
-	for player in [music,music_secondary,effects,effects_secondary,kitchen_cue_player]:
+	for player in [music,music_secondary,effects,effects_secondary,kitchen_cue_player,shelter_cue_player]:
 		if is_instance_valid(player):
 			player.stop()
 			player.stream = null
 	streams.clear()
 	music_streams.clear()
 	kitchen_cue_cache.clear()
+	shelter_cue_cache.clear()
 func _exit_tree():
 	shutdown()
 

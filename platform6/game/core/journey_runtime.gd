@@ -95,7 +95,7 @@ func route():
  game.hud.title.text='PLATFORM 6 CONTINUES · '+('The carriage' if snapshot.mode=='train' else str(model.current_destination().get('title','Journey')))
  game.hud.set_subtitle('A bounded authored Journey. Return to the train whenever you like.')
  game.audio.apply_settings(prefs)
- var sound_locations={'rain_town':'apartment','unsent_letters_library':'paper_sky','arcade':'the_small_fair','beach_before_sunrise':'shoreline','winter_orchard':'quiet_orchard','rest_room':'still_here','failed_things_festival':'the_small_fair','sunrise_cafe':'night_kitchen','no_destination_road':'return_platform','fireflies':'overlook'}
+ var sound_locations={'rain_town':'apartment','unsent_letters_library':'paper_sky','arcade':'the_small_fair','beach_before_sunrise':'shoreline','winter_orchard':'quiet_orchard','rest_room':'still_here','failed_things_festival':'the_small_fair','sunrise_cafe':'night_kitchen','no_destination_road':'return_platform','fireflies':'overlook','shelter_parade':'shelter_porch'}
  game.audio.crossfade_location('return_train' if snapshot.mode=='train' else str(sound_locations.get(snapshot.journey_id,'shoreline')))
  audio_profile()
  game.apply_graphics(prefs)
@@ -264,9 +264,12 @@ func dispatch(action:String,value:Variant=null):
      # Animate only a newly selected real care act. Revisited / restored
      # shelters show the finished arrangement without replaying it.
      var care_world=game.world_container.get_child(0)
-     if care_world.has_method('play_care_moment'):
-      care_world.play_care_moment(str(model.snapshot().location_states.get('shelter_parade','as_found')))
-     game.hud.show_notice((response+' Look around, then return to the train when you like.') if warning.is_empty() else warning)
+     var care_id=str(model.snapshot().location_states.get('shelter_parade','as_found'))
+     if care_world.has_method('play_care_moment'): care_world.play_care_moment(care_id)
+     # A new care choice is audible; restoring a settled room never replays it.
+     var audible=game.audio.play_shelter_cue(care_id)
+     var cue_caption=(' [Soft water plinks in the bowl.]' if care_id=='water_bowl' else ' [The folded towel rustles.]') if audible else ''
+     game.hud.show_notice((response+cue_caption+' Look around, then return to the train when you like.') if warning.is_empty() else warning)
     else:
      model.apply('finish'); save(); game.hud.close_all(); game.route()
      game.hud.show_notice(response if warning.is_empty() else warning)
