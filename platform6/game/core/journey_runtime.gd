@@ -261,6 +261,11 @@ func dispatch(action:String,value:Variant=null):
      # credited until they choose to leave; all choices remain reversible.
      game.hud.close_all()
      game.route()
+     # Animate only a newly selected real care act. Revisited / restored
+     # shelters show the finished arrangement without replaying it.
+     var care_world=game.world_container.get_child(0)
+     if care_world.has_method('play_care_moment'):
+      care_world.play_care_moment(str(model.snapshot().location_states.get('shelter_parade','as_found')))
      game.hud.show_notice((response+' Look around, then return to the train when you like.') if warning.is_empty() else warning)
     else:
      model.apply('finish'); save(); game.hud.close_all(); game.route()

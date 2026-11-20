@@ -9,6 +9,7 @@ const IDS = ["rain_town","unsent_letters_library","arcade","beach_before_sunrise
 const MARKET_MARKER_PROGRESS = [0.18,0.50,0.83]
 const MARKET_ROUTE_GLIDE_SECONDS := 0.42
 const SHELTER_GATE_TURN_SPEED := 5.8 # ~0.27 s for a quarter-turn; display only
+const SHELTER_CARE_SECONDS := 1.08 # presentation only; never a timed task
 var factory: RefCounted
 var snapshot: Dictionary = {}
 var campaign: Dictionary = {}
@@ -33,6 +34,8 @@ var _market_pose_ready := false
 var _shelter_gates_ready := false
 var _market_glide_elapsed := -1.0
 var _market_glide_origin := Vector3.ZERO
+var _care_elapsed := -1.0
+var _care_kind := ""
 
 func build(journey_snapshot: Dictionary, campaign_snapshot: Dictionary, destination_dictionary: Dictionary = {}) -> Node3D:
 	factory = load("res://world/world_factory.gd").new()
@@ -819,10 +822,48 @@ func _update_shelter_parade_pose():
 			paper.position = Vector3(lane_x+bend,0.04+0.018*absf(sin(TAU*phase)),0.26-0.5*glide)
 			paper.rotation.y = (0.16 if gate_open else -0.16)*sin(TAU*phase)
 
+# The physical shelter is already playable after the choice. A new care
+# choice adds a tiny, skippable material response; returning on a saved visit
+# stays at the settled prop. Neither animation changes the Journey model.
+func play_care_moment(state_id: String) -> bool:
+	if scene_kind != "destination" or journey_id != "shelter_parade": return false
+	if state_id not in ["water_bowl","soft_nook"] or str(get_meta("location_state","")) != state_id: return false
+	_care_kind = state_id
+	_care_elapsed = 0.0
+	_update_care_moment()
+	return true
+
+func _update_care_moment():
+	if _care_elapsed < 0.0 or not is_instance_valid(scenery): return
+	var changed = scenery.get_node_or_null("LocalConsequences")
+	if changed == null: return
+	var finished := reduced_motion or _care_elapsed >= SHELTER_CARE_SECONDS
+	var t := 1.0 if finished else clampf(_care_elapsed/SHELTER_CARE_SECONDS,0.0,1.0)
+	var eased := t*t*(3.0-2.0*t)
+	if _care_kind == "water_bowl":
+		var surface = changed.get_node_or_null("FreshWaterSurface")
+		var ripple = changed.get_node_or_null("FreshWaterRipple")
+		if surface != null: surface.scale = Vector3(0.84+0.16*eased,1.0,0.84+0.16*eased)
+		if ripple != null:
+			ripple.scale = Vector3(0.42+0.79*eased,1.0,0.42+0.79*eased)
+			ripple.visible = not finished
+	elif _care_kind == "soft_nook":
+		var towel = changed.get_node_or_null("NewFoldedTowel")
+		if towel != null:
+			towel.scale = Vector3(0.42+0.58*eased,1.0,1.0)
+			towel.rotation.y = 0.18*(1.0-eased)
+			towel.position = Vector3(4.8+0.12*(1.0-eased),0.31,-3.16)
+	if finished:
+		_care_elapsed = -1.0
+		_care_kind = ""
+
 func apply_preferences(value: bool):
 	reduced_motion = value
 	# Never restart a half-finished glide after displaying the still pose.
 	if value: _market_glide_elapsed = -1.0
+	if value and _care_elapsed >= 0.0:
+		_care_elapsed = SHELTER_CARE_SECONDS
+		_update_care_moment()
 	if has_node("AmbientMotion"): get_node("AmbientMotion").apply_preferences(value)
 	for item in _decorative:
 		if is_instance_valid(item.node): item.node.position = item.rest
@@ -851,6 +892,9 @@ func set_paused(value: bool):
 func _process(delta: float):
 	if paused or reduced_motion: return
 	motion_elapsed += delta
+	if _care_elapsed >= 0.0:
+		_care_elapsed = minf(SHELTER_CARE_SECONDS,_care_elapsed+maxf(delta,0.0))
+		_update_care_moment()
 	if activity_type == "market_rescue" and _market_glide_elapsed >= 0.0:
 		_market_glide_elapsed += delta
 		if _market_glide_elapsed >= MARKET_ROUTE_GLIDE_SECONDS: _market_glide_elapsed = -1.0
@@ -876,6 +920,14 @@ func _apply_local_state():
 		"water_bowl":
 			factory.rounded(changed,"FreshWaterBowl",Vector3(-5.1,0.17,-3.15),0.28,0.28,0.12,CREAM)
 			factory.rounded(changed,"FreshWaterSurface",Vector3(-5.1,0.24,-3.15),0.235,0.235,0.012,Color("9cc3ce"))
+			# Ten low, still-until-chosen water arcs: no downloadable effects or
+			# unexplained stream pouring out of empty air on a restored visit.
+			var ripple = _node(changed,"FreshWaterRipple",Vector3(-5.1,0.255,-3.15))
+			for i in range(10):
+				var theta := TAU*float(i)/10.0
+				var arc = _box(ripple,"Arc%d" % i,Vector3(cos(theta)*0.16,0,sin(theta)*0.16),Vector3(0.076,0.006,0.014),Color("c4e5e3"))
+				arc.rotation.y = theta+PI/2.0
+			ripple.visible = false
 		"soft_nook":
 			_box(changed,"NewFoldedTowel",Vector3(4.8,0.31,-3.16),Vector3(1.2,0.12,0.72),CREAM)
 			_box(changed,"ClearDoorMat",Vector3(3.55,0.035,-4.55),Vector3(0.78,0.045,0.55),palette[1])

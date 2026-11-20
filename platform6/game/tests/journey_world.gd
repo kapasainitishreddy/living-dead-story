@@ -187,6 +187,39 @@ func run():
 	check(paper.position==Vector3(-0.76,0.04,0.26) and not shelter.get_node("Activity/PaperParade/ParadeRibbon").visible,"reversing a gate resets the paper parade without penalty")
 	shelter.free()
 	await physics_frame
+	# Choosing real shelter care should touch the actual bowl/towel immediately,
+	# but not replay an act on an ordinary restored visit. Pause and reduced
+	# motion must always preserve the final state.
+	for care_id in ["water_bowl","soft_nook"]:
+		var care_world = script.new().build({"mode":"destination","journey_id":"shelter_parade","activity":{},"location_states":{"shelter_parade":care_id}},{},shelter_data)
+		root.add_child(care_world)
+		await physics_frame
+		var consequence = care_world.get_node("Scenery/LocalConsequences")
+		check(care_world._care_elapsed < 0.0,"saved shelter care is settled, not replayed "+care_id)
+		if care_id == "water_bowl":
+			check(not consequence.get_node("FreshWaterRipple").visible,"restored bowl has still water")
+		else:
+			check(is_equal_approx(consequence.get_node("NewFoldedTowel").scale.x,1.0),"restored towel is folded")
+		check(not care_world.play_care_moment("not_a_choice"),"unknown shelter animation is rejected")
+		check(care_world.play_care_moment(care_id),"chosen care act starts in the actual scene "+care_id)
+		if care_id == "water_bowl":
+			check(consequence.get_node("FreshWaterRipple").visible and consequence.get_node("FreshWaterSurface").scale.x < 0.9,"fresh water makes a readable small ripple")
+		else:
+			check(consequence.get_node("NewFoldedTowel").scale.x < 0.5,"new towel has a physical settling gesture")
+		care_world._process(0.18)
+		var before_pause = care_world._care_elapsed
+		care_world.set_paused(true)
+		care_world._process(1.0)
+		check(is_equal_approx(care_world._care_elapsed,before_pause),"paused shelter care gesture freezes "+care_id)
+		care_world.set_paused(false)
+		care_world.apply_preferences(true)
+		check(care_world._care_elapsed < 0.0,"reduced motion finishes care immediately "+care_id)
+		if care_id == "water_bowl":
+			check(not consequence.get_node("FreshWaterRipple").visible and is_equal_approx(consequence.get_node("FreshWaterSurface").scale.x,1.0),"reduced motion leaves full still water")
+		else:
+			check(is_equal_approx(consequence.get_node("NewFoldedTowel").scale.x,1.0) and is_zero_approx(consequence.get_node("NewFoldedTowel").rotation.y),"reduced motion leaves a folded towel")
+		care_world.free()
+		await physics_frame
 	var market_data = pack.destinations[pack.destinations.size()-1]
 	check(market_data.journey_id == "market_rescue","twelfth stop is the paper supermarket")
 	var market = script.new().build({"mode":"destination","journey_id":"market_rescue","activity":{}},{},market_data)

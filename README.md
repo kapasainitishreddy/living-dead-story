@@ -1,3 +1,11 @@
+## November 19, 2026 · shelter care has a small physical gesture (source-integrated; native QA pending)
+
+**Vision:** STILL HERE: PLATFORM 6 is a warm, single-player, unscored 3:17 journey; an imagined paper-cat parade gives way to gentle real care without making living cats obey or turning kindness into a task.
+
+**Playable change:** When the existing shelter choice places fresh water, a subtle ten-arc surface ripple widens in the real bowl; choosing the soft nook lets the actual folded towel settle into its final shape. Both last just over one second, do not block leaving or changing your mind, and only play on a **new choice**. Returning via a saved Journey immediately shows the finished water or towel. Reduced motion completes the gesture immediately; pause freezes it. Choosing to leave everything undisturbed remains equally valid. The paper play, relationships, 12 Journey stops, seven-chapter story, saves and endings are untouched; no assets, scores, extra inputs or fields were added.
+
+**Verification / outstanding:** Registered real-engine Journey world and runtime regressions now assert new-choice triggering, settled saved prop, pause freeze, live reduced-motion completion and unchanged destination exit. Source checks and remote blob/head readback are required for this commit; this environment has **no Godot binary or asset-prepared checkout**, so the native tests and genuine normal-speed audiovisual playthrough remain **unverified**. Next run `cd platform6/game && ./run_tests.sh`, choose water and towel in the real shelter at 1× with reduced motion on/off, revisit from a save, test physical exit and capture genuine gameplay before any release claim.
+
 ## November 19, 2026 · shelter care choice has an immediate place to land (source-integrated; Godot QA pending)
 
 **Vision:** STILL HERE: PLATFORM 6 is a warm, unscored single-player 3:17 journey. Its optional paper-cat freedom parade should end with a real, gentle act at the animal shelter, without making a cat comply or forcing a goal.
