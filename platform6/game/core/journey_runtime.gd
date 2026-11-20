@@ -255,10 +255,24 @@ func dispatch(action:String,value:Variant=null):
     var response=''
     for option in d.choice_nodes:
      if option.choice_id==value: response=str(option.response)
-    model.apply('finish'); save(); game.hud.close_all(); game.route()
-    game.hud.show_notice(response if warning.is_empty() else warning)
+    if d.journey_id=='shelter_parade':
+     # Let players see the fresh water, towel or untouched shelter where the
+     # decision happened, not only on a later repeat visit. No visit is
+     # credited until they choose to leave; all choices remain reversible.
+     game.hud.close_all()
+     game.route()
+     game.hud.show_notice((response+' Look around, then return to the train when you like.') if warning.is_empty() else warning)
+    else:
+     model.apply('finish'); save(); game.hud.close_all(); game.route()
+     game.hud.show_notice(response if warning.is_empty() else warning)
   'journey_finish','journey_return_train':
-   if model.apply('finish' if action=='journey_finish' else 'return_train'):
+   var method='finish' if action=='journey_finish' else 'return_train'
+   # At the shelter's final story beat, the physical train exit completes
+   # this visit after its real-world care choice has been shown. Departing
+   # earlier still keeps the partial story resumable as before.
+   if action=='journey_return_train' and model.snapshot().journey_id=='shelter_parade' and int(model.snapshot().stage)>=2:
+    method='finish'
+   if model.apply(method):
     save(); game.hud.close_all(); game.route()
   'journey_home':
    model.apply('home')
